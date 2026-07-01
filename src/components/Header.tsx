@@ -1,12 +1,12 @@
 import './Header.css'
 import { PHASES, WEEKS } from '../data/program'
 import { useAppDispatch, useAppState } from '../state/context'
+import { AccountControl } from '../auth/AccountControl'
 
-/** Sticky header: brand, week's RPE target, and the scrolling week chips. */
+/** Sticky header: brand, account/sync control, and the scrolling week chips. */
 export function Header() {
   const { week } = useAppState()
   const dispatch = useAppDispatch()
-  const rpe = WEEKS[week - 1].rpe
 
   return (
     <header className="app__header header">
@@ -18,10 +18,7 @@ export function Header() {
             <div className="header__subtitle">5-Day Strength · Endurance</div>
           </div>
         </div>
-        <div className="header__target">
-          <div className="header__rpe">RPE {rpe}</div>
-          <div className="header__target-label">week target</div>
-        </div>
+        <AccountControl />
       </div>
 
       <div className="header__chips">

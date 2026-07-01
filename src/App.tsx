@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { Header } from './components/Header'
 import { BottomNav } from './components/BottomNav'
 import { RestTimer } from './components/RestTimer'
-import { Account } from './auth/Account'
 import { SyncManager } from './sync/SyncManager'
 import { ThisWeek } from './screens/ThisWeek'
 import { WeekPlan } from './screens/WeekPlan'
@@ -34,7 +33,6 @@ export default function App() {
         {tab === 'week' && <ThisWeek />}
         {tab === 'plan' && <WeekPlan />}
         {tab === 'template' && <Template />}
-        <Account />
       </main>
 
       <RestTimer />
