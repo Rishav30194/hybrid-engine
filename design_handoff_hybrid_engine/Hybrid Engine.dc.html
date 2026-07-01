@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" rx="20" fill="#0C0D0F"/>
+    <rect x="30" y="44" width="40" height="12" rx="2" fill="#FF7A1A"/>
+    <rect x="22" y="38" width="8" height="24" rx="2" fill="#FF7A1A"/>
+    <rect x="70" y="38" width="8" height="24" rx="2" fill="#FF7A1A"/>
+  </svg>
+</template>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Hybrid Engine" />
+  <meta name="theme-color" content="#0C0D0F" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;background:#0C0D0F;}
+    input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+    input[type=number]{-moz-appearance:textfield;}
+    select{-webkit-appearance:none;appearance:none;}
+    input::placeholder{color:#6C727A;opacity:1;font-weight:500;}
+    *::-webkit-scrollbar{width:0;height:0;}
+    *{scrollbar-width:none;}
+  </style>
+</helmet>
+<div style="min-height:100dvh;background:#0C0D0F;color:#F2F3F5;font-family:'Barlow',system-ui,sans-serif;display:flex;justify-content:center;--accent:{{ accent }};--load-size:{{ loadSize }};">
+  <div style="width:100%;max-width:560px;height:100dvh;display:flex;flex-direction:column;overflow:hidden;background:#0C0D0F;border-left:1px solid rgba(255,255,255,0.05);border-right:1px solid rgba(255,255,255,0.05);position:relative;">
+
+    <header style="flex:0 0 auto;background:#0C0D0F;border-bottom:1px solid rgba(255,255,255,0.08);padding:calc(14px + env(safe-area-inset-top)) 16px 11px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div style="display:flex;align-items:center;gap:11px;">
+          <div style="width:9px;height:24px;background:var(--accent,#FF7A1A);border-radius:2px;"></div>
+          <div>
+            <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.07em;line-height:1;">HYBRID ENGINE</div>
+            <div style="font-size:10.5px;letter-spacing:0.16em;color:#7C828B;font-weight:600;text-transform:uppercase;margin-top:4px;">5-Day Strength · Endurance</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;color:var(--accent,#D7FF3E);letter-spacing:0.03em;line-height:1;">RPE {{ weekRpe }}</div>
+          <div style="font-size:9.5px;color:#7C828B;letter-spacing:0.12em;text-transform:uppercase;margin-top:4px;">week target</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;overflow-x:auto;margin-top:13px;padding-bottom:2px;">
+        <sc-for list="{{ weekChips }}" as="c" hint-placeholder-count="8">
+          <button onClick="{{ c.select }}" style="flex:0 0 auto;min-width:44px;height:40px;border-radius:10px;border:1.5px solid;border-color:{{ c.border }};background-color:{{ c.bg }};color:{{ c.fg }};font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.02em;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 9px;">
+            <span>{{ c.label }}</span>
+            <span style="width:14px;height:2px;border-radius:2px;background:{{ c.dot }};"></span>
+          </button>
+        </sc-for>
+      </div>
+    </header>
+
+    <main onScroll="{{ timer.onScroll }}" style="flex:1;overflow-y:auto;padding:16px 16px 24px;">
+
+      <sc-if value="{{ isWeek }}" hint-placeholder-val="{{ true }}">
+        <div style="border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px;background:linear-gradient(135deg,#16181C,#101216);margin-bottom:16px;">
+          <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;background:{{ phaseBg }};border:1px solid {{ phaseBorder }};">
+            <span style="width:7px;height:7px;border-radius:50%;background:{{ phaseColor }};"></span>
+            <span style="font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.13em;color:{{ phaseColor }};">{{ phaseTag }}</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:12px;margin-top:13px;">
+            <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:46px;line-height:0.85;letter-spacing:-0.01em;">{{ weekTitle }}</div>
+            <div style="font-size:13px;color:#9AA0A8;">of 8 · target RPE {{ weekRpe }}</div>
+          </div>
+        </div>
+
+        <div style="border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;background:#15171B;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;">
+            <span style="font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.14em;color:#C7CCD2;">YOUR 1-REP MAX</span>
+            <span style="font-size:11px;color:#6C727A;">edit to recalc ↻</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <sc-for list="{{ maxesList }}" as="m" hint-placeholder-count="4">
+              <label style="display:flex;flex-direction:column;gap:4px;background:#0E1014;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 11px;">
+                <span style="font-size:10px;letter-spacing:0.07em;text-transform:uppercase;color:#7C828B;font-weight:600;">{{ m.name }}</span>
+                <div style="display:flex;align-items:baseline;gap:5px;">
+                  <input type="number" inputmode="numeric" value="{{ m.value }}" onInput="{{ m.onInput }}" style="width:100%;min-width:0;background:transparent;border:none;outline:none;color:#F2F3F5;font-family:'Oswald',sans-serif;font-weight:600;font-size:22px;padding:0;" />
+                  <span style="font-size:11px;color:#7C828B;">lb</span>
+                </div>
+              </label>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:9px;margin-top:11px;">
+            <span style="font-size:12px;color:#9AA0A8;">Round loads to</span>
+            <select value="{{ rounding }}" onChange="{{ onRounding }}" style="background:#0E1014;border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#E6E8EB;font-family:'Barlow',sans-serif;font-size:13px;padding:5px 22px 5px 9px;outline:none;background-image:linear-gradient(45deg,transparent 50%,#7C828B 50%),linear-gradient(135deg,#7C828B 50%,transparent 50%);background-position:calc(100% - 12px) 50%,calc(100% - 8px) 50%;background-size:4px 4px,4px 4px;background-repeat:no-repeat;">
+              <option value="1">1</option>
+              <option value="2.5">2.5</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+            </select>
+            <span style="font-size:12px;color:#7C828B;">lb</span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:20px 0 11px;">
+          <span style="font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.16em;color:#C7CCD2;">MAIN LIFTS</span>
+          <span style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></span>
+        </div>
+        <sc-for list="{{ mainLifts }}" as="lift" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:14px;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;background:#15171B;margin-bottom:10px;">
+            <button onClick="{{ lift.toggle }}" style="flex:0 0 auto;width:30px;height:30px;border-radius:9px;border:1.5px solid {{ lift.checkBorder }};background:{{ lift.checkBg }};color:#0C0D0F;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;font-weight:700;">{{ lift.check }}</button>
+            <div style="flex:1;min-width:0;">
+              <div style="font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;letter-spacing:0.02em;">{{ lift.name }}</div>
+              <div style="font-size:12.5px;color:#9AA0A8;margin-top:3px;">{{ lift.meta }}</div>
+              <div style="font-size:11.5px;color:#6C727A;margin-top:3px;">{{ lift.note }}</div>
+            </div>
+            <div style="text-align:right;flex:0 0 auto;">
+              <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:var(--load-size,40px);line-height:0.85;color:var(--accent,#D7FF3E);">{{ lift.load }}</div>
+              <div style="font-size:10px;color:#7C828B;letter-spacing:0.14em;text-transform:uppercase;margin-top:3px;">lb</div>
+            </div>
+          </div>
+        </sc-for>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:20px 0 11px;">
+          <span style="font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.16em;color:#C7CCD2;">CONDITIONING</span>
+          <span style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></span>
+        </div>
+        <sc-for list="{{ conditioning }}" as="c" hint-placeholder-count="5">
+          <div style="display:flex;align-items:flex-start;gap:12px;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px 13px;background:#121419;margin-bottom:8px;">
+            <button onClick="{{ c.toggle }}" style="flex:0 0 auto;margin-top:1px;width:28px;height:28px;border-radius:8px;border:1.5px solid {{ c.checkBorder }};background:{{ c.checkBg }};color:#0C0D0F;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;font-weight:700;">{{ c.check }}</button>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C828B;font-weight:600;">{{ c.label }}</div>
+              <div style="font-family:'Barlow',sans-serif;font-size:14.5px;color:#F2F3F5;margin-top:3px;font-weight:600;">{{ c.desc }}</div>
+              <div style="font-size:11.5px;color:#6C727A;margin-top:5px;line-height:1.5;">{{ c.how }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <sc-if value="{{ isPlan }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:12px;color:#7C828B;margin-bottom:13px;line-height:1.5;">Loads recalculate from your 1RM × each week's %1RM. Tap a week to make it active.</div>
+        <sc-for list="{{ weeksList }}" as="w" hint-placeholder-count="8">
+          <div style="border:1.5px solid;border-color:{{ w.cardBorder }};border-radius:14px;padding:14px;background:{{ w.cardBg }};margin-bottom:10px;">
+            <button onClick="{{ w.select }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:transparent;border:none;cursor:pointer;padding:0;">
+              <div style="display:flex;align-items:center;gap:11px;">
+                <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:24px;color:#F2F3F5;min-width:36px;text-align:left;">{{ w.wkLabel }}</div>
+                <div style="text-align:left;">
+                  <div style="display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:{{ w.bg }};">
+                    <span style="width:6px;height:6px;border-radius:50%;background:{{ w.color }};"></span>
+                    <span style="font-family:'Oswald',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:0.1em;color:{{ w.color }};">{{ w.tag }}</span>
+                  </div>
+                  <div style="font-size:11px;color:#7C828B;margin-top:5px;">target RPE {{ w.rpe }}</div>
+                </div>
+              </div>
+              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:{{ w.cta }};font-weight:700;flex:0 0 auto;">{{ w.ctaText }}</div>
+            </button>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:13px;">
+              <sc-for list="{{ w.loads }}" as="ld" hint-placeholder-count="4">
+                <div style="background:#0E1014;border:1px solid rgba(255,255,255,0.06);border-radius:9px;padding:8px 4px;text-align:center;">
+                  <div style="font-size:9.5px;letter-spacing:0.06em;color:#7C828B;font-weight:600;">{{ ld.abbr }}</div>
+                  <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;color:#E6E8EB;margin-top:3px;">{{ ld.load }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ w.toggleOpen }}" style="margin-top:11px;width:100%;text-align:left;background:transparent;border:none;border-top:1px dashed rgba(255,255,255,0.10);padding:10px 0 0;cursor:pointer;color:#9AA0A8;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;">{{ w.condToggleText }}</button>
+            <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:9px;display:flex;flex-direction:column;gap:6px;">
+                <sc-for list="{{ w.cond }}" as="cd" hint-placeholder-count="5">
+                  <div style="display:flex;justify-content:space-between;gap:12px;font-size:12.5px;">
+                    <span style="color:#7C828B;flex:0 0 auto;">{{ cd.label }}</span>
+                    <span style="color:#D2D5DA;text-align:right;font-weight:500;">{{ cd.desc }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+
+        <div style="border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;background:#101216;margin-top:6px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <span style="font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.14em;color:#C7CCD2;">HOW TO PROGRESS</span>
+            <span style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></span>
+          </div>
+          <sc-for list="{{ notes }}" as="n" hint-placeholder-count="7">
+            <div style="display:flex;gap:9px;margin-top:10px;">
+              <span style="color:var(--accent,#D7FF3E);font-size:12px;flex:0 0 auto;line-height:1.5;">▸</span>
+              <span style="font-size:13px;color:#C7CCD2;line-height:1.5;">{{ n.text }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isTemplate }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:12px;color:#7C828B;margin-bottom:13px;line-height:1.5;">Main-lift loads auto-calculate for <span style="color:var(--accent,#D7FF3E);font-weight:600;">{{ weekTitle }}</span>. Type into the box on each accessory to log the weight you used — it saves per week.</div>
+        <sc-for list="{{ tmplDays }}" as="d" hint-placeholder-count="5">
+          <div style="border:1.5px solid;border-color:{{ d.border }};border-radius:14px;background:#121419;margin-bottom:10px;overflow:hidden;">
+            <button onClick="{{ d.toggleOpen }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;background:transparent;border:none;cursor:pointer;">
+              <div style="text-align:left;">
+                <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.03em;color:#F2F3F5;">{{ d.title }}</div>
+                <div style="font-size:11.5px;color:#7C828B;margin-top:3px;">{{ d.sub }}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:11px;flex:0 0 auto;">
+                <span style="font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;color:{{ d.progColor }};">{{ d.progress }}</span>
+                <span style="color:#7C828B;font-size:13px;">{{ d.caret }}</span>
+              </div>
+            </button>
+            <sc-if value="{{ d.open }}" hint-placeholder-val="{{ true }}">
+              <div style="padding:0 12px 12px;">
+                <sc-for list="{{ d.exercises }}" as="e" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-top:1px solid rgba(255,255,255,0.06);">
+                    <button onClick="{{ e.toggle }}" style="flex:0 0 auto;margin-top:1px;width:26px;height:26px;border-radius:8px;border:1.5px solid {{ e.checkBorder }};background:{{ e.checkBg }};color:#0C0D0F;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;">{{ e.check }}</button>
+                    <div style="flex:1;min-width:0;">
+                      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;">
+                        <span style="font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;color:#EDEFF1;">{{ e.name }}</span>
+                        <sc-if value="{{ e.isMain }}" hint-placeholder-val="{{ true }}">
+                          <span style="flex:0 0 auto;font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;color:{{ e.loadColor }};">{{ e.load }}</span>
+                        </sc-if>
+                        <sc-if value="{{ e.isInput }}" hint-placeholder-val="{{ false }}">
+                          <input type="text" inputmode="decimal" value="{{ e.logValue }}" onInput="{{ e.onLog }}" placeholder="{{ e.placeholder }}" style="flex:0 0 auto;width:98px;text-align:right;background:#0E1014;border:1px solid rgba(255,255,255,0.14);border-radius:7px;color:var(--accent,#D7FF3E);font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;padding:5px 8px;outline:none;" />
+                        </sc-if>
+                      </div>
+                      <div style="font-size:12px;color:#8A9097;margin-top:3px;">{{ e.meta }}</div>
+                      <div style="font-size:11.5px;color:#666C74;margin-top:2px;line-height:1.4;">{{ e.note }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+                <div style="display:flex;align-items:flex-start;gap:11px;padding:12px;margin-top:11px;border:1px dashed rgba(255,255,255,0.16);border-radius:11px;background:rgba(255,255,255,0.03);">
+                  <button onClick="{{ d.cond.toggle }}" style="flex:0 0 auto;margin-top:1px;width:26px;height:26px;border-radius:8px;border:1.5px solid {{ d.cond.checkBorder }};background:{{ d.cond.checkBg }};color:#0C0D0F;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:700;">{{ d.cond.check }}</button>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent,#D7FF3E);font-weight:700;">CONDITIONING · {{ d.cond.label }}</div>
+                    <div style="font-size:14px;color:#F2F3F5;margin-top:4px;font-weight:600;">{{ d.cond.desc }}</div>
+                    <div style="font-size:11.5px;color:#9298A0;margin-top:5px;line-height:1.5;">{{ d.cond.how }}</div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-if>
+
+    </main>
+
+    <button onClick="{{ timer.toggleOpen }}" style="position:absolute;right:16px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:41;height:46px;min-width:46px;padding:0 16px;border-radius:23px;border:1.5px solid;border-color:{{ timer.pillBorder }};background-color:{{ timer.pillBg }};color:{{ timer.pillFg }};display:flex;align-items:center;gap:7px;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,0.45);font-family:'Oswald',sans-serif;font-weight:600;transform:{{ timer.pillShift }};opacity:{{ timer.pillOpacity }};pointer-events:{{ timer.pillPointer }};transition:transform .25s ease, opacity .25s ease;">
+      <span style="font-size:17px;line-height:1;">⏱</span>
+      <span style="font-size:15px;letter-spacing:0.04em;font-variant-numeric:tabular-nums;">{{ timer.collapsedLabel }}</span>
+    </button>
+    <sc-if value="{{ timer.open }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;right:16px;bottom:calc(130px + env(safe-area-inset-bottom));z-index:42;width:258px;background:#16181C;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:14px;box-shadow:0 16px 40px rgba(0,0,0,0.55);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:'Oswald',sans-serif;font-weight:600;font-size:12px;letter-spacing:0.14em;color:#C7CCD2;">REST TIMER</span>
+          <button onClick="{{ timer.close }}" style="background:transparent;border:none;color:#7C828B;font-size:18px;line-height:1;cursor:pointer;padding:0 2px;">×</button>
+        </div>
+        <div style="text-align:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:54px;line-height:1;color:{{ timer.timeColor }};margin:8px 0 12px;font-variant-numeric:tabular-nums;letter-spacing:0.01em;">{{ timer.display }}</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;">
+          <sc-for list="{{ timer.presets }}" as="p" hint-placeholder-count="5">
+            <button onClick="{{ p.set }}" style="flex:1;padding:7px 0;border-radius:8px;border:1px solid;border-color:{{ p.border }};background-color:{{ p.bg }};color:{{ p.fg }};font-family:'Oswald',sans-serif;font-weight:600;font-size:12px;cursor:pointer;font-variant-numeric:tabular-nums;">{{ p.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onClick="{{ timer.reset }}" style="flex:0 0 auto;padding:10px 13px;border-radius:10px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:#C7CCD2;font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;cursor:pointer;">Reset</button>
+          <button onClick="{{ timer.startPause }}" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--accent,#FF7A1A);color:#0C0D0F;font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.04em;cursor:pointer;">{{ timer.startPauseLabel }}</button>
+          <button onClick="{{ timer.add15 }}" style="flex:0 0 auto;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:#C7CCD2;font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;cursor:pointer;">+15s</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <nav style="flex:0 0 auto;background:#0C0D0F;border-top:1px solid rgba(255,255,255,0.08);display:flex;padding-bottom:env(safe-area-inset-bottom);">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.select }}" style="flex:1;padding:10px 4px 14px;background:transparent;border:none;border-top:2px solid {{ t.bar }};cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <span style="font-size:16px;line-height:1;color:{{ t.color }};">{{ t.icon }}</span>
+          <span style="font-family:'Oswald',sans-serif;font-size:10.5px;letter-spacing:0.06em;font-weight:600;color:{{ t.color }};">{{ t.label }}</span>
+        </button>
+      </sc-for>
+    </nav>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 430, &quot;height&quot;: 900 },
+  &quot;accentColor&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#FF7A1A&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Style&quot;, &quot;options&quot;: [&quot;#FF7A1A&quot;, &quot;#D7FF3E&quot;, &quot;#35D6FF&quot;, &quot;#FF4D8D&quot;] },
+  &quot;showPercents&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Display&quot; },
+  &quot;bigLoad&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Display&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    tab: "week",
+    week: 1,
+    rounding: 5,
+    rm: { squat: 245, bench: 225, tbdl: 375, ohp: 135 },
+    done: {},
+    log: {},
+    openWeek: 0,
+    openDay: 1,
+    timer: { open: false, running: false, duration: 90, remaining: 90, endAt: null },
+    pillHidden: false,
+  };
+
+  onMainScroll = () => {
+    if (!this.state.pillHidden) this.setState({ pillHidden: true });
+    clearTimeout(this._scrollT);
+    this._scrollT = setTimeout(() => this.setState({ pillHidden: false }), 600);
+  };
+
+  LIFTS = [
+    { key: "squat", name: "Back Squat", abbr: "SQ", note: "Fresh — strength anchor." },
+    { key: "bench", name: "Bench Press", abbr: "BN", note: "Alternate with OHP every 3rd wk." },
+    { key: "tbdl", name: "Trap-Bar Deadlift", abbr: "DL", note: "Posterior-chain anchor." },
+    { key: "ohp", name: "Overhead Press", abbr: "OHP", note: "Swap option for bench." },
+  ];
+
+  PHASES = {
+    base:   { color: "#2DD4BF", bg: "rgba(45,212,191,0.13)",  border: "rgba(45,212,191,0.40)" },
+    peak:   { color: "#FB923C", bg: "rgba(251,146,60,0.13)",  border: "rgba(251,146,60,0.40)" },
+    build:  { color: "#38BDF8", bg: "rgba(56,189,248,0.13)",  border: "rgba(56,189,248,0.40)" },
+    deload: { color: "#A78BFA", bg: "rgba(167,139,250,0.13)", border: "rgba(167,139,250,0.40)" },
+    test:   { color: "#FB7185", bg: "rgba(251,113,133,0.13)", border: "rgba(251,113,133,0.40)" },
+  };
+
+  COND = [
+    { key: "d1", label: "Day 1 — Sled Push + Carry", short: "Sled+Carry" },
+    { key: "d2", label: "Day 2 — Intervals", short: "Intervals" },
+    { key: "d3", label: "Day 3 — Zone 2", short: "Zone 2" },
+    { key: "d4", label: "Day 4 — Sled Drag", short: "Sled Drag" },
+    { key: "d5", label: "Day 5 — Finisher", short: "Finisher" },
+  ];
+
+  CONDINFO = {
+    d1: "Sled push: hard but unbroken ~20 m lengths, walk back = rest (45–60s). Long aggressive steps, drive through the balls of your feet. Then heavy farmer's carries — grip, core & traps in one.",
+    d2: "Work : rest intervals. \"Hard\" = RPE 7–8 (breathing heavily, not an all-out sprint). Keep pedalling / pulling easy through the rest — don't fully stop.",
+    d3: "This easy Zone 2 block IS your conditioning. Conversational / nose-breathing pace — it should feel too easy. Chasing intensity here wrecks recovery for Days 4–5.",
+    d4: "Alternate backward drag (faces forward, torches quads, knee-friendly) and forward rope drag (row it in, hits the back). Walk back = rest.",
+    d5: "Pick ONE, controlled — not a wipe-out:  A) 3 rounds — 250 m row + 10 KB swings + 10 step-ups.  B) 10-min EMOM — odd min 12-cal bike, even min 10 goblet squats.  C) 3 rounds — sled push 2×20 m + 200 m row.",
+  };
+
+  WEEKS = [
+    { wk: 1, phase: "base", tag: "BLOCK 1 · BASE", rpe: "7",
+      main: { squat: { sr: "4×5", rpe: "7", pct: .785 }, bench: { sr: "4×6", rpe: "7", pct: .76 }, tbdl: { sr: "4×5", rpe: "7", pct: .785 }, ohp: { sr: "4×6", rpe: "7", pct: .72 } },
+      cond: { d1: "Sled push 6 × 20m · Farmer's carry 3 × 30m", d2: "6 rounds · 20s hard / 70s easy (~9 min)", d3: "Zone 2: 12 min easy + light circuit", d4: "Sled drag 6 × 20m", d5: "Optional / short — finisher not in yet" } },
+    { wk: 2, phase: "base", tag: "BLOCK 1 · BASE", rpe: "7–8",
+      main: { squat: { sr: "4×5", rpe: "7.5", pct: .80 }, bench: { sr: "4×6", rpe: "7.5", pct: .775 }, tbdl: { sr: "4×5", rpe: "7.5", pct: .80 }, ohp: { sr: "4×6", rpe: "7.5", pct: .735 } },
+      cond: { d1: "Sled push 7 × 20m · Farmer's carry 3 × 35m", d2: "7 rounds · 20s hard / 70s easy", d3: "Zone 2: 13 min easy", d4: "Sled drag 7 × 20m", d5: "Optional / short finisher" } },
+    { wk: 3, phase: "peak", tag: "BLOCK 1 · PEAK", rpe: "8",
+      main: { squat: { sr: "4×5", rpe: "8", pct: .81 }, bench: { sr: "4×6", rpe: "8", pct: .785 }, tbdl: { sr: "4×5", rpe: "8", pct: .81 }, ohp: { sr: "4×6", rpe: "8", pct: .745 } },
+      cond: { d1: "Sled push 8 × 20m · Farmer's carry 4 × 35m", d2: "8 rounds · 20s hard / 70s easy", d3: "Zone 2: 15 min easy", d4: "Sled drag 8 × 20m", d5: "Finisher folds in · 3 rounds" } },
+    { wk: 4, phase: "deload", tag: "DELOAD WEEK", rpe: "5–6",
+      main: { squat: { sr: "3×5", rpe: "5", pct: .68 }, bench: { sr: "3×6", rpe: "5", pct: .66 }, tbdl: { sr: "3×5", rpe: "5", pct: .68 }, ohp: { sr: "3×6", rpe: "5", pct: .62 } },
+      cond: { d1: "Light walk only", d2: "Drop intervals", d3: "Zone 2 only: 15–20 min easy", d4: "Drop sled", d5: "Skip finisher" } },
+    { wk: 5, phase: "build", tag: "BLOCK 2 · BUILD", rpe: "7–8",
+      main: { squat: { sr: "4×4", rpe: "7.5", pct: .825 }, bench: { sr: "4×5", rpe: "7.5", pct: .795 }, tbdl: { sr: "4×4", rpe: "7.5", pct: .825 }, ohp: { sr: "4×5", rpe: "7.5", pct: .755 } },
+      cond: { d1: "Sled push 6 heavier · Carry 4 × 40m", d2: "6 rounds · 30s hard / 60s easy", d3: "Zone 2: 15 min easy", d4: "Sled drag 6 × 20m", d5: "Finisher: 10-min EMOM" } },
+    { wk: 6, phase: "build", tag: "BLOCK 2 · BUILD", rpe: "8",
+      main: { squat: { sr: "4×4", rpe: "8", pct: .835 }, bench: { sr: "4×5", rpe: "8", pct: .81 }, tbdl: { sr: "4×4", rpe: "8", pct: .835 }, ohp: { sr: "4×5", rpe: "8", pct: .77 } },
+      cond: { d1: "Sled push 7 · Carry 4 × 40m", d2: "8 rounds · 30s hard / 60s easy", d3: "Zone 2: 15–18 min easy", d4: "Sled drag 7 × 20m", d5: "Finisher" } },
+    { wk: 7, phase: "peak", tag: "BLOCK 2 · PEAK", rpe: "8–9",
+      main: { squat: { sr: "4×4", rpe: "8 hold", pct: .835 }, bench: { sr: "4×5", rpe: "8 hold", pct: .81 }, tbdl: { sr: "4×4", rpe: "8 hold", pct: .835 }, ohp: { sr: "4×5", rpe: "8 hold", pct: .77 } },
+      cond: { d1: "Sled push 8 heaviest · Carry 4 × 45m", d2: "6 rounds · 30s hard / 45s easy", d3: "Zone 2: 15 min easy", d4: "Sled drag 8 × 20m heaviest", d5: "Finisher — hard" } },
+    { wk: 8, phase: "test", tag: "TEST WEEK", rpe: "test",
+      main: { squat: { sr: "3×3 / test", rpe: "6", pct: .72 }, bench: { sr: "3×4 / test", rpe: "6", pct: .72 }, tbdl: { sr: "3×3 / test", rpe: "6", pct: .72 }, ohp: { sr: "3×4 / test", rpe: "6", pct: .68 } },
+      cond: { d1: "Test: sled 20m for time", d2: "Test: 2 km row", d3: "Zone 2: easy", d4: "Test: max-distance carry", d5: "Test: max push-ups" } },
+  ];
+
+  DAYS = [
+    { n: 1, title: "DAY 1 — LOWER", sub: "Strength + Sled Push & Carry", condLabel: "Sled Push + Farmer's Carry", condKey: "d1",
+      ex: [
+        { id: "d1e0", name: "Back Squat", main: "squat", sr: "4×5→4×4", rpe: "7→8", rest: "2–3 min", note: "Strength anchor — do it fresh. Brace, knees out." },
+        { id: "d1e1", name: "A1 · Romanian Deadlift", sr: "3×8", rpe: "7", rest: "—", load: "RPE-based", note: "Tri-set A1–A3. Hinge, soft knees, hamstring stretch." },
+        { id: "d1e2", name: "A2 · DB Walking Lunge", sr: "3×10/leg", rpe: "7", rest: "—", load: "RPE-based", note: "Long stride, tall torso, push the front heel." },
+        { id: "d1e3", name: "A3 · Standing Calf Raise", sr: "3×12", rpe: "8", rest: "75–90s", load: "RPE-based", note: "Full stretch, 1-sec squeeze top. Calves 2×/wk." },
+      ] },
+    { n: 2, title: "DAY 2 — UPPER", sub: "Push / Pull + Intervals", condLabel: "Bike / Row Intervals", condKey: "d2",
+      ex: [
+        { id: "d2e0", name: "Barbell Bench Press", main: "bench", sr: "4×6→4×5", rpe: "7→8", rest: "2 min", note: "Strength anchor. Swap to OHP every 3rd week." },
+        { id: "d2e1", name: "A1 · Weighted Pull-up / Pulldown", sr: "3×8", rpe: "8", rest: "—", load: "RPE-based", note: "Full hang to chest, elbows down & in." },
+        { id: "d2e2", name: "A2 · Standing DB Overhead Press", sr: "3×10", rpe: "7", rest: "75s", load: "RPE-based", note: "Superset A. Glutes tight, press up & back." },
+        { id: "d2e3", name: "B1 · Chest-Supported Row", sr: "3×12", rpe: "7", rest: "—", load: "RPE-based", note: "Tri-set B1–B3. Squeeze blades, control down." },
+        { id: "d2e4", name: "B2 · Push-up", sr: "3×AMRAP-2", rpe: "8", rest: "—", load: "bodyweight", note: "Stop 2 reps short of failure." },
+        { id: "d2e5", name: "B3 · Cable / DB Lateral Raise", sr: "3×15", rpe: "8", rest: "60s", load: "RPE-based", note: "Side delts. Raise out, not up." },
+      ] },
+    { n: 3, title: "DAY 3 — ENGINE", sub: "Zone 2 + Circuit · deliberately EASY", condLabel: "Built into Zone 2", condKey: "d3",
+      ex: [
+        { id: "d3e0", name: "Zone 2: Row / Bike / Incline Walk", sr: "12–15 min", rpe: "4–5", rest: "—", load: "easy pace", note: "Conversational / nose-breathing. The engine base." },
+        { id: "d3e1", name: "Goblet Squat", sr: "3×15", rpe: "6", rest: "—", load: "light", note: "Circuit: 3 rounds, 60s rest between rounds." },
+        { id: "d3e2", name: "Push-up", sr: "3×12", rpe: "6", rest: "—", load: "bodyweight", note: "Crisp full reps." },
+        { id: "d3e3", name: "DB / Ring Row", sr: "3×15", rpe: "6", rest: "—", load: "light", note: "Squeeze the back, no jerk." },
+        { id: "d3e4", name: "Kettlebell Swing", sr: "3×20", rpe: "6", rest: "—", load: "moderate", note: "Hip snap, glutes drive it." },
+        { id: "d3e5", name: "Plank", sr: "3×40s", rpe: "—", rest: "60s", load: "bodyweight", note: "Ribs down, glutes tight, breathe." },
+      ] },
+    { n: 4, title: "DAY 4 — LOWER", sub: "Strength + Sled Drag", condLabel: "Sled Drag", condKey: "d4",
+      ex: [
+        { id: "d4e0", name: "Trap-Bar Deadlift", main: "tbdl", sr: "4×5→4×4", rpe: "7→8", rest: "2–3 min", note: "Posterior-chain anchor. Chest tall, push floor away." },
+        { id: "d4e1", name: "A1 · Bulgarian Split Squat", sr: "3×8/leg", rpe: "7", rest: "—", load: "RPE-based", note: "Tri-set A1–A3. Drop straight down, drive front heel." },
+        { id: "d4e2", name: "A2 · Seated / Lying Leg Curl", sr: "3×12", rpe: "8", rest: "—", load: "RPE-based", note: "Squeeze hams, slow return." },
+        { id: "d4e3", name: "A3 · Hanging Leg Raise", sr: "3×12", rpe: "7", rest: "75s", load: "bodyweight", note: "Direct core. Roll hips up, don't swing." },
+      ] },
+    { n: 5, title: "DAY 5 — UPPER PUMP", sub: "Pump + Mixed-Modal Finisher", condLabel: "Mixed-Modal Finisher", condKey: "d5",
+      ex: [
+        { id: "d5e0", name: "A1 · Incline DB Press", sr: "3×12", rpe: "8", rest: "—", load: "RPE-based", note: "Stretch at bottom, squeeze upper chest." },
+        { id: "d5e1", name: "A2 · Cable / Chest-Supported Row", sr: "3×12", rpe: "8", rest: "60–75s", load: "RPE-based", note: "Superset A. Pull to lower ribs." },
+        { id: "d5e2", name: "B1 · DB Lateral Raise", sr: "3×15", rpe: "8", rest: "—", load: "RPE-based", note: "Tri-set B1–B3. Lead with elbows, out not up." },
+        { id: "d5e3", name: "B2 · Lat Pulldown / Pull-up", sr: "3×12", rpe: "8", rest: "—", load: "RPE-based", note: "Elbows to back pockets." },
+        { id: "d5e4", name: "B3 · Face Pull", sr: "3×15", rpe: "8", rest: "60s", load: "RPE-based", note: "Rear delts + external rotators." },
+        { id: "d5e5", name: "C1 · EZ-Bar Curl", sr: "3×12–15", rpe: "8", rest: "—", load: "RPE-based", note: "Tri-set C1–C3. Squeeze top." },
+        { id: "d5e6", name: "C2 · Triceps Rope Pressdown", sr: "3×15", rpe: "8", rest: "—", load: "RPE-based", note: "Elbows pinned, full lockout." },
+        { id: "d5e7", name: "C3 · Seated Calf Raise", sr: "3×15", rpe: "8", rest: "45s", load: "RPE-based", note: "Slow, full range, pause." },
+      ] },
+  ];
+
+  NOTES = [
+    "Loads auto-update from your 1RM and the week's %1RM. Update a 1RM and the whole plan recalculates.",
+    "Strength: when the top set feels easier than the listed RPE, bump that lift's 1RM by 5 lb (lower) / 2.5–5 lb (upper).",
+    "Conditioning: progress ONE dial at a time — more rounds OR longer work OR heavier sled. Only if last week was repeatable.",
+    "Sled load = you can keep moving the whole length unbroken. Stall mid-length → too heavy, strip a plate.",
+    "Weeks 4 & 8 are deloads — mandatory. Week 8 can be a test week (log the numbers).",
+    "Accessory / superset work is RPE-based by design: pick a load that hits the listed RPE for the reps.",
+    "After Week 8: nudge starting 1RMs up ~2.5–5% and repeat the 8-week block.",
+  ];
+
+  componentDidMount() {
+    try {
+      const raw = localStorage.getItem("hybridEngine.v1");
+      if (raw) {
+        const s = JSON.parse(raw);
+        this.setState((st) => ({
+          week: s.week || st.week,
+          rounding: s.rounding || st.rounding,
+          rm: Object.assign({}, st.rm, s.rm || {}),
+          done: s.done || {},
+          log: s.log || {},
+        }));
+      }
+    } catch (e) {}
+    this._iv = setInterval(this.tick, 1000);
+  }
+
+  componentWillUnmount() { clearInterval(this._iv); }
+
+  fmtTime = (s) => { const m = Math.floor(s / 60); const ss = s % 60; return m + ":" + (ss < 10 ? "0" : "") + ss; };
+  resumeAudio = () => { try { if (!this._audio) this._audio = new (window.AudioContext || window.webkitAudioContext)(); if (this._audio.state === "suspended") this._audio.resume(); } catch (e) {} };
+  tick = () => { this.setState((st) => { const tm = st.timer; if (!tm.running || !tm.endAt) return null; const r = Math.max(0, Math.round((tm.endAt - Date.now()) / 1000)); if (r <= 0) { this.timerDone(); return { timer: { ...tm, remaining: 0, running: false, endAt: null } }; } if (r === tm.remaining) return null; return { timer: { ...tm, remaining: r } }; }); };
+  timerDone = () => { try { if (navigator.vibrate) navigator.vibrate([220, 120, 220, 120, 320]); } catch (e) {} this.playBeep(); };
+  playBeep = () => { try { const ac = this._audio || (this._audio = new (window.AudioContext || window.webkitAudioContext)()); if (ac.state === "suspended") ac.resume(); const tone = (t, f) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = f; o.connect(g); g.connect(ac.destination); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.4, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.28); o.start(t); o.stop(t + 0.3); }; const n = ac.currentTime; tone(n, 880); tone(n + 0.32, 880); tone(n + 0.64, 1175); } catch (e) {} };
+  openTimer = () => this.setState((st) => ({ timer: { ...st.timer, open: !st.timer.open } }));
+  closeTimer = () => this.setState((st) => ({ timer: { ...st.timer, open: false } }));
+  startTimer = (sec) => { this.resumeAudio(); this.setState((st) => ({ timer: { ...st.timer, duration: sec, remaining: sec, running: true, open: true, endAt: Date.now() + sec * 1000 } })); };
+  startPauseTimer = () => { this.resumeAudio(); this.setState((st) => { const tm = st.timer; if (tm.running) return { timer: { ...tm, running: false, endAt: null } }; const rem = tm.remaining > 0 ? tm.remaining : tm.duration; return { timer: { ...tm, remaining: rem, running: true, endAt: Date.now() + rem * 1000 } }; }); };
+  resetTimer = () => this.setState((st) => ({ timer: { ...st.timer, remaining: st.timer.duration, running: false, endAt: null } }));
+  addTimer = (s) => this.setState((st) => { const tm = st.timer; const rem = Math.min(3599, tm.remaining + s); return { timer: { ...tm, remaining: rem, endAt: tm.running ? Date.now() + rem * 1000 : tm.endAt } }; });
+
+  save = () => {
+    try {
+      const { week, rounding, rm, done, log } = this.state;
+      localStorage.setItem("hybridEngine.v1", JSON.stringify({ week, rounding, rm, done, log }));
+    } catch (e) {}
+  };
+
+  toNum = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
+
+  roundLoad = (v, pct) => {
+    const r = this.toNum(this.state.rounding) || 1;
+    return Math.round((this.toNum(v) * pct) / r) * r;
+  };
+
+  setWeek = (w) => this.setState({ week: w }, this.save);
+  setTab = (t) => this.setState({ tab: t });
+  setRounding = (e) => this.setState({ rounding: this.toNum(e.target.value) || 1 }, this.save);
+  setRm = (k, v) => this.setState((st) => ({ rm: Object.assign({}, st.rm, { [k]: v === "" ? "" : this.toNum(v) }) }), this.save);
+  setLog = (id, v) => this.setState((st) => ({ log: Object.assign({}, st.log, { [id]: v }) }), this.save);
+  toggleDone = (id) => this.setState((st) => { const d = Object.assign({}, st.done); d[id] = !d[id]; return { done: d }; }, this.save);
+  toggleWeek = (w) => this.setState((st) => ({ openWeek: st.openWeek === w ? 0 : w }));
+  toggleDay = (n) => this.setState((st) => ({ openDay: st.openDay === n ? 0 : n }));
+
+  chk(on) {
+    return {
+      check: on ? "✓" : "",
+      checkBg: on ? "var(--accent,#D7FF3E)" : "transparent",
+      checkBorder: on ? "var(--accent,#D7FF3E)" : "rgba(255,255,255,0.22)",
+    };
+  }
+
+  renderVals() {
+    const st = this.state;
+    const week = st.week;
+    const cw = this.WEEKS[week - 1];
+    const ph = this.PHASES[cw.phase];
+    const showPct = this.props.showPercents ?? true;
+    const accentHex = this.props.accentColor ?? "#FF7A1A";
+
+    const mainLifts = this.LIFTS.map((l) => {
+      const m = cw.main[l.key];
+      const id = "w" + week + ":m:" + l.key;
+      let meta = m.sr + " · RPE " + m.rpe;
+      if (showPct) meta += " · " + Math.round(m.pct * 100) + "%";
+      return Object.assign({
+        key: l.key, name: l.name, load: String(this.roundLoad(st.rm[l.key], m.pct)),
+        meta, note: l.note, toggle: () => this.toggleDone(id),
+      }, this.chk(!!st.done[id]));
+    });
+
+    const conditioning = this.COND.map((c) => {
+      const id = "w" + week + ":c:" + c.key;
+      return Object.assign({
+        label: c.label, desc: cw.cond[c.key], how: this.CONDINFO[c.key], toggle: () => this.toggleDone(id),
+      }, this.chk(!!st.done[id]));
+    });
+
+    const weekChips = this.WEEKS.map((w) => {
+      const active = w.wk === week;
+      const color = this.PHASES[w.phase].color;
+      return {
+        label: "W" + w.wk, color, dot: color,
+        bg: active ? accentHex : "#15171B",
+        fg: active ? "#0C0D0F" : "#C7CCD2",
+        border: active ? accentHex : "rgba(255,255,255,0.10)",
+        select: () => this.setWeek(w.wk),
+      };
+    });
+
+    const maxesList = this.LIFTS.map((l) => ({
+      name: l.name, value: st.rm[l.key], onInput: (e) => this.setRm(l.key, e.target.value),
+    }));
+
+    const weeksList = this.WEEKS.map((w) => {
+      const active = w.wk === week;
+      const p = this.PHASES[w.phase];
+      const open = st.openWeek === w.wk;
+      return {
+        wkLabel: "W" + w.wk, tag: w.tag, rpe: w.rpe, color: p.color, bg: p.bg,
+        cardBg: active ? "linear-gradient(135deg,#1A1D22,#121419)" : "#121419",
+        cardBorder: active ? accentHex : "rgba(255,255,255,0.08)",
+        cta: active ? "var(--accent,#D7FF3E)" : "#6C727A",
+        ctaText: active ? "● ACTIVE" : "SET ACTIVE",
+        loads: this.LIFTS.map((l) => ({ abbr: l.abbr, load: String(this.roundLoad(st.rm[l.key], w.main[l.key].pct)) })),
+        cond: this.COND.map((c) => ({ label: c.short, desc: w.cond[c.key] })),
+        open, condToggleText: open ? "Hide conditioning ▲" : "Show conditioning ▾",
+        select: () => this.setWeek(w.wk), toggleOpen: () => this.toggleWeek(w.wk),
+      };
+    });
+
+    const tmplDays = this.DAYS.map((d) => {
+      const exercises = d.ex.map((e) => {
+        const id = "w" + week + ":t:" + e.id;
+        const isMain = !!e.main;
+        let load = e.load;
+        if (isMain) load = this.roundLoad(st.rm[e.main], cw.main[e.main].pct) + " lb";
+        let meta = e.sr + " · RPE " + e.rpe;
+        if (e.rest && e.rest !== "—") meta += " · rest " + e.rest;
+        return Object.assign({
+          name: e.name, load: String(load), meta, note: e.note,
+          loadColor: isMain ? "var(--accent,#D7FF3E)" : "#9AA0A8",
+          isMain: isMain, isInput: !isMain,
+          logValue: st.log[id] || "", placeholder: e.load,
+          onLog: (ev) => this.setLog(id, ev.target.value),
+          toggle: () => this.toggleDone(id),
+        }, this.chk(!!st.done[id]));
+      });
+      const cid = "w" + week + ":tc:" + d.condKey;
+      const cond = Object.assign({
+        label: d.condLabel, desc: cw.cond[d.condKey], how: this.CONDINFO[d.condKey], toggle: () => this.toggleDone(cid),
+      }, this.chk(!!st.done[cid]));
+      const total = exercises.length + 1;
+      const doneCount = exercises.filter((x) => x.check === "✓").length + (cond.check === "✓" ? 1 : 0);
+      const complete = doneCount === total;
+      const open = st.openDay === d.n;
+      return {
+        n: d.n, title: d.title, sub: d.sub, exercises, cond,
+        progress: doneCount + "/" + total, complete, open,
+        caret: open ? "▲" : "▾",
+        progColor: complete ? "var(--accent,#D7FF3E)" : "#7C828B",
+        border: complete ? accentHex : (open ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.08)"),
+        toggleOpen: () => this.toggleDay(d.n),
+      };
+    });
+
+    const tabs = [
+      { key: "week", label: "THIS WEEK", icon: "◉" },
+      { key: "plan", label: "8-WEEK", icon: "▦" },
+      { key: "template", label: "TEMPLATE", icon: "≣" },
+    ].map((t) => ({
+      label: t.label, icon: t.icon, select: () => this.setTab(t.key),
+      color: st.tab === t.key ? "var(--accent,#D7FF3E)" : "#6C727A",
+      bar: st.tab === t.key ? "var(--accent,#D7FF3E)" : "transparent",
+    }));
+
+    const tm = st.timer;
+    const started = tm.running || tm.remaining !== tm.duration;
+    const timer = {
+      open: tm.open,
+      display: this.fmtTime(tm.remaining),
+      collapsedLabel: started ? this.fmtTime(tm.remaining) : "REST",
+      timeColor: tm.remaining === 0 ? accentHex : "#F2F3F5",
+      startPauseLabel: tm.running ? "Pause" : (tm.remaining > 0 && tm.remaining < tm.duration ? "Resume" : "Start"),
+      pillBg: started ? accentHex : "#16181C",
+      pillFg: started ? "#0C0D0F" : accentHex,
+      pillBorder: started ? accentHex : "rgba(255,255,255,0.16)",
+      presets: [30, 60, 90, 120, 180].map((s) => ({
+        label: this.fmtTime(s), set: () => this.startTimer(s),
+        bg: tm.duration === s ? accentHex : "#0E1014",
+        fg: tm.duration === s ? "#0C0D0F" : "#C7CCD2",
+        border: tm.duration === s ? accentHex : "rgba(255,255,255,0.10)",
+      })),
+      toggleOpen: this.openTimer, close: this.closeTimer,
+      startPause: this.startPauseTimer, reset: this.resetTimer, add15: () => this.addTimer(15),
+      onScroll: this.onMainScroll,
+    };
+    const hidden = st.pillHidden && !tm.open;
+    timer.pillShift = hidden ? "translateX(140%)" : "translateX(0)";
+    timer.pillOpacity = hidden ? "0" : "1";
+    timer.pillPointer = hidden ? "none" : "auto";
+
+    return {
+      accent: this.props.accentColor ?? "#FF7A1A",
+      timer,
+      loadSize: (this.props.bigLoad ?? false) ? "52px" : "40px",
+      weekTitle: "WEEK " + week, weekRpe: cw.rpe, phaseTag: cw.tag,
+      phaseColor: ph.color, phaseBg: ph.bg, phaseBorder: ph.border,
+      weekChips, maxesList, rounding: st.rounding, onRounding: this.setRounding,
+      mainLifts, conditioning,
+      isWeek: st.tab === "week", isPlan: st.tab === "plan", isTemplate: st.tab === "template",
+      weeksList, notes: this.NOTES.map((t) => ({ text: t })), tmplDays, tabs,
+    };
+  }
+}
+</script>
+</body>
+</html>

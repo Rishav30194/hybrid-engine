@@ -1,0 +1,37 @@
+.check-btn {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+.check-btn--on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.check-btn--lift {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-size: 16px;
+}
+
+.check-btn--cond {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  margin-top: 1px;
+}
+
+.check-btn--exercise {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-size: 14px;
+}

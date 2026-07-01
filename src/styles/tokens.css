@@ -1,0 +1,72 @@
+/* Design tokens — Hybrid Engine
+ * Source of truth: design_handoff_hybrid_engine/README.md → "Design Tokens"
+ * Options are hardcoded (see docs/IMPLEMENTATION_PHASES.md): orange accent, percents on, normal load size.
+ */
+
+:root {
+  /* Accent (hardcoded default; alternates kept for reference) */
+  --accent: #ff7a1a;
+  --on-accent: #0c0d0f;
+  /* alternates: #d7ff3e, #35d6ff, #ff4d8d */
+
+  /* Backgrounds & surfaces */
+  --bg: #0c0d0f;
+  --surface-1: #101216;
+  --surface-2: #121419;
+  --surface-3: #15171b;
+  --surface-4: #16181c;
+  --well: #0e1014; /* input wells */
+
+  /* Text */
+  --text-primary: #f2f3f5;
+  --text-primary-alt: #edeff1;
+  --text-secondary: #c7ccd2;
+  --text-secondary-alt: #9aa0a8;
+  --text-muted: #8a9097;
+  --text-muted-alt: #7c828b;
+  --text-faint: #6c727a;
+  --text-faint-alt: #666c74;
+
+  /* Borders */
+  --border-hair: rgba(255, 255, 255, 0.06);
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --border-mid: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-dashed: rgba(255, 255, 255, 0.1);
+
+  /* Phase colors (block periodization) */
+  --phase-base: #2dd4bf; /* teal */
+  --phase-peak: #fb923c; /* orange */
+  --phase-build: #38bdf8; /* blue */
+  --phase-deload: #a78bfa; /* purple */
+  --phase-test: #fb7185; /* red */
+
+  /* Radii */
+  --r-tile: 10px;
+  --r-input: 7px;
+  --r-card: 14px;
+  --r-card-lg: 16px;
+  --r-pill: 999px;
+
+  /* Shadows */
+  --shadow-pill: 0 8px 22px rgba(0, 0, 0, 0.45);
+  --shadow-panel: 0 16px 40px rgba(0, 0, 0, 0.55);
+
+  /* Type scale (px) */
+  --fs-hero: 46px;
+  --fs-load: 40px;
+  --fs-load-big: 52px;
+  --fs-timer: 54px;
+  --fs-1rm-input: 22px;
+  --fs-card-title: 16px;
+  --fs-section: 13px;
+  --fs-body: 14px;
+  --fs-caption: 11.5px;
+
+  /* Fonts */
+  --font-head: "Oswald", system-ui, sans-serif;
+  --font-body: "Barlow", system-ui, sans-serif;
+
+  /* Layout */
+  --app-max-width: 560px;
+}

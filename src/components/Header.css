@@ -1,0 +1,103 @@
+.header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-soft);
+  padding: calc(14px + env(safe-area-inset-top)) 16px 11px;
+}
+
+.header__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.header__accent-bar {
+  width: 9px;
+  height: 24px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.header__title {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.07em;
+  line-height: 1;
+}
+
+.header__subtitle {
+  margin-top: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted-alt);
+}
+
+.header__target {
+  text-align: right;
+}
+
+.header__rpe {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.header__target-label {
+  margin-top: 4px;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted-alt);
+}
+
+.header__chips {
+  display: flex;
+  gap: 6px;
+  margin-top: 13px;
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+
+.chip {
+  flex: 0 0 auto;
+  min-width: 44px;
+  height: 40px;
+  padding: 0 9px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-dashed);
+  background: var(--surface-3);
+  color: var(--text-secondary);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.chip--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.chip__dash {
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+}

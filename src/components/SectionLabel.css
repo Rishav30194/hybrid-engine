@@ -1,0 +1,20 @@
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 11px;
+}
+
+.section-label__text {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  color: var(--text-secondary);
+}
+
+.section-label__rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border-soft);
+}
