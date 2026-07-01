@@ -1,5 +1,10 @@
+import { WEEKS } from '../data/program'
 import { toNum } from '../engine/loads'
 import type { Action, AppState } from './types'
+
+/** Keep week within 1..8 so WEEKS[week-1] is always valid (guards corrupt data). */
+export const clampWeek = (n: unknown): number =>
+  Math.min(Math.max(1, Math.round(toNum(n as number)) || 1), WEEKS.length)
 
 export const INITIAL_STATE: AppState = {
   tab: 'week',
@@ -19,7 +24,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'setTab':
       return { ...state, tab: action.tab }
     case 'setWeek':
-      return { ...state, week: action.week }
+      return { ...state, week: clampWeek(action.week) }
     case 'setRounding':
       return { ...state, rounding: toNum(action.rounding) || 1 }
     case 'setRm':
@@ -49,7 +54,7 @@ export function reducer(state: AppState, action: Action): AppState {
       const d = action.data
       return {
         ...state,
-        week: d.week ?? state.week,
+        week: clampWeek(d.week ?? state.week),
         rounding: d.rounding ?? state.rounding,
         rm: { ...state.rm, ...(d.rm ?? {}) },
         done: d.done ?? {},

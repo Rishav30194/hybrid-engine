@@ -6,6 +6,12 @@ describe('reducer', () => {
     expect(reducer(INITIAL_STATE, { type: 'setWeek', week: 5 }).week).toBe(5)
   })
 
+  it('clamps out-of-range weeks so WEEKS[week-1] is always valid', () => {
+    expect(reducer(INITIAL_STATE, { type: 'setWeek', week: 99 }).week).toBe(8)
+    expect(reducer(INITIAL_STATE, { type: 'setWeek', week: 0 }).week).toBe(1)
+    expect(reducer(INITIAL_STATE, { type: 'hydrateRemote', data: { week: 42 } }).week).toBe(8)
+  })
+
   it('coerces rounding and defaults falsy to 1', () => {
     expect(reducer(INITIAL_STATE, { type: 'setRounding', rounding: '2.5' }).rounding).toBe(2.5)
     expect(reducer(INITIAL_STATE, { type: 'setRounding', rounding: 0 }).rounding).toBe(1)

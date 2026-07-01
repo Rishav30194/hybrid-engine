@@ -39,6 +39,10 @@
   color: var(--accent);
 }
 
+.account__status--error {
+  color: var(--phase-test);
+}
+
 .account__row {
   display: flex;
   align-items: center;

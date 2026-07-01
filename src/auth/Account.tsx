@@ -1,7 +1,15 @@
 import './Account.css'
-import { useState, type FormEvent } from 'react'
+import { useState, useSyncExternalStore, type FormEvent } from 'react'
 import { isSupabaseConfigured } from '../lib/supabase'
+import { getSyncStatus, subscribeSyncStatus } from '../sync/syncStatus'
 import { useAuth } from './context'
+
+const SYNC_LABEL: Record<string, string> = {
+  idle: 'Signed in',
+  syncing: 'Syncing…',
+  synced: 'Synced ✓',
+  error: 'Sync failed — will retry',
+}
 
 /** Cloud-sync account card. Renders nothing until Supabase is configured. */
 export function Account() {
@@ -23,24 +31,7 @@ function AccountCard() {
   }
 
   if (status === 'signedIn' && user) {
-    return (
-      <div className="account">
-        <div className="account__head">
-          <span className="account__title">CLOUD SYNC</span>
-          <span className="account__status">Synced ✓</span>
-        </div>
-        <div className="account__row">
-          <span className="account__email">{user.email}</span>
-          <button
-            type="button"
-            className="account__btn"
-            onClick={() => void signOut()}
-          >
-            Sign out
-          </button>
-        </div>
-      </div>
-    )
+    return <SignedIn email={user.email ?? ''} onSignOut={() => void signOut()} />
   }
 
   const submit = async (e: FormEvent) => {
@@ -110,6 +101,28 @@ function AccountCard() {
           ? 'Need an account? Create one'
           : 'Have an account? Sign in'}
       </button>
+    </div>
+  )
+}
+
+function SignedIn({ email, onSignOut }: { email: string; onSignOut: () => void }) {
+  const sync = useSyncExternalStore(subscribeSyncStatus, getSyncStatus)
+  return (
+    <div className="account">
+      <div className="account__head">
+        <span className="account__title">CLOUD SYNC</span>
+        <span
+          className={`account__status${sync.state === 'error' ? ' account__status--error' : ''}`}
+        >
+          {SYNC_LABEL[sync.state]}
+        </span>
+      </div>
+      <div className="account__row">
+        <span className="account__email">{email}</span>
+        <button type="button" className="account__btn" onClick={onSignOut}>
+          Sign out
+        </button>
+      </div>
     </div>
   )
 }

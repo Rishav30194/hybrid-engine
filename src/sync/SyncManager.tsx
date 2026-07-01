@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAppDispatch, useAppState } from '../state/context'
 import { persistedSnapshot, readBlob, setNextUpdatedAt } from '../state/persistence'
 import { fetchRemote, pushRemote, type RemoteBlob } from './syncClient'
+import { setSyncStatus } from './syncStatus'
 
 const PUSH_DEBOUNCE_MS = 800
 
@@ -40,7 +41,11 @@ export function SyncManager() {
 
   const flushPush = useCallback((uid: string) => {
     const blob = readBlob()
-    if (blob) void pushRemote(uid, blob.persisted, blob.updatedAt)
+    if (!blob) return
+    setSyncStatus('syncing')
+    void pushRemote(uid, blob.persisted, blob.updatedAt).then(({ error }) =>
+      setSyncStatus(error ? 'error' : 'synced'),
+    )
   }, [])
 
   // On sign-in: reconcile by updatedAt (pull if remote newer, else push local),
@@ -52,11 +57,17 @@ export function SyncManager() {
     let cancelled = false
 
     void (async () => {
+      setSyncStatus('syncing')
       const local = readBlob()
       const remote = await fetchRemote(userId)
       if (cancelled) return
-      if (!applyRemote(remote?.data) && local) {
-        await pushRemote(userId, local.persisted, local.updatedAt)
+      if (applyRemote(remote?.data)) {
+        setSyncStatus('synced')
+      } else if (local) {
+        const { error } = await pushRemote(userId, local.persisted, local.updatedAt)
+        if (!cancelled) setSyncStatus(error ? 'error' : 'synced')
+      } else {
+        setSyncStatus('synced')
       }
       if (!cancelled) ready.current = true
     })()

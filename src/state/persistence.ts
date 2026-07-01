@@ -1,4 +1,4 @@
-import { INITIAL_STATE } from './reducer'
+import { clampWeek, INITIAL_STATE } from './reducer'
 import type { AppState, PersistedState } from './types'
 
 const STORAGE_KEY = 'hybridEngine.v1'
@@ -14,7 +14,7 @@ export function mergePersisted(saved: Partial<PersistedState> | null): AppState 
   if (!saved) return INITIAL_STATE
   return {
     ...INITIAL_STATE,
-    week: saved.week || INITIAL_STATE.week,
+    week: clampWeek(saved.week || INITIAL_STATE.week),
     rounding: saved.rounding || INITIAL_STATE.rounding,
     rm: { ...INITIAL_STATE.rm, ...(saved.rm ?? {}) },
     done: saved.done ?? {},
