@@ -51,3 +51,11 @@ export type Action =
   | { type: 'toggleWeek'; week: number }
   | { type: 'toggleDay'; day: number }
   | { type: 'setPillHidden'; hidden: boolean }
+  // Rest timer. Time-dependent actions carry `now` so the reducer stays pure.
+  | { type: 'timerToggleOpen' }
+  | { type: 'timerClose' }
+  | { type: 'timerStart'; seconds: number; now: number }
+  | { type: 'timerStartPause'; now: number }
+  | { type: 'timerReset' }
+  | { type: 'timerAdd'; seconds: number; now: number }
+  | { type: 'timerTick'; now: number }

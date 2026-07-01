@@ -44,6 +44,60 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, openDay: state.openDay === action.day ? 0 : action.day }
     case 'setPillHidden':
       return { ...state, pillHidden: action.hidden }
+
+    case 'timerToggleOpen':
+      return { ...state, timer: { ...state.timer, open: !state.timer.open } }
+    case 'timerClose':
+      return { ...state, timer: { ...state.timer, open: false } }
+    case 'timerStart': {
+      const s = action.seconds
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          duration: s,
+          remaining: s,
+          running: true,
+          open: true,
+          endAt: action.now + s * 1000,
+        },
+      }
+    }
+    case 'timerStartPause': {
+      const tm = state.timer
+      if (tm.running) {
+        return { ...state, timer: { ...tm, running: false, endAt: null } }
+      }
+      const rem = tm.remaining > 0 ? tm.remaining : tm.duration
+      return {
+        ...state,
+        timer: { ...tm, remaining: rem, running: true, endAt: action.now + rem * 1000 },
+      }
+    }
+    case 'timerReset':
+      return {
+        ...state,
+        timer: { ...state.timer, remaining: state.timer.duration, running: false, endAt: null },
+      }
+    case 'timerAdd': {
+      const tm = state.timer
+      const rem = Math.min(3599, tm.remaining + action.seconds)
+      return {
+        ...state,
+        timer: { ...tm, remaining: rem, endAt: tm.running ? action.now + rem * 1000 : tm.endAt },
+      }
+    }
+    case 'timerTick': {
+      const tm = state.timer
+      if (!tm.running || tm.endAt == null) return state
+      const r = Math.max(0, Math.round((tm.endAt - action.now) / 1000))
+      if (r <= 0) {
+        return { ...state, timer: { ...tm, remaining: 0, running: false, endAt: null } }
+      }
+      if (r === tm.remaining) return state
+      return { ...state, timer: { ...tm, remaining: r } }
+    }
+
     default:
       return state
   }
