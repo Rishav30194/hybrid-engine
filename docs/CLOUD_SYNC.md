@@ -19,7 +19,8 @@ stays offline-first either way.
 
 4. **Grab your keys** — Project Settings → API:
    - `Project URL` → `VITE_SUPABASE_URL`
-   - `anon` `public` key → `VITE_SUPABASE_ANON_KEY`
+   - `Publishable key` (`sb_publishable_…`) → `VITE_SUPABASE_PUBLISHABLE_KEY`
+     (the legacy `anon`/`public` key also works via `VITE_SUPABASE_ANON_KEY`)
    (Both are safe in a client bundle; Row-Level Security protects the data.)
 
 5. **(Optional) Realtime** — for live multi-device updates, enable Realtime for
@@ -41,7 +42,7 @@ The Actions build reads the same two vars from repo secrets. Add them under
 **Settings → Secrets and variables → Actions → New repository secret**:
 
 - `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
 
 Then re-run the **Deploy to GitHub Pages** workflow (or push any commit). Until
 these are set, the deployed app simply runs on localStorage as before.
