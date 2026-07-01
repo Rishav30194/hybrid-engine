@@ -1,10 +1,15 @@
 import './App.css'
+import { WEEKS } from './data/program'
+import { useAppState } from './state/store'
 
 /**
- * Phase 0 — app shell only.
- * Header / scrolling main / bottom nav are placeholders; real chrome lands in Phase 3.
+ * Phase 2 — shell now reads live state from the store.
+ * Real chrome/screens land in Phases 3+.
  */
 export default function App() {
+  const { week } = useAppState()
+  const rpe = WEEKS[week - 1].rpe
+
   return (
     <div className="app">
       <header className="app__header shell-placeholder shell-placeholder--header">
@@ -14,7 +19,7 @@ export default function App() {
 
       <main className="app__main">
         <div className="shell-placeholder shell-placeholder--body">
-          Themed shell ready — screens land in later phases.
+          Week {week} · target RPE {rpe} — state wired, screens land in later phases.
         </div>
       </main>
 
