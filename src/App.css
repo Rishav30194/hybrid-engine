@@ -1,7 +1,0 @@
-/* Temporary per-tab placeholder — replaced by real screens in Phases 4–6. */
-.screen-placeholder {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--text-muted-alt);
-  font-size: var(--fs-body);
-}
