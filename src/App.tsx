@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { Header } from './components/Header'
 import { BottomNav } from './components/BottomNav'
 import { RestTimer } from './components/RestTimer'
+import { SyncManager } from './sync/SyncManager'
 import { ThisWeek } from './screens/ThisWeek'
 import { WeekPlan } from './screens/WeekPlan'
 import { Template } from './screens/Template'
@@ -25,6 +26,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <SyncManager />
       <Header />
 
       <main className="app__main" onScroll={onMainScroll}>

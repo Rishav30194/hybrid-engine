@@ -45,6 +45,18 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'setPillHidden':
       return { ...state, pillHidden: action.hidden }
 
+    case 'hydrateRemote': {
+      const d = action.data
+      return {
+        ...state,
+        week: d.week ?? state.week,
+        rounding: d.rounding ?? state.rounding,
+        rm: { ...state.rm, ...(d.rm ?? {}) },
+        done: d.done ?? {},
+        log: d.log ?? {},
+      }
+    }
+
     case 'timerToggleOpen':
       return { ...state, timer: { ...state.timer, open: !state.timer.open } }
     case 'timerClose':
