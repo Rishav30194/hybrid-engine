@@ -1,10 +1,8 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
-// Prefer the new publishable key (sb_publishable_…); fall back to the legacy
-// anon key name for backward compatibility.
-const key = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
-  import.meta.env.VITE_SUPABASE_ANON_KEY) as string | undefined
+// Supabase publishable key (sb_publishable_…).
+const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined
 
 /**
  * Cloud sync is opt-in: it only activates when both env vars are present.

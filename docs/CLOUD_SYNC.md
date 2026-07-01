@@ -20,7 +20,6 @@ stays offline-first either way.
 4. **Grab your keys** — Project Settings → API:
    - `Project URL` → `VITE_SUPABASE_URL`
    - `Publishable key` (`sb_publishable_…`) → `VITE_SUPABASE_PUBLISHABLE_KEY`
-     (the legacy `anon`/`public` key also works via `VITE_SUPABASE_ANON_KEY`)
    (Both are safe in a client bundle; Row-Level Security protects the data.)
 
 5. **(Optional) Realtime** — for live multi-device updates, enable Realtime for
@@ -30,7 +29,7 @@ stays offline-first either way.
 
 ```bash
 cp .env.example .env.local
-# paste your VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+# paste your VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY
 npm run dev
 ```
 
