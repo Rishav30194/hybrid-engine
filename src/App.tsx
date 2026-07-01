@@ -1,33 +1,30 @@
 import './App.css'
-import { WEEKS } from './data/program'
-import { useAppState } from './state/store'
+import { Header } from './components/Header'
+import { BottomNav } from './components/BottomNav'
+import { useAppState } from './state/context'
 
 /**
- * Phase 2 — shell now reads live state from the store.
- * Real chrome/screens land in Phases 3+.
+ * Phase 3 — global chrome wired up: header, week chips, bottom nav, tab switching.
+ * The three screens land in Phases 4–6; placeholders stand in for now.
  */
 export default function App() {
-  const { week } = useAppState()
-  const rpe = WEEKS[week - 1].rpe
+  const { tab } = useAppState()
 
   return (
     <div className="app">
-      <header className="app__header shell-placeholder shell-placeholder--header">
-        <span className="shell-accent-bar" />
-        <span className="shell-title">HYBRID ENGINE</span>
-      </header>
+      <Header />
 
       <main className="app__main">
-        <div className="shell-placeholder shell-placeholder--body">
-          Week {week} · target RPE {rpe} — state wired, screens land in later phases.
-        </div>
+        {tab === 'week' && <ScreenPlaceholder label="This Week" />}
+        {tab === 'plan' && <ScreenPlaceholder label="8-Week Plan" />}
+        {tab === 'template' && <ScreenPlaceholder label="Template" />}
       </main>
 
-      <nav className="app__nav shell-placeholder shell-placeholder--nav">
-        <span>THIS WEEK</span>
-        <span>8-WEEK</span>
-        <span>TEMPLATE</span>
-      </nav>
+      <BottomNav />
     </div>
   )
+}
+
+function ScreenPlaceholder({ label }: { label: string }) {
+  return <div className="screen-placeholder">{label} — coming in a later phase.</div>
 }

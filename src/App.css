@@ -1,45 +1,7 @@
-/* Phase 0 shell placeholders — replaced by real chrome/screens in later phases. */
-
-.shell-placeholder {
-  display: flex;
-  align-items: center;
-}
-
-.shell-placeholder--header {
-  gap: 10px;
-  padding: 16px;
-  border-bottom: 1px solid var(--border-hair);
-}
-
-.shell-accent-bar {
-  width: 9px;
-  height: 24px;
-  border-radius: 2px;
-  background: var(--accent);
-}
-
-.shell-title {
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: 0.07em;
-}
-
-.shell-placeholder--body {
-  justify-content: center;
+/* Temporary per-tab placeholder — replaced by real screens in Phases 4–6. */
+.screen-placeholder {
   padding: 40px 20px;
+  text-align: center;
   color: var(--text-muted-alt);
   font-size: var(--fs-body);
-  text-align: center;
-}
-
-.shell-placeholder--nav {
-  justify-content: space-around;
-  padding: 14px 0;
-  border-top: 1px solid var(--border-hair);
-  font-family: var(--font-head);
-  font-weight: 600;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  color: var(--text-faint);
 }

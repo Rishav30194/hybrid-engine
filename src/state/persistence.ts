@@ -32,11 +32,21 @@ export function loadState(): AppState {
   }
 }
 
-/** Write the persisted slice; swallows quota/availability errors. */
-export function saveState(state: AppState): void {
+/** Serialized persisted slice — used as a stable effect dependency. */
+export function persistedSnapshot(state: AppState): string {
+  return JSON.stringify(pickPersisted(state))
+}
+
+/** Write an already-serialized snapshot; swallows quota/availability errors. */
+export function writeSnapshot(json: string): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(pickPersisted(state)))
+    localStorage.setItem(STORAGE_KEY, json)
   } catch {
     /* storage unavailable or full — ignore */
   }
+}
+
+/** Write the persisted slice; swallows quota/availability errors. */
+export function saveState(state: AppState): void {
+  writeSnapshot(persistedSnapshot(state))
 }
