@@ -8,13 +8,16 @@ and the authored source `design_handoff_hybrid_engine/Hybrid Engine.dc.html`.
 - **Stack:** React + Vite + TypeScript. PWA via `vite-plugin-pwa`.
 - **Location:** built at **repo root**, alongside `design_handoff_hybrid_engine/`.
 - **Options:** hardcoded defaults — accent `#FF7A1A` (orange), `showPercents` on, `bigLoad` off. No settings UI.
-- **Persistence:** localStorage only (`hybridEngine.v1`), best-effort.
+- **Persistence:** localStorage (`hybridEngine.v1`) by default; optional cloud sync when signed in.
 - **Data:** `WEEKS`, `DAYS`, `COND`, `CONDINFO`, `NOTES`, `PHASES`, `LIFTS` copied **verbatim** from the authored source — they are the program's real prescription data.
 
-## Parked for the future
+## Delivered beyond the original plan
 
-- **User accounts + cloud sync** (Supabase auth + `user_state` jsonb, offline-first sync). Not built now.
-  State is kept as a single serializable JSON blob so this is a later drop-in, not a refactor.
+- **Deployed** to GitHub Pages (base `/hybrid-engine/`) via an Actions workflow that tests, builds, and publishes on every push to `main`.
+- **User accounts + cloud sync** — implemented (Supabase email/password auth + `user_state` jsonb, offline-first last-write-wins). Opt-in and off unless configured. See [`CLOUD_SYNC.md`](CLOUD_SYNC.md).
+
+## Still parked / intentionally out
+
 - **JSON export/import backup** — intentionally left out.
 
 ## iOS Safari persistence note
@@ -24,7 +27,7 @@ Apple's rules: a **7-day eviction cap** for script-writable storage if the app i
 in a Safari tab, eviction under storage pressure, and "Clear History and Website Data". **Add to Home
 Screen (PWA)** greatly improves durability (separate storage container, not subject to the 7-day Safari
 cap the same way) but is still best-effort. `navigator.storage.persist()` is effectively ignored on iOS.
-Guaranteed durability requires the parked cloud-sync work.
+Guaranteed durability comes from signing in — cloud sync backs the state up to Supabase.
 
 ---
 
