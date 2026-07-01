@@ -40,4 +40,30 @@ describe('reducer', () => {
     const s = reducer(INITIAL_STATE, { type: 'setLog', id: 'w1:t:d1e1', value: '95' })
     expect(s.log['w1:t:d1e1']).toBe('95')
   })
+
+  it('hydrates the persisted slice from a remote blob', () => {
+    const local = reducer(INITIAL_STATE, { type: 'setRm', lift: 'squat', value: '999' })
+    const s = reducer(local, {
+      type: 'hydrateRemote',
+      data: {
+        week: 6,
+        rounding: 10,
+        rm: { squat: 300, bench: 240, tbdl: 400, ohp: 150 },
+        done: { 'w6:m:squat': true },
+        log: { 'w6:t:d1e1': '135' },
+      },
+    })
+    expect(s.week).toBe(6)
+    expect(s.rounding).toBe(10)
+    expect(s.rm.squat).toBe(300) // remote overwrites local edit
+    expect(s.done['w6:m:squat']).toBe(true)
+    expect(s.log['w6:t:d1e1']).toBe('135')
+  })
+
+  it('hydrateRemote leaves non-persisted UI state alone', () => {
+    const withTab = reducer(INITIAL_STATE, { type: 'setTab', tab: 'template' })
+    const s = reducer(withTab, { type: 'hydrateRemote', data: { week: 3 } })
+    expect(s.tab).toBe('template')
+    expect(s.week).toBe(3)
+  })
 })

@@ -24,6 +24,12 @@ npm test           # run the Vitest suite
 npm run gen-icons  # regenerate PWA icons from public/icon.svg
 ```
 
+## Cloud sync (optional)
+
+Sign-in and cross-device sync via Supabase are opt-in and off by default — the
+app works fully on localStorage without an account. To enable, see
+[`docs/CLOUD_SYNC.md`](docs/CLOUD_SYNC.md).
+
 ## Install on iPhone
 
 The production build is a PWA. Serve it (or deploy it), open in Safari, then

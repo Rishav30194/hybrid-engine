@@ -51,6 +51,8 @@ export type Action =
   | { type: 'toggleWeek'; week: number }
   | { type: 'toggleDay'; day: number }
   | { type: 'setPillHidden'; hidden: boolean }
+  // Replace the persisted slice from a remote (cloud) blob.
+  | { type: 'hydrateRemote'; data: Partial<PersistedState> }
   // Rest timer. Time-dependent actions carry `now` so the reducer stays pure.
   | { type: 'timerToggleOpen' }
   | { type: 'timerClose' }
