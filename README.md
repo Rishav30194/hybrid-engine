@@ -30,13 +30,19 @@ Sign-in and cross-device sync via Supabase are opt-in and off by default — the
 app works fully on localStorage without an account. To enable, see
 [`docs/CLOUD_SYNC.md`](docs/CLOUD_SYNC.md).
 
+## Live
+
+Deployed to GitHub Pages: **https://rishav30194.github.io/hybrid-engine/**
+(auto-deploys on every push to `main`).
+
 ## Install on iPhone
 
-The production build is a PWA. Serve it (or deploy it), open in Safari, then
+The production build is a PWA. Open the live URL in Safari, then
 **Share → Add to Home Screen** for a standalone, offline-capable install.
 
 ## Status
 
-All eight phases complete — recalculation engine, three screens (This Week /
-8-Week Plan / Template), rest timer, and PWA install. See
-[`docs/IMPLEMENTATION_PHASES.md`](docs/IMPLEMENTATION_PHASES.md) for details.
+Complete and deployed — recalculation engine, three screens (This Week /
+8-Week Plan / Template), rest timer, PWA install, and optional Supabase cloud
+sync. See [`docs/IMPLEMENTATION_PHASES.md`](docs/IMPLEMENTATION_PHASES.md) and
+[`docs/CLOUD_SYNC.md`](docs/CLOUD_SYNC.md).
