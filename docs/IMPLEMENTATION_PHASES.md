@@ -16,6 +16,17 @@ and the authored source `design_handoff_hybrid_engine/Hybrid Engine.dc.html`.
 - **Deployed** to GitHub Pages (base `/hybrid-engine/`) via an Actions workflow that tests, builds, and publishes on every push to `main`.
 - **User accounts + cloud sync** — implemented (Supabase email/password auth + `user_state` jsonb, offline-first last-write-wins). Opt-in and off unless configured. See [`CLOUD_SYNC.md`](CLOUD_SYNC.md).
 
+## UI refinements
+
+- **Account/sync control moved to the header.** The cloud-sync affordance previously rendered
+  as a card at the bottom of every tab, which was redundant once signed in. It now lives in the
+  header's top-right, reclaiming the old "RPE / WEEK TARGET" slot (redundant with the week hero,
+  which already shows target RPE). It's a compact control that opens a small popover:
+  - **Signed out:** email/password sign-in / create-account form.
+  - **Signed in:** a subtle synced indicator (colored by real sync state) revealing the account
+    email + **Sign out**.
+  Renders nothing when Supabase isn't configured, so the header stays clean in the localStorage-only mode.
+
 ## Still parked / intentionally out
 
 - **JSON export/import backup** — intentionally left out.

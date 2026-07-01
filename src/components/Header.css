@@ -41,27 +41,6 @@
   color: var(--text-muted-alt);
 }
 
-.header__target {
-  text-align: right;
-}
-
-.header__rpe {
-  font-family: var(--font-head);
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.03em;
-  line-height: 1;
-  color: var(--accent);
-}
-
-.header__target-label {
-  margin-top: 4px;
-  font-size: 9.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted-alt);
-}
-
 .header__chips {
   display: flex;
   gap: 6px;
