@@ -1,0 +1,125 @@
+.account {
+  margin-top: 22px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-card);
+  padding: 14px;
+  background: var(--surface-3);
+}
+
+.account--muted {
+  color: var(--text-faint);
+  font-size: 12px;
+  text-align: center;
+}
+
+.account__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 11px;
+}
+
+.account__title {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--text-secondary);
+}
+
+.account__hint {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.account__status {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.account__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.account__email {
+  font-size: 13px;
+  color: var(--text-secondary-alt);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account__form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account__input {
+  background: var(--well);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  padding: 9px 11px;
+  outline: none;
+}
+
+.account__input:focus {
+  border-color: var(--border-strong);
+}
+
+.account__error {
+  font-size: 12px;
+  color: var(--phase-test);
+}
+
+.account__message {
+  font-size: 12px;
+  color: var(--text-secondary-alt);
+}
+
+.account__submit {
+  margin-top: 2px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.account__submit:disabled {
+  opacity: 0.6;
+}
+
+.account__btn {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--border-mid);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.account__toggle {
+  display: block;
+  width: 100%;
+  margin-top: 11px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted-alt);
+  font-size: 12px;
+  text-align: center;
+}
