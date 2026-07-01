@@ -31,11 +31,12 @@ export async function pushRemote(
   userId: string,
   persisted: Partial<PersistedState>,
   updatedAt: number,
-): Promise<void> {
-  if (!supabase) return
-  await supabase.from('user_state').upsert({
+): Promise<{ error?: string }> {
+  if (!supabase) return {}
+  const { error } = await supabase.from('user_state').upsert({
     user_id: userId,
     data: { ...persisted, updatedAt },
     updated_at: new Date(updatedAt).toISOString(),
   })
+  return error ? { error: error.message } : {}
 }
