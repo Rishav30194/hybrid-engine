@@ -19,3 +19,20 @@
   font-weight: 600;
   letter-spacing: 0.13em;
 }
+
+/* Compact variant for the 8-Week cards: smaller, no border. */
+.phase-pill--card {
+  gap: 6px;
+  padding: 3px 9px;
+  border: none;
+}
+
+.phase-pill--card .phase-pill__dot {
+  width: 6px;
+  height: 6px;
+}
+
+.phase-pill--card .phase-pill__tag {
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+}

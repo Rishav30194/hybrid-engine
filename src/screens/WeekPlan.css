@@ -1,0 +1,189 @@
+.plan-intro {
+  font-size: 12px;
+  color: var(--text-muted-alt);
+  margin-bottom: 13px;
+  line-height: 1.5;
+}
+
+/* --- Week card --- */
+.week-card {
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--r-card);
+  padding: 14px;
+  background: var(--surface-2);
+  margin-bottom: 10px;
+}
+
+.week-card--active {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, #1a1d22, #121419);
+}
+
+.week-card__head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: transparent;
+  padding: 0;
+}
+
+.week-card__head-left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.week-card__wk {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--text-primary);
+  min-width: 36px;
+  text-align: left;
+}
+
+.week-card__meta {
+  text-align: left;
+}
+
+.week-card__rpe {
+  font-size: 11px;
+  color: var(--text-muted-alt);
+  margin-top: 5px;
+}
+
+.week-card__cta {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.week-card__cta--active {
+  color: var(--accent);
+}
+
+/* --- 4-col load grid --- */
+.week-card__loads {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 13px;
+}
+
+.load-tile {
+  background: var(--well);
+  border: 1px solid var(--border-hair);
+  border-radius: 9px;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.load-tile__abbr {
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted-alt);
+  font-weight: 600;
+}
+
+.load-tile__num {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 18px;
+  color: #e6e8eb;
+  margin-top: 3px;
+}
+
+/* --- Conditioning toggle + list --- */
+.week-card__toggle {
+  margin-top: 11px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-top: 1px dashed var(--border-dashed);
+  padding: 10px 0 0;
+  color: var(--text-secondary-alt);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.week-card__cond {
+  margin-top: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.week-card__cond-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12.5px;
+}
+
+.week-card__cond-label {
+  color: var(--text-muted-alt);
+  flex: 0 0 auto;
+}
+
+.week-card__cond-desc {
+  color: #d2d5da;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* --- How to progress --- */
+.progress-card {
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-card);
+  padding: 16px;
+  background: var(--surface-1);
+  margin-top: 6px;
+}
+
+.progress-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.progress-card__title {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--text-secondary);
+}
+
+.progress-card__rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border-soft);
+}
+
+.progress-card__note {
+  display: flex;
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.progress-card__marker {
+  color: var(--accent);
+  font-size: 12px;
+  flex: 0 0 auto;
+  line-height: 1.5;
+}
+
+.progress-card__text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}

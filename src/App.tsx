@@ -2,6 +2,7 @@ import './App.css'
 import { Header } from './components/Header'
 import { BottomNav } from './components/BottomNav'
 import { ThisWeek } from './screens/ThisWeek'
+import { WeekPlan } from './screens/WeekPlan'
 import { useAppState } from './state/context'
 
 /**
@@ -17,7 +18,7 @@ export default function App() {
 
       <main className="app__main">
         {tab === 'week' && <ThisWeek />}
-        {tab === 'plan' && <ScreenPlaceholder label="8-Week Plan" />}
+        {tab === 'plan' && <WeekPlan />}
         {tab === 'template' && <ScreenPlaceholder label="Template" />}
       </main>
 
