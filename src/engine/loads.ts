@@ -2,7 +2,7 @@
  * The recalculation engine — the heart of the app.
  * Working load = round(1RM × pct / increment) × increment.
  */
-import { WEEKS } from '../data/program'
+import { LIFTS, pressForWeek, WEEKS } from '../data/program'
 import type { Exercise, LiftKey } from '../data/types'
 
 /** Parse a possibly-empty/edited numeric value; non-numbers become 0. */
@@ -48,4 +48,18 @@ export function exerciseMeta(e: Exercise): string {
   let meta = `${e.sr} · RPE ${e.rpe}`
   if (e.rest && e.rest !== '—') meta += ` · rest ${e.rest}`
   return meta
+}
+
+/**
+ * Wednesday's press slot is authored as the bench but runs overhead in weeks 3
+ * and 6, so the row's name and computed load follow the week. Every other
+ * exercise resolves to itself.
+ */
+export function resolveExercise(
+  e: Exercise,
+  week: number,
+): { main?: LiftKey; name: string } {
+  if (e.main !== 'bench') return { main: e.main, name: e.name }
+  const lift = pressForWeek(week)
+  return { main: lift, name: LIFTS.find((l) => l.key === lift)?.name ?? e.name }
 }

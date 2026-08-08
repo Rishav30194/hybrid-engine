@@ -1,7 +1,7 @@
 import './Template.css'
 import { CONDINFO, DAYS, WEEKS } from '../data/program'
 import type { Day, Exercise } from '../data/types'
-import { computeLoad, exerciseMeta } from '../engine/loads'
+import { computeLoad, exerciseMeta, resolveExercise } from '../engine/loads'
 import { dayProgress } from '../engine/progress'
 import { tmplCondDoneKey, tmplDoneKey } from '../engine/keys'
 import { useAppDispatch, useAppState } from '../state/context'
@@ -75,7 +75,7 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
   const { week, rm, rounding, done, log } = useAppState()
   const dispatch = useAppDispatch()
   const id = tmplDoneKey(week, ex.id)
-  const main = ex.main
+  const { main, name } = resolveExercise(ex, week)
 
   return (
     <div className="ex-row">
@@ -86,7 +86,7 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
       />
       <div className="ex-row__body">
         <div className="ex-row__top">
-          <span className="ex-row__name">{ex.name}</span>
+          <span className="ex-row__name">{name}</span>
           {main ? (
             <span className="ex-row__load">
               {computeLoad(rm[main], week, main, rounding)} lb

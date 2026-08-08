@@ -1,5 +1,5 @@
 import './ThisWeek.css'
-import { COND, CONDINFO, LIFTS, OFF_DAYS, WEEKS } from '../data/program'
+import { anchorLifts, COND, CONDINFO, LIFTS, OFF_DAYS, WEEKS } from '../data/program'
 import type { ConditioningDay, Lift } from '../data/types'
 import { computeLoad, mainLiftMeta } from '../engine/loads'
 import { condDoneKey, mainDoneKey } from '../engine/keys'
@@ -19,7 +19,7 @@ export function ThisWeek() {
       <OneRepMaxEditor />
 
       <SectionLabel>MAIN LIFTS</SectionLabel>
-      {LIFTS.map((lift) => (
+      {anchorLifts(week).map((lift) => (
         <MainLiftRow key={lift.key} lift={lift} />
       ))}
 

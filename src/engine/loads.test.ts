@@ -3,10 +3,11 @@ import {
   computeLoad,
   exerciseMeta,
   mainLiftMeta,
+  resolveExercise,
   roundLoad,
   toNum,
 } from './loads'
-import { COND, DAYS, WEEKS } from '../data/program'
+import { anchorLifts, COND, DAYS, WEEKS } from '../data/program'
 
 const DEFAULT_RM = { squat: 245, bench: 225, tbdl: 375, ohp: 135 } as const
 
@@ -74,6 +75,40 @@ describe('exerciseMeta', () => {
   it('omits rest when it is an em dash', () => {
     const accessory = DAYS[0].ex[1] // Chest-Supported Row, rest "—"
     expect(exerciseMeta(accessory)).toBe('3×10 · RPE 8')
+  })
+})
+
+describe('resolveExercise (Wednesday press swap)', () => {
+  const press = DAYS[1].ex[0] // the authored bench anchor
+  const squat = DAYS[0].ex[0]
+
+  it('keeps the bench on a normal week', () => {
+    expect(resolveExercise(press, 1)).toEqual({ main: 'bench', name: 'Bench Press' })
+  })
+  it('runs overhead in weeks 3 and 6', () => {
+    for (const wk of [3, 6]) {
+      expect(resolveExercise(press, wk)).toEqual({
+        main: 'ohp',
+        name: 'Overhead Press',
+      })
+    }
+  })
+  it('leaves every other exercise alone', () => {
+    expect(resolveExercise(squat, 3)).toEqual({ main: 'squat', name: squat.name })
+  })
+  it('drives the load off the lift actually programmed', () => {
+    // wk 3 ohp pct 0.745 → 135 × 0.745 = 100.6 → 100; bench would be 175.
+    const { main } = resolveExercise(press, 3)
+    expect(computeLoad(DEFAULT_RM.ohp, 3, main!, 5)).toBe(100)
+  })
+})
+
+describe('anchorLifts', () => {
+  it('programs three lifts a week, pressing overhead in 3 and 6', () => {
+    expect(anchorLifts(1).map((l) => l.key)).toEqual(['squat', 'bench', 'tbdl'])
+    expect(anchorLifts(3).map((l) => l.key)).toEqual(['squat', 'ohp', 'tbdl'])
+    expect(anchorLifts(6).map((l) => l.key)).toEqual(['squat', 'ohp', 'tbdl'])
+    expect(anchorLifts(8).map((l) => l.key)).toEqual(['squat', 'bench', 'tbdl'])
   })
 })
 

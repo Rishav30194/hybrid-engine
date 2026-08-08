@@ -34,21 +34,24 @@ describe('mergePersisted', () => {
   it('returns defaults for a null blob', () => {
     expect(mergePersisted(null)).toEqual(INITIAL_STATE)
   })
-  it('drops retired 5-day conditioning check-offs but keeps everything else', () => {
+  it('drops retired 5-day keys but keeps main lifts and current state', () => {
     const merged = mergePersisted({
       done: {
-        'w1:c:d4': true,
+        'w1:c:d4': true, // retired conditioning
         'w1:tc:d4': true,
+        'w1:t:d1e1': true, // retired exercise id (a different movement now)
         'w1:c:mon': true,
         'w1:m:squat': true,
-        'w1:t:d1e0': true,
+        'w1:t:mon-e1': true,
       },
+      log: { 'w1:t:d1e1': '185', 'w1:t:mon-e1': '95' },
     })
     expect(Object.keys(merged.done).sort()).toEqual([
       'w1:c:mon',
       'w1:m:squat',
-      'w1:t:d1e0',
+      'w1:t:mon-e1',
     ])
+    expect(merged.log).toEqual({ 'w1:t:mon-e1': '95' })
   })
   it('merges saved rm over defaults and keeps non-persisted defaults', () => {
     const merged = mergePersisted({ week: 6, rm: { squat: 300 } as AppState['rm'] })
@@ -69,7 +72,7 @@ describe('round-trip', () => {
       rounding: 10,
       rm: { ...INITIAL_STATE.rm, squat: 275 },
       done: { 'w4:m:squat': true },
-      log: { 'w4:t:d1e1': '95' },
+      log: { 'w4:t:mon-e1': '95' },
     }
     saveState(state)
     const reloaded = loadState()
@@ -78,7 +81,7 @@ describe('round-trip', () => {
     expect(reloaded.rounding).toBe(10)
     expect(reloaded.rm.squat).toBe(275)
     expect(reloaded.done['w4:m:squat']).toBe(true)
-    expect(reloaded.log['w4:t:d1e1']).toBe('95')
+    expect(reloaded.log['w4:t:mon-e1']).toBe('95')
     // transient fields are NOT restored
     expect(reloaded.tab).toBe('week')
   })

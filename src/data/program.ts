@@ -4,9 +4,11 @@
  * actual 8-week plan, three sessions a week (Mon / Wed / Fri, ≤45 min each).
  */
 import type {
+  CondKey,
   ConditioningDay,
   Day,
   Lift,
+  LiftKey,
   Phase,
   PhaseKey,
   Week,
@@ -14,9 +16,25 @@ import type {
 
 export const LIFTS: Lift[] = [
   { key: 'squat', name: 'Back Squat', abbr: 'SQ', note: 'Fresh — strength anchor.' },
-  { key: 'bench', name: 'Bench Press', abbr: 'BN', note: 'Alternate with OHP every 3rd wk.' },
+  { key: 'bench', name: 'Bench Press', abbr: 'BN', note: 'Wednesday anchor, except weeks 3 and 6.' },
   { key: 'tbdl', name: 'Trap-Bar Deadlift', abbr: 'DL', note: 'Posterior-chain anchor.' },
-  { key: 'ohp', name: 'Overhead Press', abbr: 'OHP', note: 'Swap option for bench.' },
+  { key: 'ohp', name: 'Overhead Press', abbr: 'OHP', note: 'Takes the Wednesday press slot in weeks 3 and 6.' },
+]
+
+const LIFT_BY_KEY = Object.fromEntries(LIFTS.map((l) => [l.key, l])) as Record<
+  LiftKey,
+  Lift
+>
+
+/** The press rotates overhead in weeks 3 and 6; bench every other week. */
+export const pressForWeek = (week: number): LiftKey =>
+  week === 3 || week === 6 ? 'ohp' : 'bench'
+
+/** The three lifts actually programmed in a week, in session order (Mon/Wed/Fri). */
+export const anchorLifts = (week: number): Lift[] => [
+  LIFT_BY_KEY.squat,
+  LIFT_BY_KEY[pressForWeek(week)],
+  LIFT_BY_KEY.tbdl,
 ]
 
 export const PHASES: Record<PhaseKey, Phase> = {
@@ -33,7 +51,7 @@ export const COND: ConditioningDay[] = [
   { key: 'fri', label: 'FRI — Zone 2 Tail', short: 'Zone 2' },
 ]
 
-export const CONDINFO: Record<string, string> = {
+export const CONDINFO: Record<CondKey, string> = {
   mon: "Sled push: hard but unbroken ~20 m lengths, walk back = rest. Long aggressive steps, drive through the balls of your feet. Then heavy farmer's carries — grip, core and traps in one.",
   wed: 'Hard = RPE 8–9: breathing heavily, not an all-out sprint. Keep pedalling / pulling easy through the rest — don\'t fully stop. Pick an output you can repeat on the last round.',
   fri: 'Conversational, nose-breathing — it should feel too easy. This is the whole aerobic base now, so it does not get cut when the session runs long.',
@@ -74,25 +92,25 @@ export const DAYS: Day[] = [
   { n: 1, title: 'MONDAY — SQUAT + PULL', sub: 'Strength + Sled Push & Carry', condLabel: "Sled Push + Farmer's Carry", condKey: 'mon',
     extension: 'Extension · +10 min — only on the weeks you have 55 minutes. Base weeks (1–4): two more sled lengths and a fourth carry. Build weeks (5–8): three rounds of 250 m row + 10 kettlebell swings + 10 step-ups.',
     ex: [
-      { id: 'd1e0', name: 'Back Squat', main: 'squat', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Strength anchor — do it fresh. Brace, knees out.' },
-      { id: 'd1e1', name: 'A1 · Chest-Supported Row', sr: '3×10', rpe: '8', rest: '—', load: 'RPE-based', note: 'Squeeze blades, control down.' },
-      { id: 'd1e2', name: 'A2 · Standing DB Overhead Press', sr: '3×8', rpe: '8', rest: '60s', load: 'RPE-based', note: 'Glutes tight, press up and back.' },
-      { id: 'd1e3', name: 'A3 · Hanging Leg Raise', sr: '3×12', rpe: '7', rest: '—', load: 'bodyweight', note: "Fills the A rest. Roll hips up, don't swing." },
+      { id: 'mon-e0', name: 'Back Squat', main: 'squat', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Strength anchor — do it fresh. Brace, knees out.' },
+      { id: 'mon-e1', name: 'A1 · Chest-Supported Row', sr: '3×10', rpe: '8', rest: '—', load: 'RPE-based', note: 'Squeeze blades, control down.' },
+      { id: 'mon-e2', name: 'A2 · Standing DB Overhead Press', sr: '3×8', rpe: '8', rest: '60s', load: 'RPE-based', note: 'Glutes tight, press up and back.' },
+      { id: 'mon-e3', name: 'A3 · Hanging Leg Raise', sr: '3×12', rpe: '7', rest: '—', load: 'bodyweight', note: "Fills the A rest. Roll hips up, don't swing." },
     ] },
   { n: 2, title: 'WEDNESDAY — PRESS + INTERVALS', sub: 'Push / Pull + Hard Intervals', condLabel: 'Bike / Row Intervals', condKey: 'wed',
     ex: [
-      { id: 'd2e0', name: 'Bench Press', main: 'bench', sr: '4×6→4×5', rpe: '7→8', rest: '2 min', note: 'Strength anchor. OHP takes this slot in weeks 3 and 6.' },
-      { id: 'd2e1', name: 'A1 · Weighted Pull-up / Pulldown', sr: '3×8', rpe: '8', rest: '—', load: 'RPE-based', note: 'Full hang to chest, elbows down and in.' },
-      { id: 'd2e2', name: 'A2 · Romanian Deadlift', sr: '3×8', rpe: '7', rest: '75s', load: 'RPE-based', note: 'Hinge, soft knees, hamstring stretch.' },
-      { id: 'd2e3', name: 'B1 · DB Lateral Raise', sr: '3×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'Side delts. Raise out, not up.' },
-      { id: 'd2e4', name: 'B2 · EZ-Bar Curl', sr: '2×12', rpe: '8', rest: '45s', load: 'RPE-based', note: 'Your only direct arm work. Squeeze the top.' },
+      { id: 'wed-e0', name: 'Bench Press', main: 'bench', sr: '4×6→4×5', rpe: '7→8', rest: '2 min', note: 'Strength anchor. OHP takes this slot in weeks 3 and 6.' },
+      { id: 'wed-e1', name: 'A1 · Weighted Pull-up / Pulldown', sr: '3×8', rpe: '8', rest: '—', load: 'RPE-based', note: 'Full hang to chest, elbows down and in.' },
+      { id: 'wed-e2', name: 'A2 · Romanian Deadlift', sr: '3×8', rpe: '7', rest: '75s', load: 'RPE-based', note: 'Hinge, soft knees, hamstring stretch.' },
+      { id: 'wed-e3', name: 'B1 · DB Lateral Raise', sr: '3×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'Side delts. Raise out, not up.' },
+      { id: 'wed-e4', name: 'B2 · EZ-Bar Curl', sr: '2×12', rpe: '8', rest: '45s', load: 'RPE-based', note: 'Your only direct arm work. Squeeze the top.' },
     ] },
   { n: 3, title: 'FRIDAY — HINGE + ZONE 2', sub: 'Strength + easy aerobic tail', condLabel: 'Zone 2 Tail', condKey: 'fri',
     ex: [
-      { id: 'd3e0', name: 'Trap-Bar Deadlift', main: 'tbdl', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Posterior-chain anchor. Chest tall, push the floor away.' },
-      { id: 'd3e1', name: 'A1 · Bulgarian Split Squat', sr: '3×8/leg', rpe: '7', rest: '—', load: 'RPE-based', note: 'Drop straight down, drive the front heel.' },
-      { id: 'd3e2', name: 'A2 · Incline DB Press', sr: '3×10', rpe: '8', rest: '75s', load: 'RPE-based', note: 'Stretch at the bottom, squeeze the upper chest.' },
-      { id: 'd3e3', name: 'Standing Calf Raise', sr: '2×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'During cooldown. Full stretch, one-second squeeze.' },
+      { id: 'fri-e0', name: 'Trap-Bar Deadlift', main: 'tbdl', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Posterior-chain anchor. Chest tall, push the floor away.' },
+      { id: 'fri-e1', name: 'A1 · Bulgarian Split Squat', sr: '3×8/leg', rpe: '7', rest: '—', load: 'RPE-based', note: 'Drop straight down, drive the front heel.' },
+      { id: 'fri-e2', name: 'A2 · Incline DB Press', sr: '3×10', rpe: '8', rest: '75s', load: 'RPE-based', note: 'Stretch at the bottom, squeeze the upper chest.' },
+      { id: 'fri-e3', name: 'Standing Calf Raise', sr: '2×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'During cooldown. Full stretch, one-second squeeze.' },
     ] },
 ]
 
