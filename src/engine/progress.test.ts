@@ -34,7 +34,7 @@ describe('dayProgress', () => {
 
 describe('key format', () => {
   it('matches the persisted key scheme', () => {
-    expect(tmplDoneKey(3, 'd1e0')).toBe('w3:t:d1e0')
+    expect(tmplDoneKey(3, 'mon-e0')).toBe('w3:t:mon-e0')
     expect(tmplCondDoneKey(3, 'mon')).toBe('w3:tc:mon')
   })
 })

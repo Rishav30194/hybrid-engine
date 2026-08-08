@@ -19,12 +19,22 @@ and the authored source `design_handoff_3day_rewire/Hybrid Engine - 3-Day App.dc
 ## 3-day rewire
 
 The program was rewired from five sessions a week to three (Mon / Wed / Fri, ≤45 min each) per
-`design_handoff_3day_rewire/`. It is a **data change only**: `CondKey` became `mon | wed | fri`,
-and `COND`, `CONDINFO`, the per-week `cond` blocks, `DAYS` and `NOTES` were replaced. The engine,
-screens, state, sync and CSS were untouched — they map over the data — plus three small additions:
-the Monday `extension` callout, the This Week OFF DAYS note, and a load-time cleanup that drops
-orphaned `w{n}:c:d1`–`d5` / `w{n}:tc:d1`–`d5` check-offs. The 8-week periodisation and every %1RM
-are unchanged, so existing 1RMs and main-lift check-offs carry over.
+`design_handoff_3day_rewire/`. Mostly a data change: `CondKey` became `mon | wed | fri`, and
+`COND`, `CONDINFO`, the per-week `cond` blocks, `DAYS` and `NOTES` were replaced. The 8-week
+periodisation and every %1RM are unchanged, so existing 1RMs and main-lift check-offs carry over.
+Added with it: the Monday `extension` callout and the This Week OFF DAYS note.
+
+**Exercise ids were re-issued** (`d1e0` → `mon-e0`). The old ids would otherwise have been reused
+by different movements — a weight logged against the old `d1e1` (Romanian Deadlift) would have
+surfaced on the new one (Chest-Supported Row), and an old Zone 2 check-off would have shown
+Friday's deadlift as done. `src/state/migrate.ts` drops the retired conditioning and exercise keys
+on **both** paths into state: the localStorage hydrate and the reducer's `hydrateRemote`, since a
+cloud blob written before the rewire still carries them. Main-lift check-offs are untouched.
+
+**The press rotation is real, not just copy.** `pressForWeek()` puts the overhead press in the
+Wednesday slot in weeks 3 and 6; `anchorLifts()` gives the three lifts a week actually programs.
+This Week lists those three (the 1RM editor still edits all four), the 8-Week cards show three
+load tiles, and `resolveExercise()` renames and re-loads the Wednesday anchor on the swap weeks.
 
 ## UI refinements
 

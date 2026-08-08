@@ -70,7 +70,7 @@
 /* --- 4-col load grid --- */
 .week-card__loads {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   margin-top: 13px;
 }

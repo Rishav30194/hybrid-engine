@@ -1,5 +1,5 @@
 import './WeekPlan.css'
-import { COND, LIFTS, NOTES, WEEKS } from '../data/program'
+import { anchorLifts, COND, NOTES, WEEKS } from '../data/program'
 import type { Week } from '../data/types'
 import { computeLoad } from '../engine/loads'
 import { useAppDispatch, useAppState } from '../state/context'
@@ -49,7 +49,7 @@ function WeekCard({ w }: { w: Week }) {
       </button>
 
       <div className="week-card__loads">
-        {LIFTS.map((l) => (
+        {anchorLifts(w.wk).map((l) => (
           <div key={l.key} className="load-tile">
             <div className="load-tile__abbr">{l.abbr}</div>
             <div className="load-tile__num">

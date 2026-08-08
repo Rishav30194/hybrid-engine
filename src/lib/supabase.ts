@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
 // Supabase publishable key (sb_publishable_…).
@@ -11,11 +11,23 @@ const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined
  */
 export const isSupabaseConfigured = Boolean(url && key)
 
-export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(url!, key!, {
+let client: Promise<SupabaseClient> | null = null
+
+/**
+ * The Supabase client, loaded on first use. The import is dynamic so
+ * supabase-js lands in its own chunk instead of the initial bundle — the app is
+ * offline-first and paints from localStorage without it. Returns null when
+ * cloud sync isn't configured. The promise is cached, so there's one client.
+ */
+export function getSupabase(): Promise<SupabaseClient> | null {
+  if (!isSupabaseConfigured) return null
+  client ??= import('@supabase/supabase-js').then(({ createClient }) =>
+    createClient(url!, key!, {
       auth: { persistSession: true, autoRefreshToken: true },
-    })
-  : null
+    }),
+  )
+  return client
+}
 
 /** The single row shape in public.user_state. */
 export interface UserStateRow {

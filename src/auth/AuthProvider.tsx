@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { getSupabase, isSupabaseConfigured } from '../lib/supabase'
 import { AuthContext, type AuthStatus, type AuthValue } from './context'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -10,23 +10,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   useEffect(() => {
-    if (!supabase) return
+    const pending = getSupabase()
+    if (!pending) return
     let active = true
+    let unsubscribe: (() => void) | undefined
 
-    supabase.auth.getSession().then(({ data }) => {
+    void pending.then((sb) => {
       if (!active) return
-      setSession(data.session)
-      setStatus(data.session ? 'signedIn' : 'signedOut')
-    })
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
-      setSession(next)
-      setStatus(next ? 'signedIn' : 'signedOut')
+      void sb.auth.getSession().then(({ data }) => {
+        if (!active) return
+        setSession(data.session)
+        setStatus(data.session ? 'signedIn' : 'signedOut')
+      })
+
+      const { data: sub } = sb.auth.onAuthStateChange((_event, next) => {
+        setSession(next)
+        setStatus(next ? 'signedIn' : 'signedOut')
+      })
+      unsubscribe = () => sub.subscription.unsubscribe()
     })
 
     return () => {
       active = false
-      sub.subscription.unsubscribe()
+      unsubscribe?.()
     }
   }, [])
 
@@ -36,20 +43,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       status,
       signIn: async (email, password) => {
-        if (!supabase) return { error: 'Cloud sync is not configured.' }
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
+        const sb = await getSupabase()
+        if (!sb) return { error: 'Cloud sync is not configured.' }
+        const { error } = await sb.auth.signInWithPassword({ email, password })
         return error ? { error: error.message } : {}
       },
       signUp: async (email, password) => {
-        if (!supabase) return { error: 'Cloud sync is not configured.' }
-        const { error } = await supabase.auth.signUp({ email, password })
+        const sb = await getSupabase()
+        if (!sb) return { error: 'Cloud sync is not configured.' }
+        const { error } = await sb.auth.signUp({ email, password })
         return error ? { error: error.message } : {}
       },
       signOut: async () => {
-        await supabase?.auth.signOut()
+        const sb = await getSupabase()
+        await sb?.auth.signOut()
       },
     }),
     [session, status],

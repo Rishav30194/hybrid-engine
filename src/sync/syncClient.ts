@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import type { PersistedState } from '../state/types'
 
 /** The JSON blob stored in user_state.data. */
@@ -10,8 +10,9 @@ export interface RemoteBlob extends Partial<PersistedState> {
 export async function fetchRemote(
   userId: string,
 ): Promise<{ data: RemoteBlob; updatedAt: number } | null> {
-  if (!supabase) return null
-  const { data, error } = await supabase
+  const sb = await getSupabase()
+  if (!sb) return null
+  const { data, error } = await sb
     .from('user_state')
     .select('data, updated_at')
     .eq('user_id', userId)
@@ -32,8 +33,9 @@ export async function pushRemote(
   persisted: Partial<PersistedState>,
   updatedAt: number,
 ): Promise<{ error?: string }> {
-  if (!supabase) return {}
-  const { error } = await supabase.from('user_state').upsert({
+  const sb = await getSupabase()
+  if (!sb) return {}
+  const { error } = await sb.from('user_state').upsert({
     user_id: userId,
     data: { ...persisted, updatedAt },
     updated_at: new Date(updatedAt).toISOString(),

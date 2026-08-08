@@ -1,5 +1,6 @@
 import { WEEKS } from '../data/program'
 import { toNum } from '../engine/loads'
+import { dropRetiredKeys } from './migrate'
 import type { Action, AppState } from './types'
 
 /** Keep week within 1..8 so WEEKS[week-1] is always valid (guards corrupt data). */
@@ -57,8 +58,9 @@ export function reducer(state: AppState, action: Action): AppState {
         week: clampWeek(d.week ?? state.week),
         rounding: d.rounding ?? state.rounding,
         rm: { ...state.rm, ...(d.rm ?? {}) },
-        done: d.done ?? {},
-        log: d.log ?? {},
+        // A blob written before the 3-day rewire still carries the old keys.
+        done: dropRetiredKeys(d.done ?? {}),
+        log: dropRetiredKeys(d.log ?? {}),
       }
     }
 

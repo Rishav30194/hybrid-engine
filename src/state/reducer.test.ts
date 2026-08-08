@@ -43,8 +43,8 @@ describe('reducer', () => {
   })
 
   it('stores logged accessory weights', () => {
-    const s = reducer(INITIAL_STATE, { type: 'setLog', id: 'w1:t:d1e1', value: '95' })
-    expect(s.log['w1:t:d1e1']).toBe('95')
+    const s = reducer(INITIAL_STATE, { type: 'setLog', id: 'w1:t:mon-e1', value: '95' })
+    expect(s.log['w1:t:mon-e1']).toBe('95')
   })
 
   it('hydrates the persisted slice from a remote blob', () => {
@@ -56,14 +56,26 @@ describe('reducer', () => {
         rounding: 10,
         rm: { squat: 300, bench: 240, tbdl: 400, ohp: 150 },
         done: { 'w6:m:squat': true },
-        log: { 'w6:t:d1e1': '135' },
+        log: { 'w6:t:mon-e1': '135' },
       },
     })
     expect(s.week).toBe(6)
     expect(s.rounding).toBe(10)
     expect(s.rm.squat).toBe(300) // remote overwrites local edit
     expect(s.done['w6:m:squat']).toBe(true)
-    expect(s.log['w6:t:d1e1']).toBe('135')
+    expect(s.log['w6:t:mon-e1']).toBe('135')
+  })
+
+  it('hydrateRemote drops retired 5-day keys from a pre-rewire cloud blob', () => {
+    const s = reducer(INITIAL_STATE, {
+      type: 'hydrateRemote',
+      data: {
+        done: { 'w1:tc:d4': true, 'w1:t:d1e1': true, 'w1:m:squat': true },
+        log: { 'w1:t:d1e1': '185', 'w1:t:mon-e1': '95' },
+      },
+    })
+    expect(s.done).toEqual({ 'w1:m:squat': true })
+    expect(s.log).toEqual({ 'w1:t:mon-e1': '95' })
   })
 
   it('hydrateRemote leaves non-persisted UI state alone', () => {

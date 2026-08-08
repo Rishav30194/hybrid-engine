@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useAuth } from '../auth/context'
-import { supabase } from '../lib/supabase'
+import { getSupabase, isSupabaseConfigured } from '../lib/supabase'
 import { useAppDispatch, useAppState } from '../state/context'
 import { persistedSnapshot, readBlob, setNextUpdatedAt } from '../state/persistence'
 import { fetchRemote, pushRemote, type RemoteBlob } from './syncClient'
@@ -52,9 +52,11 @@ export function SyncManager() {
   // then keep pulling other devices' changes via realtime (if enabled).
   useEffect(() => {
     ready.current = false
-    if (status !== 'signedIn' || !userId || !supabase) return
-    const sb = supabase
+    if (status !== 'signedIn' || !userId) return
+    const pending = getSupabase()
+    if (!pending) return
     let cancelled = false
+    let unsubscribe: (() => void) | undefined
 
     void (async () => {
       setSyncStatus('syncing')
@@ -72,18 +74,22 @@ export function SyncManager() {
       if (!cancelled) ready.current = true
     })()
 
-    const channel = sb
-      .channel(`user_state:${userId}`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'user_state', filter: `user_id=eq.${userId}` },
-        (payload) => applyRemote((payload.new as { data?: RemoteBlob }).data),
-      )
-      .subscribe()
+    void pending.then((sb) => {
+      if (cancelled) return
+      const channel = sb
+        .channel(`user_state:${userId}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'user_state', filter: `user_id=eq.${userId}` },
+          (payload) => applyRemote((payload.new as { data?: RemoteBlob }).data),
+        )
+        .subscribe()
+      unsubscribe = () => sb.removeChannel(channel)
+    })
 
     return () => {
       cancelled = true
-      sb.removeChannel(channel)
+      unsubscribe?.()
     }
   }, [status, userId, applyRemote])
 
@@ -91,7 +97,7 @@ export function SyncManager() {
   // back to an already-open device without realtime), and flush a push when the
   // tab is hidden so a change isn't lost if the app is closed before the debounce.
   useEffect(() => {
-    if (status !== 'signedIn' || !userId || !supabase) return
+    if (status !== 'signedIn' || !userId || !isSupabaseConfigured) return
     const onVisibility = () => {
       if (document.visibilityState === 'visible') void pullRemote(userId)
       else flushPush(userId)
@@ -107,7 +113,8 @@ export function SyncManager() {
 
   // Debounced push of local changes, once the initial reconcile has settled.
   useEffect(() => {
-    if (status !== 'signedIn' || !userId || !supabase || !ready.current) return
+    if (status !== 'signedIn' || !userId || !isSupabaseConfigured || !ready.current)
+      return
     const t = setTimeout(() => flushPush(userId), PUSH_DEBOUNCE_MS)
     return () => clearTimeout(t)
   }, [snapshot, status, userId, flushPush])

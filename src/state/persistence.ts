@@ -1,3 +1,4 @@
+import { dropRetiredKeys } from './migrate'
 import { clampWeek, INITIAL_STATE } from './reducer'
 import type { AppState, PersistedState } from './types'
 
@@ -9,24 +10,6 @@ export function pickPersisted(state: AppState): PersistedState {
   return { week, rounding, rm, done, log }
 }
 
-/**
- * Conditioning check-offs from the retired 5-day program (`w3:c:d4`,
- * `w3:tc:d4`). The 3-day rewire renamed the conditioning keys to mon/wed/fri,
- * so these read to nothing — drop them on load. Scoped to the `c`/`tc` segments
- * on purpose: template exercise keys (`w3:t:d1e0`) are still live.
- */
-const RETIRED_COND_KEY = /:(?:c|tc):d[1-5]$/
-
-function dropRetiredCondKeys(
-  done: Record<string, boolean>,
-): Record<string, boolean> {
-  const kept: Record<string, boolean> = {}
-  for (const [k, v] of Object.entries(done)) {
-    if (!RETIRED_COND_KEY.test(k)) kept[k] = v
-  }
-  return kept
-}
-
 /** Merge a (possibly partial/untrusted) persisted blob onto the defaults. */
 export function mergePersisted(saved: Partial<PersistedState> | null): AppState {
   if (!saved) return INITIAL_STATE
@@ -35,8 +18,8 @@ export function mergePersisted(saved: Partial<PersistedState> | null): AppState 
     week: clampWeek(saved.week || INITIAL_STATE.week),
     rounding: saved.rounding || INITIAL_STATE.rounding,
     rm: { ...INITIAL_STATE.rm, ...(saved.rm ?? {}) },
-    done: dropRetiredCondKeys(saved.done ?? {}),
-    log: saved.log ?? {},
+    done: dropRetiredKeys(saved.done ?? {}),
+    log: dropRetiredKeys(saved.log ?? {}),
   }
 }
 

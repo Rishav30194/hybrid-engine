@@ -20,7 +20,7 @@ export default defineConfig({
       manifest: {
         name: 'Hybrid Engine',
         short_name: 'Hybrid Engine',
-        description: '5-day hybrid strength + endurance training',
+        description: '3-day hybrid strength + endurance training',
         theme_color: '#0C0D0F',
         background_color: '#0C0D0F',
         display: 'standalone',
