@@ -7,7 +7,7 @@ import { tmplCondDoneKey, tmplDoneKey } from '../engine/keys'
 import { useAppDispatch, useAppState } from '../state/context'
 import { CheckButton } from '../components/CheckButton'
 
-/** Screen 3 — the 5-day workout; main loads come live from the active week,
+/** Screen 3 — the 3-day workout; main loads come live from the active week,
  *  accessory weights are logged per week. */
 export function Template() {
   const { week } = useAppState()
@@ -64,6 +64,7 @@ function DayAccordion({ day }: { day: Day }) {
             <ExerciseRow key={e.id} ex={e} />
           ))}
           <ConditioningBlock day={day} />
+          {day.extension && <div className="ex-ext">{day.extension}</div>}
         </div>
       )}
     </div>

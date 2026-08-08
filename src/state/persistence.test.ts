@@ -34,6 +34,22 @@ describe('mergePersisted', () => {
   it('returns defaults for a null blob', () => {
     expect(mergePersisted(null)).toEqual(INITIAL_STATE)
   })
+  it('drops retired 5-day conditioning check-offs but keeps everything else', () => {
+    const merged = mergePersisted({
+      done: {
+        'w1:c:d4': true,
+        'w1:tc:d4': true,
+        'w1:c:mon': true,
+        'w1:m:squat': true,
+        'w1:t:d1e0': true,
+      },
+    })
+    expect(Object.keys(merged.done).sort()).toEqual([
+      'w1:c:mon',
+      'w1:m:squat',
+      'w1:t:d1e0',
+    ])
+  })
   it('merges saved rm over defaults and keeps non-persisted defaults', () => {
     const merged = mergePersisted({ week: 6, rm: { squat: 300 } as AppState['rm'] })
     expect(merged.week).toBe(6)

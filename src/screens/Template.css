@@ -184,3 +184,14 @@
   margin-top: 5px;
   line-height: 1.5;
 }
+
+.ex-ext {
+  padding: 12px;
+  margin-top: 9px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 11.5px;
+  color: #9298a0;
+  line-height: 1.5;
+}

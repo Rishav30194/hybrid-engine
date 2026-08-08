@@ -6,7 +6,7 @@ import {
   roundLoad,
   toNum,
 } from './loads'
-import { DAYS, WEEKS } from '../data/program'
+import { COND, DAYS, WEEKS } from '../data/program'
 
 const DEFAULT_RM = { squat: 245, bench: 225, tbdl: 375, ohp: 135 } as const
 
@@ -68,12 +68,12 @@ describe('mainLiftMeta', () => {
 
 describe('exerciseMeta', () => {
   it('appends rest when present', () => {
-    const main = DAYS[0].ex[0] // Back Squat, rest "2–3 min"
-    expect(exerciseMeta(main)).toBe('4×5→4×4 · RPE 7→8 · rest 2–3 min')
+    const main = DAYS[0].ex[0] // Back Squat, rest "2 min"
+    expect(exerciseMeta(main)).toBe('4×5→4×4 · RPE 7→8 · rest 2 min')
   })
   it('omits rest when it is an em dash', () => {
-    const accessory = DAYS[0].ex[1] // RDL, rest "—"
-    expect(exerciseMeta(accessory)).toBe('3×8 · RPE 7')
+    const accessory = DAYS[0].ex[1] // Chest-Supported Row, rest "—"
+    expect(exerciseMeta(accessory)).toBe('3×10 · RPE 8')
   })
 })
 
@@ -89,7 +89,12 @@ describe('program data integrity', () => {
       }
     }
   })
-  it('has 5 template days', () => {
-    expect(DAYS).toHaveLength(5)
+  it('has 3 template days', () => {
+    expect(DAYS).toHaveLength(3)
+  })
+  it('prescribes every conditioning day in every week', () => {
+    for (const w of WEEKS) {
+      for (const c of COND) expect(w.cond[c.key]).toBeTruthy()
+    }
   })
 })
