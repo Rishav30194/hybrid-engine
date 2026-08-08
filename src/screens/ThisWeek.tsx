@@ -1,5 +1,5 @@
 import './ThisWeek.css'
-import { COND, CONDINFO, LIFTS, WEEKS } from '../data/program'
+import { COND, CONDINFO, LIFTS, OFF_DAYS, WEEKS } from '../data/program'
 import type { ConditioningDay, Lift } from '../data/types'
 import { computeLoad, mainLiftMeta } from '../engine/loads'
 import { condDoneKey, mainDoneKey } from '../engine/keys'
@@ -27,6 +27,11 @@ export function ThisWeek() {
       {COND.map((c) => (
         <ConditioningRow key={c.key} cond={c} />
       ))}
+
+      <div className="off-days">
+        <div className="off-days__label">OFF DAYS</div>
+        <div className="off-days__desc">{OFF_DAYS}</div>
+      </div>
     </>
   )
 }

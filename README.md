@@ -1,12 +1,12 @@
 # Hybrid Engine
 
 Mobile-first PWA for a single athlete running a fixed 8-week hybrid (strength + endurance)
-training program. Enter your four 1-rep maxes once, pick the current week (1–8), and every
-working load recalculates automatically. Three tabs — **This Week**, **8-Week Plan**,
-**Template** — plus a floating rest timer and per-day check-off. All state persists locally
-(localStorage).
+training program — **three sessions a week (Mon / Wed / Fri), 45 minutes each**. Enter your four
+1-rep maxes once, pick the current week (1–8), and every working load recalculates automatically.
+Three tabs — **This Week**, **8-Week Plan**, **Template** — plus a floating rest timer and per-day
+check-off. All state persists locally (localStorage).
 
-Built from the design bundle in [`design_handoff_hybrid_engine/`](design_handoff_hybrid_engine/).
+Built from the design bundle in [`design_handoff_3day_rewire/`](design_handoff_3day_rewire/).
 Build plan and decisions: [`docs/IMPLEMENTATION_PHASES.md`](docs/IMPLEMENTATION_PHASES.md).
 
 ## Stack

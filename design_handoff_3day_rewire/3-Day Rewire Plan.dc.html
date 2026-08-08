@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+body { margin:0; background:#0c0d0f; color:#f2f3f5; font-family:"Barlow",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+a { color:#ff7a1a; }
+a:hover { color:#ffa05c; }
+</style>
+</helmet>
+<div style="max-width:880px;margin:0 auto;padding:56px 28px 96px;font-family:'Barlow',system-ui,sans-serif;color:#f2f3f5;line-height:1.55;text-wrap:pretty">
+
+  <div style="display:flex;flex-direction:column;gap:14px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,0.12)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-family:'Barlow';font-size:11.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#0c0d0f;background:#ff7a1a;padding:4px 9px;border-radius:999px">Program plan</span>
+      <span style="font-family:'Barlow';font-size:11.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#8a9097">Hybrid Engine · v2</span>
+    </div>
+    <h1 style="font-family:'Oswald',sans-serif;font-weight:600;font-size:46px;line-height:1.05;letter-spacing:-0.01em;margin:0">Three days. Forty-five minutes.<br>Same two goals.</h1>
+    <p style="margin:0;max-width:62ch;font-size:17px;color:#c7ccd2">The current program spends 5 sessions and roughly 85 hard sets a week. The rewire spends 3 sessions and about 38. This document says what that costs, what it protects, and how the week is laid out — before any code changes. Locked to Mon / Wed / Fri, restarting at Week 1, with Monday carrying the extra ten minutes when you have them.</p>
+  </div>
+
+  <section style="padding-top:44px">
+    <div style="font-family:'Barlow';font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ff7a1a;margin-bottom:16px">01 · The verdict</div>
+    <p style="margin:0 0 18px;font-size:18px;max-width:66ch;color:#edeff1">Strength is cheaper to keep than it looks. Endurance is the half that actually gets squeezed — and the squeeze happens in the easy aerobic work, not the hard stuff.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">
+      <div style="background:#101216;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 18px 20px">
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#2dd4bf;margin-bottom:8px">Protected</div>
+        <div style="font-size:15px;color:#c7ccd2">Squat, bench/OHP and trap-bar deadlift keep progressing. Each still gets 4 hard sets a week at 70–85% — above the 2–3 sets per exercise that the minimum-dose literature says drives 1RM.</div>
+      </div>
+      <div style="background:#101216;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 18px 20px">
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#38bdf8;margin-bottom:8px">Protected</div>
+        <div style="font-size:15px;color:#c7ccd2">VO₂max. Interval work returns roughly twice the aerobic gain per minute of moderate steady work, so the ceiling survives inside a 15-minute block.</div>
+      </div>
+      <div style="background:#101216;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 18px 20px">
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#fb7185;margin-bottom:8px">At risk</div>
+        <div style="font-size:15px;color:#c7ccd2">Aerobic base and arm/shoulder size. Zone 2 shrinks to a single 15-minute tail on Friday plus your daily walking, and the Day 5 pump session disappears entirely.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:52px">
+    <div style="font-family:'Barlow';font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ff7a1a;margin-bottom:16px">02 · What you lose</div>
+    <div style="display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden">
+
+      <div style="background:#101216;padding:20px 20px;display:grid;grid-template-columns:34px 1fr;gap:16px;align-items:start">
+        <div style="font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#fb7185;line-height:1">1</div>
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:19px;font-weight:500;margin-bottom:6px">Zone 2 volume — the real casualty</div>
+          <div style="font-size:15px;color:#c7ccd2;max-width:70ch">Days 3 and 5 currently carry your easy aerobic work. Nothing in a 45-minute strength session can replace it. Left unreplaced, you keep a high VO₂max sitting on a thinner base: interval sessions feel harder, recovery between them slows.</div>
+          <div style="margin-top:10px;font-size:14.5px;color:#9aa0a8"><span style="color:#2dd4bf;font-weight:600">Mitigation —</span> a fixed 15-minute Zone 2 tail on Friday, every week, plus your daily walking. It is less base than five days bought you, but it is scheduled rather than hoped for — which is the difference that matters.</div>
+        </div>
+      </div>
+
+      <div style="background:#101216;padding:20px 20px;display:grid;grid-template-columns:34px 1fr;gap:16px;align-items:start">
+        <div style="font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#fb7185;line-height:1">2</div>
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:19px;font-weight:500;margin-bottom:6px">Hypertrophy rate on the small stuff</div>
+          <div style="font-size:15px;color:#c7ccd2;max-width:70ch">Day 5 was 24 sets of arms, delts, upper back and calves. Direct arm work drops to about 2 sets a week and calves to 2. Those muscles move from <em>growing</em> to <em>holding</em>. Chest, back, quads and hams stay above the growth threshold.</div>
+          <div style="margin-top:10px;font-size:14.5px;color:#9aa0a8"><span style="color:#2dd4bf;font-weight:600">Mitigation —</span> the arm and lateral sets sit inside rest periods, so they cost no extra minutes. Accept slower arm growth; it's the cheapest thing to give up.</div>
+        </div>
+      </div>
+
+      <div style="background:#101216;padding:20px 20px;display:grid;grid-template-columns:34px 1fr;gap:16px;align-items:start">
+        <div style="font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#fb7185;line-height:1">3</div>
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:19px;font-weight:500;margin-bottom:6px">Sled and carry volume</div>
+          <div style="font-size:15px;color:#c7ccd2;max-width:70ch">Three sled slots become one. Sled push is the best minute-for-minute item you own — hard conditioning with almost no eccentric damage — so it keeps its place, but sled drag and the max-distance carry work come out.</div>
+        </div>
+      </div>
+
+      <div style="background:#101216;padding:20px 20px;display:grid;grid-template-columns:34px 1fr;gap:16px;align-items:start">
+        <div style="font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#fb7185;line-height:1">4</div>
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:19px;font-weight:500;margin-bottom:6px">Overhead press as its own lift</div>
+          <div style="font-size:15px;color:#c7ccd2;max-width:70ch">It stays as bench's every-third-week alternate, which means it progresses at roughly a third the rate. Pick one to be the number you care about; the other rides along.</div>
+        </div>
+      </div>
+
+      <div style="background:#101216;padding:20px 20px;display:grid;grid-template-columns:34px 1fr;gap:16px;align-items:start">
+        <div style="font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#fb7185;line-height:1">5</div>
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:19px;font-weight:500;margin-bottom:6px">Margin for a missed session</div>
+          <div style="font-size:15px;color:#c7ccd2;max-width:70ch">One skipped day used to cost 20% of the week. Now it costs 33%, and it removes a main lift entirely. The plan needs a stated rule for this, not improvisation — see §06.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="padding-top:52px">
+    <div style="font-family:'Barlow';font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ff7a1a;margin-bottom:16px">03 · What the evidence supports</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+
+      <div style="background:#121419;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px">
+        <div style="font-size:15px;color:#edeff1;margin-bottom:10px">Upper- and lower-body 1RM keep climbing on <strong style="color:#fff">2–3 hard sets per exercise per week</strong> at 70–85% taken close to failure. Hypertrophy's floor is about <strong style="color:#fff">4 sets per muscle group per week</strong> at 6–15 reps.</div>
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6c727a">Androulakis-Korakakis meta-analysis; Iversen review — summarised in ACSM's Health &amp; Fitness Journal, Jan 2026</div>
+      </div>
+
+      <div style="background:#121419;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px">
+        <div style="font-size:15px;color:#edeff1;margin-bottom:10px">Trained lifters hold strength and size on roughly <strong style="color:#fff">a third of their usual volume</strong> for months — as long as the load on the bar stays high. Cut volume, never intensity.</div>
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6c727a">Bickel et al.; Spiering et al. 2021, minimal-dose review</div>
+      </div>
+
+      <div style="background:#121419;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px">
+        <div style="font-size:15px;color:#edeff1;margin-bottom:10px">The interference effect is <strong style="color:#fff">much weaker than the 1980 Hickson result implied</strong>. A 2025 trial of 96 people found concurrent aerobic and strength training impaired neither maximal strength, explosive strength, nor hypertrophy — whether or not the cardio hit the same muscles as the lifting.</div>
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6c727a">Feuerbacher et al., Scand J Med Sci Sports, Feb 2025</div>
+      </div>
+
+      <div style="background:#121419;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px">
+        <div style="font-size:15px;color:#edeff1;margin-bottom:10px">Order and same-day scheduling <strong style="color:#fff">are not the main driver</strong> of interference. Across 43 studies, sequence and session arrangement didn't blunt hypertrophy or maximal strength. Lift first anyway — it protects the quality of the sets that matter.</div>
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6c727a">Schumann et al. meta-analysis; Frontiers in Sports &amp; Active Living, Dec 2025</div>
+      </div>
+
+      <div style="background:#121419;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px">
+        <div style="font-size:15px;color:#edeff1;margin-bottom:10px">Interval work produces <strong style="color:#fff">roughly double the VO₂max gain</strong> of moderate continuous training, and 3–5 minute efforts produce the largest jumps. This is what makes a 15-minute engine block viable.</div>
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6c727a">Bacon 2013; Milanović 2015; Weston 2014; Helgerud 2007 (4×4)</div>
+      </div>
+
+      <div style="background:#121419;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px">
+        <div style="font-size:15px;color:#edeff1;margin-bottom:10px">With weekly volume held equal, <strong style="color:#fff">frequency has little independent effect</strong>. Three full-body days can carry what five split days carried, minus the volume you genuinely cut.</div>
+        <div style="font-family:'Barlow';font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6c727a">Pelland et al., dose-response meta-regressions, 2025</div>
+      </div>
+
+    </div>
+    <p style="margin:18px 0 0;font-size:14px;color:#7c828b;max-width:70ch">Two caveats worth holding: most of these trials run 8–12 weeks with fewer than 30 people per group, and "no interference detected" is not the same as "no interference at elite margins." At your volume it is a safe bet.</p>
+  </section>
+
+  <section style="padding-top:52px">
+    <div style="font-family:'Barlow';font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ff7a1a;margin-bottom:8px">04 · The new week</div>
+    <p style="margin:0 0 22px;font-size:16px;color:#c7ccd2;max-width:70ch">Three full-body days, each anchored by one of your three main lifts, each closing with a different flavour of conditioning. Every muscle group gets hit twice a week; every session ends inside 45 minutes.</p>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <div style="background:#101216;border:1px solid rgba(255,255,255,0.08);border-left:3px solid #2dd4bf;border-radius:14px;overflow:hidden">
+        <div style="padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap">
+          <div>
+            <div style="font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;letter-spacing:0.01em">MONDAY — SQUAT + PULL</div>
+            <div style="font-size:14px;color:#9aa0a8;margin-top:2px">Anchor: Back Squat · Engine: Sled Push + Carry · the long day</div>
+          </div>
+          <div style="font-family:'Oswald',sans-serif;font-size:22px;color:#2dd4bf">≈ 43 → 53 min</div>
+        </div>
+        <div style="display:flex;flex-direction:column">
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:9px 20px;font-family:'Barlow';font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6c727a;background:#0e1014">
+            <div>Exercise</div><div>Sets × reps</div><div>Rest</div><div>Time</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div style="color:#8a9097">Warm-up — bike/row easy + 2 ramp sets</div><div style="color:#8a9097">—</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">5</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div><strong>Back Squat</strong> <span style="color:#8a9097">· % of 1RM</span></div><div>4 × 5</div><div style="color:#c7ccd2">2 min</div><div style="color:#c7ccd2">12</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>A1 · Chest-Supported Row</div><div>3 × 10</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">10</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>A2 · Standing DB Overhead Press</div><div>3 × 8</div><div style="color:#c7ccd2">60 s</div><div style="color:#8a9097">↑</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>A3 · Hanging Leg Raise <span style="color:#8a9097">· fills the rest</span></div><div>3 × 12</div><div style="color:#8a9097">—</div><div style="color:#8a9097">0</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(45,212,191,0.06)"><div><strong style="color:#2dd4bf">Sled Push</strong> <span style="color:#8a9097">· 20 m, walk back = rest</span></div><div>6 lengths</div><div style="color:#c7ccd2">45–60 s</div><div style="color:#c7ccd2">8</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(45,212,191,0.06)"><div><strong style="color:#2dd4bf">Farmer's Carry</strong></div><div>3 × 30 m</div><div style="color:#c7ccd2">45 s</div><div style="color:#c7ccd2">4</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px dashed rgba(255,255,255,0.16)"><div style="color:#9aa0a8"><strong style="color:#edeff1">Extension</strong> · only on 55-min weeks — base weeks: +2 sled lengths and +1 carry · build weeks: 3 rounds of 250 m row + 10 KB swings + 10 step-ups</div><div style="color:#8a9097">optional</div><div style="color:#8a9097">—</div><div style="color:#8a9097">+10</div></div>
+        </div>
+        <div style="padding:12px 20px 16px;font-size:14px;color:#8a9097;border-top:1px solid rgba(255,255,255,0.06)">Monday is the only day that stretches. Everything above the dashed line fits 45 minutes on its own — the extension is a bonus, never a debt you owe next week.</div>
+      </div>
+
+      <div style="background:#101216;border:1px solid rgba(255,255,255,0.08);border-left:3px solid #38bdf8;border-radius:14px;overflow:hidden">
+        <div style="padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap">
+          <div>
+            <div style="font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;letter-spacing:0.01em">WEDNESDAY — PRESS + INTERVALS</div>
+            <div style="font-size:14px;color:#9aa0a8;margin-top:2px">Anchor: Bench (OHP every 3rd week) · Engine: bike/row intervals</div>
+          </div>
+          <div style="font-family:'Oswald',sans-serif;font-size:22px;color:#38bdf8">≈ 45 min</div>
+        </div>
+        <div style="display:flex;flex-direction:column">
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:9px 20px;font-family:'Barlow';font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6c727a;background:#0e1014">
+            <div>Exercise</div><div>Sets × reps</div><div>Rest</div><div>Time</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div style="color:#8a9097">Warm-up — shoulders + 2 ramp sets</div><div style="color:#8a9097">—</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">4</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div><strong>Bench Press</strong> <span style="color:#8a9097">· % of 1RM</span></div><div>4 × 6</div><div style="color:#c7ccd2">2 min</div><div style="color:#c7ccd2">12</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>A1 · Weighted Pull-up / Pulldown</div><div>3 × 8</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">10</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>A2 · Romanian Deadlift</div><div>3 × 8</div><div style="color:#c7ccd2">75 s</div><div style="color:#8a9097">↑</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>B1 · Lateral Raise &nbsp;/&nbsp; B2 · EZ Curl</div><div>3 × 15 / 2 × 12</div><div style="color:#c7ccd2">45 s</div><div style="color:#c7ccd2">4</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(56,189,248,0.06)"><div><strong style="color:#38bdf8">Intervals</strong> <span style="color:#8a9097">· 2 min hard RPE 8 / 1 min easy</span></div><div>5 rounds</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">15</div></div>
+        </div>
+        <div style="padding:12px 20px 16px;font-size:14px;color:#8a9097;border-top:1px solid rgba(255,255,255,0.06)">Hard leg-driven cardio after upper-body lifting is the lowest-friction pairing in the week. If time runs out, the B pair is what gets cut — never the intervals.</div>
+      </div>
+
+      <div style="background:#101216;border:1px solid rgba(255,255,255,0.08);border-left:3px solid #fb923c;border-radius:14px;overflow:hidden">
+        <div style="padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap">
+          <div>
+            <div style="font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;letter-spacing:0.01em">FRIDAY — HINGE + ZONE 2</div>
+            <div style="font-size:14px;color:#9aa0a8;margin-top:2px">Anchor: Trap-Bar Deadlift · Engine: Zone 2 tail, every week</div>
+          </div>
+          <div style="font-family:'Oswald',sans-serif;font-size:22px;color:#fb923c">≈ 44 min</div>
+        </div>
+        <div style="display:flex;flex-direction:column">
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:9px 20px;font-family:'Barlow';font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6c727a;background:#0e1014">
+            <div>Exercise</div><div>Sets × reps</div><div>Rest</div><div>Time</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div style="color:#8a9097">Warm-up — hips + 2 ramp sets</div><div style="color:#8a9097">—</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">4</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div><strong>Trap-Bar Deadlift</strong> <span style="color:#8a9097">· % of 1RM</span></div><div>4 × 5</div><div style="color:#c7ccd2">2 min</div><div style="color:#c7ccd2">12</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>A1 · Bulgarian Split Squat</div><div>3 × 8/leg</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">10</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>A2 · Incline DB Press</div><div>3 × 10</div><div style="color:#c7ccd2">75 s</div><div style="color:#8a9097">↑</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(251,146,60,0.06)"><div><strong style="color:#fb923c">Zone 2 tail</strong> <span style="color:#8a9097">· rower, bike or incline walk — conversational, nose-breathing, deliberately too easy</span></div><div>15 min</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">15</div></div>
+          <div style="display:grid;grid-template-columns:1fr 92px 78px 62px;gap:12px;padding:11px 20px;font-size:14.5px;border-top:1px solid rgba(255,255,255,0.06)"><div>Standing Calf Raise <span style="color:#8a9097">· during cooldown</span></div><div>2 × 15</div><div style="color:#8a9097">—</div><div style="color:#c7ccd2">2</div></div>
+        </div>
+        <div style="padding:12px 20px 16px;font-size:14px;color:#8a9097;border-top:1px solid rgba(255,255,255,0.06)">The tail is fixed, not seasonal. If you cut it because the session ran long, the aerobic base has nowhere else to come from — cut the split squats instead.</div>
+      </div>
+
+      <div style="background:#0e1014;border:1px dashed rgba(255,255,255,0.16);border-radius:14px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:19px;font-weight:500;color:#edeff1">OFF-DAY — WALK, AND WALK BRISKLY</div>
+          <div style="font-size:14.5px;color:#9aa0a8;margin-top:3px;max-width:60ch">You said daily walking is what you'll actually do, so the plan leans on it rather than pretending otherwise. Casual walking maintains health but does little for the base — 20 minutes of it brisk enough to breathe harder, most days, is what turns it into training. Free, and it costs no recovery.</div>
+        </div>
+        <div style="font-family:'Oswald',sans-serif;font-size:22px;color:#8a9097">daily</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="padding-top:52px">
+    <div style="font-family:'Barlow';font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ff7a1a;margin-bottom:16px">05 · Volume, before and after</div>
+    <div style="border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:11px 18px;background:#0e1014;font-family:'Barlow';font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6c727a">
+        <div>Muscle / quality</div><div>5-day</div><div>3-day</div><div>Expected outcome</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Main-lift strength</div><div style="color:#c7ccd2">12 sets</div><div style="color:#c7ccd2">12 sets</div><div style="color:#2dd4bf">Unchanged — keeps progressing</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Chest</div><div style="color:#c7ccd2">~13</div><div style="color:#c7ccd2">7</div><div style="color:#2dd4bf">Slow growth</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Back</div><div style="color:#c7ccd2">~15</div><div style="color:#c7ccd2">6</div><div style="color:#2dd4bf">Slow growth</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Quads / hams / glutes</div><div style="color:#c7ccd2">~22</div><div style="color:#c7ccd2">14</div><div style="color:#2dd4bf">Slow growth</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Delts</div><div style="color:#c7ccd2">~12</div><div style="color:#c7ccd2">6</div><div style="color:#fb923c">Maintain</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Arms (direct)</div><div style="color:#c7ccd2">6</div><div style="color:#c7ccd2">2</div><div style="color:#fb7185">Maintain at best</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Calves</div><div style="color:#c7ccd2">6</div><div style="color:#c7ccd2">2</div><div style="color:#fb7185">Maintain at best</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Hard conditioning</div><div style="color:#c7ccd2">4 slots</div><div style="color:#c7ccd2">3 slots</div><div style="color:#2dd4bf">VO₂max holds or rises</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:14.5px;background:#101216;border-top:1px solid rgba(255,255,255,0.06)"><div>Zone 2 (structured)</div><div style="color:#c7ccd2">~40 min</div><div style="color:#c7ccd2">15 min</div><div style="color:#fb923c">Thinner base — held, not built</div></div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:12px;padding:12px 18px;font-size:15px;background:#0e1014;border-top:1px solid rgba(255,255,255,0.12);font-weight:600"><div>Total hard sets</div><div style="color:#f2f3f5">~85</div><div style="color:#f2f3f5">~38</div><div style="color:#ff7a1a">45% of previous volume</div></div>
+    </div>
+    <p style="margin:16px 0 0;font-size:15px;color:#c7ccd2;max-width:70ch">45% sits comfortably above the one-third maintenance threshold and above the growth floor for every major muscle group. It is below it for arms and calves. That is the trade, stated plainly.</p>
+  </section>
+
+  <section style="padding-top:52px">
+    <div style="font-family:'Barlow';font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ff7a1a;margin-bottom:16px">06 · Rules that make it hold</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:15.5px;color:#c7ccd2"><span style="color:#ff7a1a">→</span><div><strong style="color:#f2f3f5">Cut volume, never intensity.</strong> The whole plan rests on loads staying at 70–85% of 1RM. Dropping the weight to "make it easier" is what causes detraining, not the missing sets.</div></div>
+      <div style="display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:15.5px;color:#c7ccd2"><span style="color:#ff7a1a">→</span><div><strong style="color:#f2f3f5">Lift first, always.</strong> Sequence isn't the main interference driver, but the main lift gets your freshest nervous system regardless.</div></div>
+      <div style="display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:15.5px;color:#c7ccd2"><span style="color:#ff7a1a">→</span><div><strong style="color:#f2f3f5">Mon / Wed / Fri, fixed.</strong> One rest day between sessions, two before Monday. Never two of the three back to back.</div></div>
+      <div style="display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:15.5px;color:#c7ccd2"><span style="color:#ff7a1a">→</span><div><strong style="color:#f2f3f5">Missed a day? Skip it, don't stack it.</strong> Slide the week's remaining sessions along and carry the missed anchor into next week's slot — the app can rotate it automatically rather than doubling a session.</div></div>
+      <div style="display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:15.5px;color:#c7ccd2"><span style="color:#ff7a1a">→</span><div><strong style="color:#f2f3f5">Progress one dial at a time.</strong> Strength: bump the 1RM when the top set beats its target RPE. Conditioning: more rounds <em>or</em> longer work <em>or</em> heavier sled — never two at once.</div></div>
+      <div style="display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:15.5px;color:#c7ccd2"><span style="color:#ff7a1a">→</span><div><strong style="color:#f2f3f5">Under 40 minutes? Cut in this order:</strong> B-pair accessories → A-pair third round → sled or interval rounds. The anchor lift and Friday's Zone 2 tail never get cut.</div></div>
+      <div style="display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:15.5px;color:#c7ccd2"><span style="color:#ff7a1a">→</span><div><strong style="color:#f2f3f5">Extra time goes to Monday.</strong> Only Monday has an extension block. Wednesday and Friday stay at 45 even on a good week — spare minutes there are better spent leaving.</div></div>
+    </div>
+  </section>
+
+  <section style="padding-top:52px">
+    <div style="font-family:'Barlow';font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ff7a1a;margin-bottom:8px">07 · The 8-week block stays</div>
+    <p style="margin:0 0 18px;font-size:16px;color:#c7ccd2;max-width:70ch">The existing periodisation still fits, so the percentage ladder and the recalculation engine survive the rewire untouched. Only the day count and the exercise list change.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px">
+      <div style="background:rgba(45,212,191,0.13);border:1px solid rgba(45,212,191,0.40);border-radius:10px;padding:12px 10px"><div style="font-family:'Oswald',sans-serif;font-size:20px;color:#2dd4bf">W1–2</div><div style="font-size:12.5px;color:#c7ccd2;margin-top:2px">Base · RPE 7 · sled volume up</div></div>
+      <div style="background:rgba(251,146,60,0.13);border:1px solid rgba(251,146,60,0.40);border-radius:10px;padding:12px 10px"><div style="font-family:'Oswald',sans-serif;font-size:20px;color:#fb923c">W3</div><div style="font-size:12.5px;color:#c7ccd2;margin-top:2px">Peak · RPE 8</div></div>
+      <div style="background:rgba(167,139,250,0.13);border:1px solid rgba(167,139,250,0.40);border-radius:10px;padding:12px 10px"><div style="font-family:'Oswald',sans-serif;font-size:20px;color:#a78bfa">W4</div><div style="font-size:12.5px;color:#c7ccd2;margin-top:2px">Deload · 3 sets · engine easy</div></div>
+      <div style="background:rgba(56,189,248,0.13);border:1px solid rgba(56,189,248,0.40);border-radius:10px;padding:12px 10px"><div style="font-family:'Oswald',sans-serif;font-size:20px;color:#38bdf8">W5–6</div><div style="font-size:12.5px;color:#c7ccd2;margin-top:2px">Build · 4×4 · mixed-modal extension</div></div>
+      <div style="background:rgba(251,146,60,0.13);border:1px solid rgba(251,146,60,0.40);border-radius:10px;padding:12px 10px"><div style="font-family:'Oswald',sans-serif;font-size:20px;color:#fb923c">W7</div><div style="font-size:12.5px;color:#c7ccd2;margin-top:2px">Peak · RPE 8 hold</div></div>
+      <div style="background:rgba(251,113,133,0.13);border:1px solid rgba(251,113,133,0.40);border-radius:10px;padding:12px 10px"><div style="font-family:'Oswald',sans-serif;font-size:20px;color:#fb7185">W8</div><div style="font-size:12.5px;color:#c7ccd2;margin-top:2px">Test · 3 lifts + 1 engine test</div></div>
+    </div>
+  </section>
+
+  <section style="padding-top:52px">
+    <div style="font-family:'Barlow';font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ff7a1a;margin-bottom:16px">08 · What this means for the app</div>
+    <div style="background:#101216;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:12px;font-size:15px;color:#c7ccd2">
+      <div><strong style="color:#f2f3f5">Unchanged:</strong> the 1RM inputs, the %1RM ladder across weeks 1–8, load recalculation, rest timer, check-off state, the three-tab shell.</div>
+      <div><strong style="color:#f2f3f5">Changes:</strong> five days become three, named Mon / Wed / Fri; conditioning keys drop from five to three (sled, intervals, Zone 2); the block restarts at Week 1 on your existing 1RMs.</div>
+      <div><strong style="color:#f2f3f5">New:</strong> a per-session time budget, an optional extension block that only Monday shows, a daily-walk check-off, and a rotation rule for a missed session.</div>
+      <div style="color:#8a9097;font-size:14px;padding-top:4px;border-top:1px solid rgba(255,255,255,0.06)">All of it fits the existing data model — this is a content rewrite plus two new fields, not a rebuild.</div>
+    </div>
+  </section>
+
+  <p style="margin:44px 0 0;font-size:13.5px;color:#6c727a;max-width:70ch">Training guidance, not medical advice. Evidence cited is from 2021–2026 reviews and meta-analyses; individual response varies and the trials behind these numbers are mostly 8–12 weeks long.</p>
+
+</div>
+</x-dc>
+</body>
+</html>

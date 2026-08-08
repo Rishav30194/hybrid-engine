@@ -15,7 +15,7 @@ export function Header() {
           <span className="header__accent-bar" />
           <div>
             <div className="header__title">HYBRID ENGINE</div>
-            <div className="header__subtitle">5-Day Strength · Endurance</div>
+            <div className="header__subtitle">3-Day Strength · Endurance</div>
           </div>
         </div>
         <AccountControl />

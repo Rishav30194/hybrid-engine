@@ -1,8 +1,8 @@
-/** Program data model — mirrors the authored source in design_handoff_hybrid_engine. */
+/** Program data model — mirrors the authored source in design_handoff_3day_rewire. */
 
 export type LiftKey = 'squat' | 'bench' | 'tbdl' | 'ohp'
 export type PhaseKey = 'base' | 'peak' | 'build' | 'deload' | 'test'
-export type CondKey = 'd1' | 'd2' | 'd3' | 'd4' | 'd5'
+export type CondKey = 'mon' | 'wed' | 'fri'
 
 export interface Lift {
   key: LiftKey
@@ -59,4 +59,6 @@ export interface Day {
   condLabel: string
   condKey: CondKey
   ex: Exercise[]
+  /** Optional +10 min add-on, shown as a callout under the day's conditioning. */
+  extension?: string
 }

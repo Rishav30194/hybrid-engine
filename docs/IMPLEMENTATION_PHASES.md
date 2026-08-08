@@ -1,12 +1,12 @@
 # Hybrid Engine — Implementation Phases
 
-Build plan for the Hybrid Engine app, derived from `design_handoff_hybrid_engine/README.md`
-and the authored source `design_handoff_hybrid_engine/Hybrid Engine.dc.html`.
+Build plan for the Hybrid Engine app, derived from `design_handoff_3day_rewire/README.md`
+and the authored source `design_handoff_3day_rewire/Hybrid Engine - 3-Day App.dc.html`.
 
 ## Locked decisions
 
 - **Stack:** React + Vite + TypeScript. PWA via `vite-plugin-pwa`.
-- **Location:** built at **repo root**, alongside `design_handoff_hybrid_engine/`.
+- **Location:** built at **repo root**, alongside `design_handoff_3day_rewire/`.
 - **Options:** hardcoded defaults — accent `#FF7A1A` (orange), `showPercents` on, `bigLoad` off. No settings UI.
 - **Persistence:** localStorage (`hybridEngine.v1`) by default; optional cloud sync when signed in.
 - **Data:** `WEEKS`, `DAYS`, `COND`, `CONDINFO`, `NOTES`, `PHASES`, `LIFTS` copied **verbatim** from the authored source — they are the program's real prescription data.
@@ -15,6 +15,16 @@ and the authored source `design_handoff_hybrid_engine/Hybrid Engine.dc.html`.
 
 - **Deployed** to GitHub Pages (base `/hybrid-engine/`) via an Actions workflow that tests, builds, and publishes on every push to `main`.
 - **User accounts + cloud sync** — implemented (Supabase email/password auth + `user_state` jsonb, offline-first last-write-wins). Opt-in and off unless configured. See [`CLOUD_SYNC.md`](CLOUD_SYNC.md).
+
+## 3-day rewire
+
+The program was rewired from five sessions a week to three (Mon / Wed / Fri, ≤45 min each) per
+`design_handoff_3day_rewire/`. It is a **data change only**: `CondKey` became `mon | wed | fri`,
+and `COND`, `CONDINFO`, the per-week `cond` blocks, `DAYS` and `NOTES` were replaced. The engine,
+screens, state, sync and CSS were untouched — they map over the data — plus three small additions:
+the Monday `extension` callout, the This Week OFF DAYS note, and a load-time cleanup that drops
+orphaned `w{n}:c:d1`–`d5` / `w{n}:tc:d1`–`d5` check-offs. The 8-week periodisation and every %1RM
+are unchanged, so existing 1RMs and main-lift check-offs carry over.
 
 ## UI refinements
 
@@ -77,7 +87,7 @@ Each phase is independently reviewable. Ship/verify at each boundary before movi
 - Week hero card (phase pill + large "WEEK n").
 - 1-Rep Max editor (four input tiles + rounding select) → recalc on edit.
 - MAIN LIFTS rows (check-off, name, meta, cue, computed load).
-- CONDITIONING rows (Day 1–5, check-off, prescription, coaching line).
+- CONDITIONING rows (Mon / Wed / Fri, check-off, prescription, coaching line) + the OFF DAYS walking note.
 
 ### Phase 5 — Screen 2: 8-Week Plan
 - Eight week cards; active card gets accent border + lighter gradient.
@@ -86,7 +96,7 @@ Each phase is independently reviewable. Ship/verify at each boundary before movi
 - "HOW TO PROGRESS" card from `NOTES`.
 
 ### Phase 6 — Screen 3: Template
-- Five day accordions (independent open via `openDay`; Day 1 open by default).
+- Three day accordions (independent open via `openDay`; Monday open by default).
 - Per-exercise rows; load slot differs by type:
   - **Main lifts:** read-only computed load from the engine.
   - **Accessories:** editable weight input, saved per-week per-exercise in `log`.

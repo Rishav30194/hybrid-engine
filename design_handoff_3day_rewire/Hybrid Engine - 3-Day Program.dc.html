@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="_ds/nocturne-45d6ac6f-1ddd-4a3d-a954-736aa1753d47/styles.css">
+<script src="_ds/nocturne-45d6ac6f-1ddd-4a3d-a954-736aa1753d47/_ds_bundle.js"></script>
+<style>
+body { margin:0; background:var(--color-bg); color:var(--color-text); }
+input { font: inherit; }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+input[type=number] { -moz-appearance:textfield; appearance:textfield; }
+.n { background:transparent; border:1px solid transparent; border-radius:var(--radius-sm); color:var(--color-text); padding:2px 4px; text-align:right; }
+.n:hover { border-color:var(--color-divider); }
+.n:focus-visible { border-color:var(--color-accent); outline:none; }
+</style>
+</helmet>
+
+<div style="max-width:840px;margin:0 auto;padding:var(--space-6) var(--space-6) calc(var(--space-8) * 3)">
+
+  <div style="display:flex;align-items:baseline;gap:var(--space-4);margin-bottom:var(--space-4)">
+    <span style="font-family:var(--font-heading);font-size:18px;white-space:nowrap">Hybrid Engine</span>
+    <span class="text-muted" style="font-size:12px;white-space:nowrap">3 days · Mon / Wed / Fri</span>
+  </div>
+
+  <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-6);flex-wrap:wrap">
+    <sc-for list="{{ weekChips }}" as="c" hint-placeholder-count="8">
+      <button type="button" class="btn" style="{{ c.style }}" onClick="{{ c.pick }}">W{{ c.wk }}</button>
+    </sc-for>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;padding-bottom:var(--space-4);margin-bottom:var(--space-6);border-bottom:1px solid var(--color-divider)">
+    <span class="card-kicker" style="margin:0;white-space:nowrap">1RM · lb</span>
+    <sc-for list="{{ rmFields }}" as="f" hint-placeholder-count="4">
+      <label style="display:inline-flex;align-items:baseline;gap:6px">
+        <span class="text-muted" style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em">{{ f.abbr }}</span>
+        <input class="n" type="number" style="width:62px;font-family:var(--font-heading);font-size:15px" value="{{ f.value }}" onChange="{{ f.set }}">
+      </label>
+    </sc-for>
+    <label style="display:inline-flex;align-items:baseline;gap:6px;margin-left:auto">
+      <span class="text-muted" style="font-size:11px;white-space:nowrap">round to</span>
+      <input class="n" type="number" style="width:44px" value="{{ rounding }}" onChange="{{ setRounding }}">
+    </label>
+  </div>
+
+  <div style="display:flex;align-items:baseline;gap:var(--space-4);margin-bottom:var(--space-6)">
+    <h3 style="margin:0">Week {{ week }}</h3>
+    <span class="tag tag-neutral">{{ phase }}</span>
+    <label style="display:inline-flex;align-items:baseline;gap:6px">
+      <span class="text-muted" style="font-size:12px;white-space:nowrap">target RPE</span>
+      <input class="n" type="text" style="width:44px" value="{{ rpe }}" onChange="{{ setRpe }}">
+    </label>
+  </div>
+
+  <sc-for list="{{ days }}" as="d" hint-placeholder-count="3">
+    <section style="margin-bottom:var(--space-8)">
+      <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-2)">
+        <h4 style="margin:0">{{ d.name }}</h4>
+        <span class="text-muted" style="font-size:12px;white-space:nowrap">{{ d.sub }}</span>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width:38%">Exercise</th>
+            <th style="width:15%">Sets × reps</th>
+            <th style="width:17%">Load</th>
+            <th style="width:14%">%1RM</th>
+            <th>Rest</th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ d.rows }}" as="r" hint-placeholder-count="5">
+            <tr>
+              <td>{{ r.name }}</td>
+              <td style="white-space:nowrap">
+                <input class="n" type="number" style="width:34px" value="{{ r.sets }}" onChange="{{ r.setSets }}"><span class="text-muted"> × </span><input class="n" type="number" style="width:38px" value="{{ r.reps }}" onChange="{{ r.setReps }}">
+              </td>
+              <td style="white-space:nowrap">
+                <input class="n" type="number" style="width:62px;color:var(--color-accent-300);font-family:var(--font-heading)" placeholder="{{ r.loadHint }}" value="{{ r.load }}" onChange="{{ r.setLoad }}"><span class="text-muted" style="font-size:11px"> lb</span>
+              </td>
+              <td>
+                <sc-if value="{{ r.isMain }}" hint-placeholder-val="{{ true }}">
+                  <span style="white-space:nowrap"><input class="n" type="number" style="width:56px" value="{{ r.pct }}" onChange="{{ r.setPct }}"><span class="text-muted" style="font-size:11px"> %</span></span>
+                </sc-if>
+              </td>
+              <td><input class="n" type="text" style="width:64px;text-align:left" value="{{ r.rest }}" onChange="{{ r.setRest }}"></td>
+            </tr>
+          </sc-for>
+          <tr>
+            <td style="color:var(--color-accent-300)">{{ d.condName }}</td>
+            <td colspan="4"><input class="n" type="text" style="width:100%;text-align:left" value="{{ d.cond }}" onChange="{{ d.setCond }}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </sc-for>
+
+  <div style="display:flex;gap:var(--space-3);align-items:center">
+    <button type="button" class="btn btn-secondary" onClick="{{ resetWeek }}">Reset week {{ week }}</button>
+    <span class="text-muted" style="font-size:12px">Edits save automatically, per week.</span>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:840,&quot;height&quot;:1100}}">
+const KEY = 'hybrid3day.v2'
+
+const WEEKS = {
+  1: { phase: 'Base', rpe: '7', pct: { squat: 78.5, bench: 76, tbdl: 78.5, ohp: 72 }, sr: { squat: [4, 5], bench: [4, 6], tbdl: [4, 5] },
+       cond: { mon: 'Sled push 6 × 20 m · Carry 3 × 30 m', wed: '6 × 1:30 hard / 1:00 easy', fri: 'Zone 2 · 15 min easy' } },
+  2: { phase: 'Base', rpe: '7.5', pct: { squat: 80, bench: 77.5, tbdl: 80, ohp: 73.5 }, sr: { squat: [4, 5], bench: [4, 6], tbdl: [4, 5] },
+       cond: { mon: 'Sled push 7 × 20 m · Carry 3 × 35 m', wed: '5 × 2:00 / 1:00', fri: 'Zone 2 · 15 min easy' } },
+  3: { phase: 'Peak · OHP week', rpe: '8', pct: { squat: 81, bench: 78.5, tbdl: 81, ohp: 74.5 }, sr: { squat: [4, 5], bench: [4, 6], tbdl: [4, 5] },
+       cond: { mon: 'Sled push 8 × 20 m · Carry 4 × 35 m', wed: '4 × 2:30 / 1:00', fri: 'Zone 2 · 15 min easy' } },
+  4: { phase: 'Deload', rpe: '5', pct: { squat: 68, bench: 66, tbdl: 68, ohp: 62 }, sr: { squat: [3, 5], bench: [3, 6], tbdl: [3, 5] },
+       cond: { mon: 'Light walk only', wed: '12 min easy spin', fri: 'Zone 2 · 20 min easy' } },
+  5: { phase: 'Build', rpe: '7.5', pct: { squat: 82.5, bench: 79.5, tbdl: 82.5, ohp: 75.5 }, sr: { squat: [4, 4], bench: [4, 5], tbdl: [4, 4] },
+       cond: { mon: 'Sled push 6 × 20 m heavier · Carry 4 × 40 m', wed: '4 × 3:00 / 1:00', fri: 'Zone 2 · 15 min easy' } },
+  6: { phase: 'Build · OHP week', rpe: '8', pct: { squat: 83.5, bench: 81, tbdl: 83.5, ohp: 77 }, sr: { squat: [4, 4], bench: [4, 5], tbdl: [4, 4] },
+       cond: { mon: 'Sled push 7 × 20 m · Carry 4 × 40 m', wed: '3 × 4:00 / 1:30', fri: 'Zone 2 · 15 min easy' } },
+  7: { phase: 'Peak', rpe: '8 hold', pct: { squat: 83.5, bench: 81, tbdl: 83.5, ohp: 77 }, sr: { squat: [4, 4], bench: [4, 5], tbdl: [4, 4] },
+       cond: { mon: 'Sled push 8 × 20 m heaviest · Carry 4 × 45 m', wed: '3 × 4:00 / 1:00', fri: 'Zone 2 · 15 min easy' } },
+  8: { phase: 'Test', rpe: '6 → max', pct: { squat: 72, bench: 72, tbdl: 72, ohp: 68 }, sr: { squat: [3, 3], bench: [3, 4], tbdl: [3, 3] },
+       cond: { mon: 'Sled 20 m for time · max-distance carry', wed: '2 km row for time', fri: 'Zone 2 · 15 min easy' } },
+}
+
+const DAYS = [
+  { key: 'mon', name: 'Monday', sub: 'Squat + Pull · Sled', condName: 'Sled + Carry', rows: [
+    { id: 'sq', name: 'Back Squat', main: 'squat', rest: '2 min' },
+    { id: 'row', name: 'A1 · Chest-Supported Row', sets: 3, reps: 10, rest: '—' },
+    { id: 'dbohp', name: 'A2 · Standing DB Overhead Press', sets: 3, reps: 8, rest: '60 s' },
+    { id: 'hlr', name: 'A3 · Hanging Leg Raise', sets: 3, reps: 12, rest: '—' },
+  ] },
+  { key: 'wed', name: 'Wednesday', sub: 'Press + Intervals', condName: 'Intervals', rows: [
+    { id: 'bp', name: 'Bench Press / OHP', main: 'bench', rest: '2 min' },
+    { id: 'pu', name: 'A1 · Weighted Pull-up', sets: 3, reps: 8, rest: '—' },
+    { id: 'rdl', name: 'A2 · Romanian Deadlift', sets: 3, reps: 8, rest: '75 s' },
+    { id: 'lat', name: 'B1 · DB Lateral Raise', sets: 3, reps: 15, rest: '—' },
+    { id: 'curl', name: 'B2 · EZ-Bar Curl', sets: 2, reps: 12, rest: '45 s' },
+  ] },
+  { key: 'fri', name: 'Friday', sub: 'Hinge + Zone 2', condName: 'Zone 2 tail', rows: [
+    { id: 'tb', name: 'Trap-Bar Deadlift', main: 'tbdl', rest: '2 min' },
+    { id: 'bss', name: 'A1 · Bulgarian Split Squat', sets: 3, reps: 8, rest: '—' },
+    { id: 'inc', name: 'A2 · Incline DB Press', sets: 3, reps: 10, rest: '75 s' },
+    { id: 'calf', name: 'Standing Calf Raise', sets: 2, reps: 15, rest: '—' },
+  ] },
+]
+
+const RM_FIELDS = [
+  { key: 'squat', abbr: 'SQ' }, { key: 'bench', abbr: 'BN' },
+  { key: 'tbdl', abbr: 'DL' }, { key: 'ohp', abbr: 'OHP' },
+]
+
+class Component extends DCLogic {
+  state = {
+    week: 1,
+    rm: { squat: 225, bench: 155, tbdl: 275, ohp: 105 },
+    rounding: 5,
+    edits: {},
+  }
+
+  componentDidMount() {
+    try {
+      const raw = localStorage.getItem(KEY)
+      if (raw) this.setState(JSON.parse(raw))
+    } catch (e) { /* first run */ }
+  }
+
+  save(next) {
+    this.setState(next, () => {
+      try { localStorage.setItem(KEY, JSON.stringify(this.state)) } catch (e) { /* ignore */ }
+    })
+  }
+
+  edit(path, value) {
+    this.save({ edits: { ...this.state.edits, [path]: value } })
+  }
+
+  val(path, fallback) {
+    const v = this.state.edits[path]
+    return v === undefined || v === '' ? fallback : v
+  }
+
+  num(v) { const n = parseFloat(v); return Number.isNaN(n) ? 0 : n }
+
+  renderVals() {
+    const { week, rm, rounding } = this.state
+    const W = WEEKS[week]
+    const inc = this.num(rounding) || 1
+    const ohpWeek = week === 3 || week === 6
+
+    const weekChips = Object.keys(WEEKS).map((k) => {
+      const wk = Number(k)
+      const on = wk === week
+      return {
+        wk,
+        style: {
+          padding: '4px 10px', fontSize: '13px',
+          color: on ? 'var(--color-bg)' : 'var(--color-text)',
+          background: on ? 'var(--color-accent)' : 'transparent',
+          borderColor: on ? 'var(--color-accent)' : 'var(--color-divider)',
+        },
+        pick: () => this.save({ week: wk }),
+      }
+    })
+
+    const rmFields = RM_FIELDS.map((f) => ({
+      abbr: f.abbr,
+      value: rm[f.key],
+      set: (e) => this.save({ rm: { ...rm, [f.key]: e.target.value } }),
+    }))
+
+    const days = DAYS.map((d) => ({
+      name: d.name,
+      sub: d.sub,
+      condName: d.condName,
+      cond: this.val(`c.${week}.${d.key}`, W.cond[d.key]),
+      setCond: (e) => this.edit(`c.${week}.${d.key}`, e.target.value),
+      rows: d.rows.map((r) => {
+        const liftKey = r.main === 'bench' && ohpWeek ? 'ohp' : r.main
+        const base = r.main ? W.sr[r.main] : [r.sets, r.reps]
+        const sets = this.val(`s.${week}.${r.id}`, base[0])
+        const reps = this.val(`r.${week}.${r.id}`, base[1])
+        const pct = r.main ? this.val(`p.${week}.${r.id}`, W.pct[liftKey]) : ''
+        const auto = r.main
+          ? Math.round((this.num(rm[liftKey]) * this.num(pct)) / 100 / inc) * inc
+          : ''
+        return {
+          name: r.main === 'bench' ? (ohpWeek ? 'Overhead Press' : 'Bench Press') : r.name,
+          isMain: !!r.main,
+          loadHint: r.main ? '' : 'RPE',
+          sets, reps, pct,
+          load: this.val(`l.${week}.${r.id}`, auto),
+          rest: this.val(`t.${week}.${r.id}`, r.rest),
+          setSets: (e) => this.edit(`s.${week}.${r.id}`, e.target.value),
+          setReps: (e) => this.edit(`r.${week}.${r.id}`, e.target.value),
+          setPct: (e) => this.edit(`p.${week}.${r.id}`, e.target.value),
+          setLoad: (e) => this.edit(`l.${week}.${r.id}`, e.target.value),
+          setRest: (e) => this.edit(`t.${week}.${r.id}`, e.target.value),
+        }
+      }),
+    }))
+
+    return {
+      week, weekChips, rmFields, days,
+      rounding,
+      phase: W.phase,
+      rpe: this.val(`rpe.${week}`, W.rpe),
+      setRpe: (e) => this.edit(`rpe.${week}`, e.target.value),
+      setRounding: (e) => this.save({ rounding: e.target.value }),
+      resetWeek: () => {
+        const kept = {}
+        for (const k of Object.keys(this.state.edits)) {
+          if (!k.split('.').includes(String(week))) kept[k] = this.state.edits[k]
+        }
+        this.save({ edits: kept })
+      },
+    }
+  }
+}
+</script>
+</body>
+</html>
