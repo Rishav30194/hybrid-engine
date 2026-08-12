@@ -13,7 +13,8 @@ anything wider is a bonus, not the target. It is used one-handed, in a gym, mid-
 offline. Desktop-looking-fine is not the bar.
 
 - **Form controls need `font-size: 16px` or larger.** Below that, iOS zooms the page on focus and
-  does not zoom back. See [Known deviations](#known-deviations) — there are two live instances.
+  does not zoom back. See [Known deviations](#known-deviations) — three of the app's five
+  controls are currently in breach.
 - **One scroll container: `.app__main`.** `.app` is `overflow: hidden; height: 100dvh`. Don't add
   nested scrollers, and don't add `position: fixed` children — the rest timer is
   `position: absolute` inside `.app` precisely so it rides the column, not the viewport.
@@ -29,12 +30,12 @@ offline. Desktop-looking-fine is not the bar.
 
 Hand-tuned to clear each other on notched phones:
 
-| Element | Rule |
-|---|---|
-| Header | `padding: calc(14px + env(safe-area-inset-top)) 16px 11px` |
-| Bottom nav | `padding-bottom: env(safe-area-inset-bottom)` |
-| Rest pill | `bottom: calc(74px + env(safe-area-inset-bottom))` |
-| Rest panel | `bottom: calc(130px + env(safe-area-inset-bottom))` |
+| Element    | Rule                                                         |
+| ---------- | ------------------------------------------------------------ |
+| Header     | `padding: calc(14px + env(safe-area-inset-top)) 16px 11px` |
+| Bottom nav | `padding-bottom: env(safe-area-inset-bottom)`              |
+| Rest pill  | `bottom: calc(74px + env(safe-area-inset-bottom))`         |
+| Rest panel | `bottom: calc(130px + env(safe-area-inset-bottom))`        |
 
 **Change the nav's height and you must retune the pill and the panel**, or the timer overlaps
 the tabs.
@@ -59,15 +60,15 @@ are intentional.
 
 ## Where things go
 
-| Adding | Goes |
-|---|---|
-| An exercise | `DAYS` in `program.ts`, with a **fresh unique `id`**. Day progress totals update automatically |
-| A per-week prescription field | `MainPrescription`/`Week` in `data/types.ts`, then all 8 entries in `WEEKS`. Partial fills fail type-check — that's the point |
-| A persisted field | `PersistedState` → `pickPersisted` → `mergePersisted` default → `hydrateRemote` → a `persistence.test.ts` case. **All five, or it desyncs** |
-| UI-only state | `AppState` only. Keep it out of `PersistedState` |
-| A colour or size | `src/styles/tokens.css` |
-| A screen | `src/screens/`, a `Tab` union member, a `BottomNav` entry, an `App.tsx` branch. Four places |
-| A feature flag | `src/config.ts` (that's what `SHOW_PERCENTS` is). There is deliberately no settings UI |
+| Adding                        | Goes                                                                                                                                                            |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| An exercise                   | `DAYS` in `program.ts`, with a **fresh unique `id`**. Day progress totals update automatically                                                      |
+| A per-week prescription field | `MainPrescription`/`Week` in `data/types.ts`, then all 8 entries in `WEEKS`. Partial fills fail type-check — that's the point                          |
+| A persisted field             | `PersistedState` → `pickPersisted` → `mergePersisted` default → `hydrateRemote` → a `persistence.test.ts` case. **All five, or it desyncs** |
+| UI-only state                 | `AppState` only. Keep it out of `PersistedState`                                                                                                            |
+| A colour or size              | `src/styles/tokens.css`                                                                                                                                       |
+| A screen                      | `src/screens/`, a `Tab` union member, a `BottomNav` entry, an `App.tsx` branch. Four places                                                             |
+| A feature flag                | `src/config.ts` (that's what `SHOW_PERCENTS` is). There is deliberately no settings UI                                                                      |
 
 ---
 
@@ -75,14 +76,14 @@ are intentional.
 
 Extend the file that owns the behaviour:
 
-| Area | Test |
-|---|---|
-| Load maths, program integrity, press swap | `src/engine/loads.test.ts` |
-| Per-week check-off keys, day progress | `src/engine/progress.test.ts` |
-| Actions and state transitions | `src/state/reducer.test.ts` |
-| Rest timer | `src/state/reducer.timer.test.ts` |
-| Persisted slice, merge, round-trip | `src/state/persistence.test.ts` |
-| Rendered screens | `src/screens/screens.test.tsx` |
+| Area                                      | Test                                |
+| ----------------------------------------- | ----------------------------------- |
+| Load maths, program integrity, press swap | `src/engine/loads.test.ts`        |
+| Per-week check-off keys, day progress     | `src/engine/progress.test.ts`     |
+| Actions and state transitions             | `src/state/reducer.test.ts`       |
+| Rest timer                                | `src/state/reducer.timer.test.ts` |
+| Persisted slice, merge, round-trip        | `src/state/persistence.test.ts`   |
+| Rendered screens                          | `src/screens/screens.test.tsx`    |
 
 Vitest + Testing Library, jsdom. No real network in tests. CI runs `npm test` before it will
 deploy — don't route around a red test with `.skip`.
@@ -96,11 +97,11 @@ Documented so they aren't "fixed" by accident or re-discovered every session.
 - **Three of the app's five form controls are under 16px and trigger the iOS zoom bug.** Tapping
   any of them zooms the page and iOS doesn't zoom back. Real bug, not yet fixed:
 
-  | Control | Used by | Size |
-  |---|---|---|
-  | `.ex-row__input` (`Template.css:121`) | accessory weight, `Template.tsx:95` | 13px |
-  | `.rm-editor__select` (`ThisWeek.css:118`) | rounding, `ThisWeek.tsx:85` | 13px |
-  | `.acct-form__input` (`AccountControl.css:110`) | email + password, `AccountControl.tsx:151,161` | 14px |
+  | Control                                            | Used by                                         | Size |
+  | -------------------------------------------------- | ----------------------------------------------- | ---- |
+  | `.ex-row__input` (`Template.css:121`)          | accessory weight,`Template.tsx:95`            | 13px |
+  | `.rm-editor__select` (`ThisWeek.css:118`)      | rounding,`ThisWeek.tsx:85`                    | 13px |
+  | `.acct-form__input` (`AccountControl.css:110`) | email + password,`AccountControl.tsx:151,161` | 14px |
 
   Only `.rm-tile__input` (the 1RM field, 22px) is safe. When auditing this, enumerate
   `<input>`/`<select>`/`<textarea>` in the TSX and check each one's rule — grepping for a single
