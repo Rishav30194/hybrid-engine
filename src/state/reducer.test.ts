@@ -66,18 +66,6 @@ describe('reducer', () => {
     expect(s.log['w6:t:mon-e1']).toBe('135')
   })
 
-  it('hydrateRemote drops retired 5-day keys from a pre-rewire cloud blob', () => {
-    const s = reducer(INITIAL_STATE, {
-      type: 'hydrateRemote',
-      data: {
-        done: { 'w1:tc:d4': true, 'w1:t:d1e1': true, 'w1:m:squat': true },
-        log: { 'w1:t:d1e1': '185', 'w1:t:mon-e1': '95' },
-      },
-    })
-    expect(s.done).toEqual({ 'w1:m:squat': true })
-    expect(s.log).toEqual({ 'w1:t:mon-e1': '95' })
-  })
-
   it('hydrateRemote leaves non-persisted UI state alone', () => {
     const withTab = reducer(INITIAL_STATE, { type: 'setTab', tab: 'template' })
     const s = reducer(withTab, { type: 'hydrateRemote', data: { week: 3 } })

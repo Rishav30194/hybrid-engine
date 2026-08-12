@@ -1,4 +1,4 @@
-/** Program data model — mirrors the authored source in design_handoff_3day_rewire. */
+/** Program data model — shapes the prescription data in program.ts. */
 
 export type LiftKey = 'squat' | 'bench' | 'tbdl' | 'ohp'
 export type PhaseKey = 'base' | 'peak' | 'build' | 'deload' | 'test'

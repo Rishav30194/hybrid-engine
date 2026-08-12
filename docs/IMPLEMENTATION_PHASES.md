@@ -1,35 +1,22 @@
 # Hybrid Engine — Implementation Phases
 
-Build plan for the Hybrid Engine app, derived from `design_handoff_3day_rewire/README.md`
-and the authored source `design_handoff_3day_rewire/Hybrid Engine - 3-Day App.dc.html`.
+Build plan and architecture decisions for the Hybrid Engine app. Why the *program* is shaped
+the way it is: [`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
 
 ## Locked decisions
 
 - **Stack:** React + Vite + TypeScript. PWA via `vite-plugin-pwa`.
-- **Location:** built at **repo root**, alongside `design_handoff_3day_rewire/`.
+- **Location:** built at **repo root**.
 - **Options:** hardcoded defaults — accent `#FF7A1A` (orange), `showPercents` on, `bigLoad` off. No settings UI.
 - **Persistence:** localStorage (`hybridEngine.v1`) by default; optional cloud sync when signed in.
-- **Data:** `WEEKS`, `DAYS`, `COND`, `CONDINFO`, `NOTES`, `PHASES`, `LIFTS` copied **verbatim** from the authored source — they are the program's real prescription data.
+- **Data:** `WEEKS`, `DAYS`, `COND`, `CONDINFO`, `NOTES`, `PHASES`, `LIFTS` in `src/data/program.ts` are the program's real prescription data and the source of truth for it.
 
 ## Delivered beyond the original plan
 
 - **Deployed** to GitHub Pages (base `/hybrid-engine/`) via an Actions workflow that tests, builds, and publishes on every push to `main`.
 - **User accounts + cloud sync** — implemented (Supabase email/password auth + `user_state` jsonb, offline-first last-write-wins). Opt-in and off unless configured. See [`CLOUD_SYNC.md`](CLOUD_SYNC.md).
 
-## 3-day rewire
-
-The program was rewired from five sessions a week to three (Mon / Wed / Fri, ≤45 min each) per
-`design_handoff_3day_rewire/`. Mostly a data change: `CondKey` became `mon | wed | fri`, and
-`COND`, `CONDINFO`, the per-week `cond` blocks, `DAYS` and `NOTES` were replaced. The 8-week
-periodisation and every %1RM are unchanged, so existing 1RMs and main-lift check-offs carry over.
-Added with it: the Monday `extension` callout and the This Week OFF DAYS note.
-
-**Exercise ids were re-issued** (`d1e0` → `mon-e0`). The old ids would otherwise have been reused
-by different movements — a weight logged against the old `d1e1` (Romanian Deadlift) would have
-surfaced on the new one (Chest-Supported Row), and an old Zone 2 check-off would have shown
-Friday's deadlift as done. `src/state/migrate.ts` drops the retired conditioning and exercise keys
-on **both** paths into state: the localStorage hydrate and the reducer's `hydrateRemote`, since a
-cloud blob written before the rewire still carries them. Main-lift check-offs are untouched.
+## Press rotation
 
 **The press rotation is real, not just copy.** `pressForWeek()` puts the overhead press in the
 Wednesday slot in weeks 3 and 6; `anchorLifts()` gives the three lifts a week actually programs.

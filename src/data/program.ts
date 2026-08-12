@@ -1,7 +1,8 @@
 /**
- * The program's real prescription data — copied verbatim from
- * design_handoff_3day_rewire. Do not edit values here; this is the athlete's
- * actual 8-week plan, three sessions a week (Mon / Wed / Fri, ≤45 min each).
+ * The program's real prescription data — this file is the source of truth.
+ * Do not edit values casually; this is the athlete's actual 8-week plan, three
+ * sessions a week (Mon / Wed / Fri, ≤45 min each). The reasoning behind the
+ * shape (time budgets, volume trade-offs) is in docs/PROGRAM_SOURCE.md.
  */
 import type {
   CondKey,
