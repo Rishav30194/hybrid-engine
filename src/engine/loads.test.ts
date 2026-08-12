@@ -26,6 +26,13 @@ describe('toNum', () => {
 })
 
 describe('roundLoad', () => {
+  it('never returns a negative load', () => {
+    // type="number" accepts a typed minus sign; a negative 1RM must not
+    // propagate a negative working load to every screen.
+    expect(roundLoad(-5, 0.785, 5)).toBe(0)
+    expect(roundLoad('-200', 0.7, 10)).toBe(0)
+  })
+
   it('rounds to the given increment', () => {
     // 245 × 0.785 = 192.325
     expect(roundLoad(245, 0.785, 1)).toBe(192)

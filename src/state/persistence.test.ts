@@ -7,6 +7,7 @@ import {
   writeSnapshot,
 } from './persistence'
 import { INITIAL_STATE } from './reducer'
+import { getStorageState, setStorageState } from './storageStatus'
 import type { AppState } from './types'
 
 /** Minimal in-memory localStorage stub so we can test the round-trip in Node. */
@@ -22,6 +23,36 @@ function makeStorage() {
 
 beforeEach(() => {
   vi.stubGlobal('localStorage', makeStorage())
+  setStorageState('ok')
+})
+
+describe('storage failure is reported, not swallowed', () => {
+  it('flags a failed write so the UI can warn', () => {
+    vi.stubGlobal('localStorage', {
+      ...makeStorage(),
+      setItem: () => {
+        throw new DOMException('QuotaExceededError')
+      },
+    })
+    writeSnapshot(persistedSnapshot(INITIAL_STATE), Date.now())
+    expect(getStorageState()).toBe('failed')
+  })
+
+  it('does not throw when storage is unavailable', () => {
+    vi.stubGlobal('localStorage', {
+      ...makeStorage(),
+      setItem: () => {
+        throw new Error('storage blocked')
+      },
+    })
+    expect(() => writeSnapshot(persistedSnapshot(INITIAL_STATE), Date.now())).not.toThrow()
+  })
+
+  it('clears the flag once a write succeeds again', () => {
+    setStorageState('failed')
+    writeSnapshot(persistedSnapshot(INITIAL_STATE), Date.now())
+    expect(getStorageState()).toBe('ok')
+  })
 })
 
 describe('pickPersisted', () => {

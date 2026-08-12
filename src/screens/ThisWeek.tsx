@@ -68,6 +68,7 @@ function OneRepMaxEditor() {
               <input
                 type="number"
                 inputMode="numeric"
+                min="0"
                 className="rm-tile__input"
                 value={rm[l.key]}
                 onChange={(e) =>

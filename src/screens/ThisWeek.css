@@ -3,7 +3,7 @@
   border: 1px solid var(--border-soft);
   border-radius: var(--r-card-lg);
   padding: 18px;
-  background: linear-gradient(135deg, #16181c, #101216);
+  background: linear-gradient(135deg, var(--surface-4), var(--surface-1));
   margin-bottom: 16px;
 }
 
@@ -119,14 +119,15 @@
   background-color: var(--well);
   border: 1px solid var(--border-mid);
   border-radius: 8px;
-  color: #e6e8eb;
+  color: var(--text-primary-alt);
   font-family: var(--font-body);
-  font-size: 13px;
-  padding: 5px 22px 5px 9px;
+  font-size: var(--fs-control);
+  /* Vertical padding trimmed 5→4 so the taller text keeps the control height. */
+  padding: 4px 22px 4px 9px;
   outline: none;
   /* CSS-drawn caret */
-  background-image: linear-gradient(45deg, transparent 50%, #7c828b 50%),
-    linear-gradient(135deg, #7c828b 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted-alt) 50%),
+    linear-gradient(135deg, var(--text-muted-alt) 50%, transparent 50%);
   background-position: calc(100% - 12px) 50%, calc(100% - 8px) 50%;
   background-size: 4px 4px, 4px 4px;
   background-repeat: no-repeat;

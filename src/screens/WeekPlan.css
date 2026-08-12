@@ -16,7 +16,7 @@
 
 .week-card--active {
   border-color: var(--accent);
-  background: linear-gradient(135deg, #1a1d22, #121419);
+  background: linear-gradient(135deg, var(--surface-4), var(--surface-2));
 }
 
 .week-card__head {
@@ -94,7 +94,7 @@
   font-family: var(--font-head);
   font-weight: 700;
   font-size: 18px;
-  color: #e6e8eb;
+  color: var(--text-primary-alt);
   margin-top: 3px;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .week-card__cond-desc {
-  color: #d2d5da;
+  color: var(--text-secondary);
   text-align: right;
   font-weight: 500;
 }

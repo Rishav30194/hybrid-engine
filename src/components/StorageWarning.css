@@ -1,0 +1,26 @@
+.storage-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 10px 16px 11px;
+  background: rgba(251, 113, 133, 0.12);
+  border-bottom: 1px solid rgba(251, 113, 133, 0.35);
+  flex: 0 0 auto;
+}
+
+.storage-warn__icon {
+  color: var(--phase-test);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.storage-warn__text {
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.storage-warn__text strong {
+  color: var(--phase-test);
+  font-weight: 600;
+}
