@@ -33,7 +33,8 @@ cp .env.example .env.local
 npm run dev
 ```
 
-The "Cloud Sync" card appears at the bottom of each tab once configured.
+Once configured, an account control appears in the header's top-right. It renders nothing when
+Supabase isn't configured, so the header stays clean in localStorage-only mode.
 
 ## Deployed build (GitHub Pages)
 
@@ -53,3 +54,6 @@ these are set, the deployed app simply runs on localStorage as before.
   newer, otherwise pushes local up (**last-write-wins**).
 - Local changes debounce-push to the cloud; other devices' changes stream back
   in via realtime. Offline changes stay local and sync on reconnect.
+
+Implementation details and the invariants involved:
+[`ARCHITECTURE.md`](ARCHITECTURE.md#cloud-sync).

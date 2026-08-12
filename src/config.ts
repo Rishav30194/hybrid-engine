@@ -1,6 +1,6 @@
 /**
- * Hardcoded option defaults (see docs/IMPLEMENTATION_PHASES.md).
- * There is deliberately no settings UI.
+ * Hardcoded option defaults. There is deliberately no settings UI
+ * (see docs/CONVENTIONS.md → "Where things go").
  */
 
 /** Show the "· nn%" tail on main-lift meta lines. */
