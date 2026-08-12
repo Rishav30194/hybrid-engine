@@ -59,6 +59,11 @@ export interface Day {
   condLabel: string
   condKey: CondKey
   ex: Exercise[]
-  /** Optional +10 min add-on, shown as a callout under the day's conditioning. */
-  extension?: string
+  /**
+   * Loggable loads on this day's conditioning block, e.g. sled and carry
+   * weight. Omitted where the conditioning isn't loaded (intervals, Zone 2).
+   * Each `id` is a storage key — treat it like an exercise id and never reuse
+   * one for a different movement.
+   */
+  condLoads?: { id: string; label: string }[]
 }

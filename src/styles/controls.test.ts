@@ -56,9 +56,14 @@ function readFontSizes(): Record<string, number> {
   return out
 }
 
-/** className of every <input>/<select>/<textarea> the app renders. */
-function readControls(): { cls: string; where: string }[] {
-  const found: { cls: string; where: string }[] = []
+/**
+ * Every <input>/<select>/<textarea> the app renders, with all of its classes.
+ * Grouped per element rather than per class: a control may carry several
+ * classes and only one of them needs to set the size (e.g.
+ * `ex-row__input cond-load__input`).
+ */
+function readControls(): { classes: string[]; where: string }[] {
+  const found: { classes: string[]; where: string }[] = []
   for (const file of walk(SRC, '.tsx')) {
     if (file.includes('.test.')) continue
     const src = readFileSync(file, 'utf8')
@@ -69,9 +74,8 @@ function readControls(): { cls: string; where: string }[] {
         names,
         `${where}: control has a non-literal className; extend this test to cover it`,
       ).toBeDefined()
-      for (const cls of (names ?? '').split(/\s+/).filter(Boolean)) {
-        found.push({ cls, where: `${where} .${cls}` })
-      }
+      const classes = (names ?? '').split(/\s+/).filter(Boolean)
+      found.push({ classes, where: `${where} .${classes.join('.')}` })
     }
   }
   return found
@@ -85,11 +89,22 @@ describe('iOS zoom floor', () => {
     expect(controls.length).toBeGreaterThanOrEqual(5)
   })
 
-  it.each(controls)('$where is at least 16px', ({ cls, where }) => {
-    const px = sizes[cls]
-    expect(px, `${where} has no explicit font-size — it would inherit`).toBeDefined()
-    expect(px, `${where} is ${px}px; iOS zooms below ${MIN_PX}px`).toBeGreaterThanOrEqual(
-      MIN_PX,
-    )
+  it.each(controls)('$where is at least 16px', ({ classes, where }) => {
+    const declared = classes
+      .map((c) => sizes[c])
+      .filter((px): px is number => px !== undefined)
+
+    expect(
+      declared.length,
+      `${where} has no explicit font-size on any of its classes — it would inherit`,
+    ).toBeGreaterThan(0)
+
+    // Every declared size must clear the floor: a smaller one on any class
+    // could win on order or specificity.
+    const smallest = Math.min(...declared)
+    expect(
+      smallest,
+      `${where} declares ${smallest}px; iOS zooms below ${MIN_PX}px`,
+    ).toBeGreaterThanOrEqual(MIN_PX)
   })
 })

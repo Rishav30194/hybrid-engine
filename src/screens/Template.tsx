@@ -64,7 +64,6 @@ function DayAccordion({ day }: { day: Day }) {
             <ExerciseRow key={e.id} ex={e} />
           ))}
           <ConditioningBlock day={day} />
-          {day.extension && <div className="ex-ext">{day.extension}</div>}
         </div>
       )}
     </div>
@@ -112,7 +111,7 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
 }
 
 function ConditioningBlock({ day }: { day: Day }) {
-  const { week, done } = useAppState()
+  const { week, done, log } = useAppState()
   const dispatch = useAppDispatch()
   const id = tmplCondDoneKey(week, day.condKey)
 
@@ -127,7 +126,40 @@ function ConditioningBlock({ day }: { day: Day }) {
         <div className="ex-cond__label">CONDITIONING · {day.condLabel}</div>
         <div className="ex-cond__desc">{weekAt(week).cond[day.condKey]}</div>
         <div className="ex-cond__how">{CONDINFO[day.condKey]}</div>
+        {day.condLoads?.map((load) => (
+          <CondLoadRow key={load.id} week={week} load={load} log={log} />
+        ))}
       </div>
     </div>
+  )
+}
+
+/** Logged weight for one loaded conditioning piece — same storage as accessory
+ *  weights (`log` keyed per week), so it progresses week to week alongside them. */
+function CondLoadRow({
+  week,
+  load,
+  log,
+}: {
+  week: number
+  load: { id: string; label: string }
+  log: Record<string, string>
+}) {
+  const dispatch = useAppDispatch()
+  const id = tmplDoneKey(week, load.id)
+
+  return (
+    <label className="cond-load">
+      <span className="cond-load__label">{load.label}</span>
+      <input
+        type="text"
+        inputMode="decimal"
+        className="ex-row__input cond-load__input"
+        value={log[id] ?? ''}
+        placeholder="weight"
+        onChange={(e) => dispatch({ type: 'setLog', id, value: e.target.value })}
+      />
+      <span className="cond-load__unit">lb</span>
+    </label>
   )
 }
