@@ -128,8 +128,9 @@
   color: var(--accent);
   font-family: var(--font-head);
   font-weight: 600;
-  font-size: 13px;
-  padding: 5px 8px;
+  font-size: var(--fs-control);
+  /* Vertical padding trimmed 5→4 so the taller text keeps the row height. */
+  padding: 4px 8px;
   outline: none;
 }
 
@@ -180,7 +181,7 @@
 
 .ex-cond__how {
   font-size: 11.5px;
-  color: #9298a0;
+  color: var(--text-muted);
   margin-top: 5px;
   line-height: 1.5;
 }
@@ -192,6 +193,6 @@
   border-radius: 11px;
   background: rgba(255, 255, 255, 0.02);
   font-size: 11.5px;
-  color: #9298a0;
+  color: var(--text-muted);
   line-height: 1.5;
 }

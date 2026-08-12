@@ -12,9 +12,11 @@ Target: **iPhone Safari and the standalone Home Screen PWA, portrait.** Verify a
 anything wider is a bonus, not the target. It is used one-handed, in a gym, mid-set, possibly
 offline. Desktop-looking-fine is not the bar.
 
-- **Form controls need `font-size: 16px` or larger.** Below that, iOS zooms the page on focus and
-  does not zoom back. See [Known deviations](#known-deviations) — three of the app's five
-  controls are currently in breach.
+- **Every form control uses `font-size: var(--fs-control)`** (16px). Below 16px, iOS zooms the
+  page on focus and does not zoom back. Use the token rather than a literal — and never set a
+  smaller size on an `input`, `select` or `textarea`, however dense the row. A larger size is
+  fine (the 1RM field is 22px). `src/styles/controls.test.ts` enforces this across every control
+  in the app; it fails with the file and size named, so you'll hear about it before the phone does.
 - **One scroll container: `.app__main`.** `.app` is `overflow: hidden; height: 100dvh`. Don't add
   nested scrollers, and don't add `position: fixed` children — the rest timer is
   `position: absolute` inside `.app` precisely so it rides the column, not the viewport.
@@ -84,6 +86,7 @@ Extend the file that owns the behaviour:
 | Rest timer                                | `src/state/reducer.timer.test.ts` |
 | Persisted slice, merge, round-trip        | `src/state/persistence.test.ts`   |
 | Rendered screens                          | `src/screens/screens.test.tsx`    |
+| Form-control font-size floor (iOS zoom)   | `src/styles/controls.test.ts`     |
 
 Vitest + Testing Library, jsdom. No real network in tests. CI runs `npm test` before it will
 deploy — don't route around a red test with `.skip`.
@@ -94,19 +97,11 @@ deploy — don't route around a red test with `.skip`.
 
 Documented so they aren't "fixed" by accident or re-discovered every session.
 
-- **Three of the app's five form controls are under 16px and trigger the iOS zoom bug.** Tapping
-  any of them zooms the page and iOS doesn't zoom back. Real bug, not yet fixed:
-
-  | Control                                            | Used by                                         | Size |
-  | -------------------------------------------------- | ----------------------------------------------- | ---- |
-  | `.ex-row__input` (`Template.css:121`)          | accessory weight,`Template.tsx:95`            | 13px |
-  | `.rm-editor__select` (`ThisWeek.css:118`)      | rounding,`ThisWeek.tsx:85`                    | 13px |
-  | `.acct-form__input` (`AccountControl.css:110`) | email + password,`AccountControl.tsx:151,161` | 14px |
-
-  Only `.rm-tile__input` (the 1RM field, 22px) is safe. When auditing this, enumerate
-  `<input>`/`<select>`/`<textarea>` in the TSX and check each one's rule — grepping for a single
-  px value silently misses controls set at other sizes. Non-control 13px rules are static text
-  and are unaffected.
+- **The rest timer can't sound while the app is backgrounded.** iOS suspends
+  `setInterval`, so the chime and vibration only fire when you return to the app — phone in a
+  pocket between sets means no cue at all. The *countdown* stays correct regardless (it's
+  anchored to `endAt`, not tick-counted). Fixing it properly needs the Notifications API or a
+  background audio track; both are out of scope for a localStorage-only PWA.
 - **Check buttons are 26–30px**, under the 44px touch-target guideline. Deliberate — the dense
   list depends on it. Don't shrink them further; enlarging is a design decision.
 - **`INITIAL_STATE.rm` (`squat: 245, bench: 225, tbdl: 375, ohp: 135`) are placeholders**, not

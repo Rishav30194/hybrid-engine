@@ -1,4 +1,5 @@
 import { clampWeek, INITIAL_STATE } from './reducer'
+import { setStorageState } from './storageStatus'
 import type { AppState, PersistedState } from './types'
 
 const STORAGE_KEY = 'hybridEngine.v1'
@@ -50,8 +51,12 @@ export function writeSnapshot(contentJson: string, updatedAt: number): void {
   try {
     const content = JSON.parse(contentJson) as PersistedState
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...content, updatedAt }))
+    setStorageState('ok')
   } catch {
-    /* storage unavailable or full — ignore */
+    // Storage full, blocked, or evicted. Never throw — that would break the app
+    // mid-set — but never fail silently either: the write did not land, and the
+    // athlete needs to know before they trust the tick they just tapped.
+    setStorageState('failed')
   }
 }
 

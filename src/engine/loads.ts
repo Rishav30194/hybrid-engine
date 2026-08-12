@@ -11,14 +11,18 @@ export function toNum(v: number | string | null | undefined): number {
   return Number.isNaN(n) ? 0 : n
 }
 
-/** round(1RM × pct / increment) × increment, with increment defaulting to 1. */
+/**
+ * round(1RM × pct / increment) × increment, with increment defaulting to 1.
+ * Floored at 0 — `type="number"` accepts a typed minus sign, and a negative
+ * working load would otherwise propagate to every screen.
+ */
 export function roundLoad(
   oneRepMax: number | string,
   pct: number,
   increment: number | string,
 ): number {
   const r = toNum(increment) || 1
-  return Math.round((toNum(oneRepMax) * pct) / r) * r
+  return Math.max(0, Math.round((toNum(oneRepMax) * pct) / r) * r)
 }
 
 /** Working load for a lift in a given week (1-based), rounded to `increment`. */

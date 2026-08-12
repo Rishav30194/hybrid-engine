@@ -112,8 +112,8 @@
   border: 1px solid var(--border-mid);
   border-radius: 8px;
   color: var(--text-primary);
-  font-size: 14px;
-  padding: 9px 11px;
+  font-size: var(--fs-control);
+  padding: 8px 11px;
   outline: none;
 }
 .acct-form__input:focus {

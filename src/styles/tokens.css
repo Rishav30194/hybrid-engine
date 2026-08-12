@@ -23,8 +23,11 @@
   --text-secondary-alt: #9aa0a8;
   --text-muted: #8a9097;
   --text-muted-alt: #7c828b;
-  --text-faint: #6c727a;
-  --text-faint-alt: #666c74;
+  /* Faint text carries the coaching cues and every input placeholder, read
+     one-handed in gym lighting. Both clear WCAG AA (4.5:1) on every surface
+     above; the previous #6c727a / #666c74 sat at 3.4–4.0:1. */
+  --text-faint: #80868e;
+  --text-faint-alt: #7e848c;
 
   /* Borders */
   --border-hair: rgba(255, 255, 255, 0.06);
@@ -56,6 +59,9 @@
   --fs-load: 40px;
   --fs-timer: 54px;
   --fs-1rm-input: 22px;
+  /* Floor for anything focusable: below 16px iOS zooms the page on focus and
+     never zooms back. Every input/select/textarea must be at least this. */
+  --fs-control: 16px;
   --fs-card-title: 16px;
   --fs-section: 13px;
   --fs-body: 14px;

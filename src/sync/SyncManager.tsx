@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAuth } from '../auth/context'
 import { getSupabase, isSupabaseConfigured } from '../lib/supabase'
 import { useAppDispatch, useAppState } from '../state/context'
@@ -14,7 +14,14 @@ export function SyncManager() {
   const state = useAppState()
   const dispatch = useAppDispatch()
   const snapshot = persistedSnapshot(state)
-  const ready = useRef(false)
+  // State, not a ref: the push effect below has to re-run when the initial
+  // reconcile finishes, or a change made while it was in flight never schedules
+  // its push. `reconciledAt` records the snapshot the reconcile settled on, so
+  // flipping ready doesn't also fire a redundant push of unchanged data.
+  const [ready, setReady] = useState(false)
+  const reconciledAt = useRef<string | null>(null)
+  const latestSnapshot = useRef(snapshot)
+  latestSnapshot.current = snapshot
   const userId = user?.id
 
   // Apply a remote blob if it's newer than what we have locally.
@@ -51,7 +58,8 @@ export function SyncManager() {
   // On sign-in: reconcile by updatedAt (pull if remote newer, else push local),
   // then keep pulling other devices' changes via realtime (if enabled).
   useEffect(() => {
-    ready.current = false
+    setReady(false)
+    reconciledAt.current = null
     if (status !== 'signedIn' || !userId) return
     const pending = getSupabase()
     if (!pending) return
@@ -71,7 +79,10 @@ export function SyncManager() {
       } else {
         setSyncStatus('synced')
       }
-      if (!cancelled) ready.current = true
+      if (!cancelled) {
+        reconciledAt.current = latestSnapshot.current
+        setReady(true)
+      }
     })()
 
     void pending.then((sb) => {
@@ -113,11 +124,13 @@ export function SyncManager() {
 
   // Debounced push of local changes, once the initial reconcile has settled.
   useEffect(() => {
-    if (status !== 'signedIn' || !userId || !isSupabaseConfigured || !ready.current)
-      return
+    if (status !== 'signedIn' || !userId || !isSupabaseConfigured || !ready) return
+    // The reconcile already left local and remote agreeing on this exact
+    // snapshot; only push once something actually changes past it.
+    if (snapshot === reconciledAt.current) return
     const t = setTimeout(() => flushPush(userId), PUSH_DEBOUNCE_MS)
     return () => clearTimeout(t)
-  }, [snapshot, status, userId, flushPush])
+  }, [snapshot, status, userId, ready, flushPush])
 
   return null
 }
