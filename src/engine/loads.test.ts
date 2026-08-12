@@ -76,18 +76,18 @@ describe('mainLiftMeta', () => {
 
 describe('exerciseMeta', () => {
   it('appends rest when present', () => {
-    const main = DAYS[0].ex[0] // Back Squat, rest "2 min"
+    const main = DAYS[0]!.ex[0]! // Back Squat, rest "2 min"
     expect(exerciseMeta(main)).toBe('4×5→4×4 · RPE 7→8 · rest 2 min')
   })
   it('omits rest when it is an em dash', () => {
-    const accessory = DAYS[0].ex[1] // Chest-Supported Row, rest "—"
+    const accessory = DAYS[0]!.ex[1]! // Chest-Supported Row, rest "—"
     expect(exerciseMeta(accessory)).toBe('3×10 · RPE 8')
   })
 })
 
 describe('resolveExercise (Wednesday press swap)', () => {
-  const press = DAYS[1].ex[0] // the authored bench anchor
-  const squat = DAYS[0].ex[0]
+  const press = DAYS[1]!.ex[0]! // the authored bench anchor
+  const squat = DAYS[0]!.ex[0]!
 
   it('keeps the bench on a normal week', () => {
     expect(resolveExercise(press, 1)).toEqual({ main: 'bench', name: 'Bench Press' })
@@ -133,6 +133,15 @@ describe('program data integrity', () => {
   })
   it('has 3 template days', () => {
     expect(DAYS).toHaveLength(3)
+  })
+  // Other suites index fixtures literally (DAYS[0].ex[0]); this is what makes
+  // that safe — if the program data loses a day's exercises, it fails here
+  // with a clear message rather than as a confusing undefined downstream.
+  it('gives every day at least one exercise, anchored by a main lift', () => {
+    for (const d of DAYS) {
+      expect(d.ex.length).toBeGreaterThan(0)
+      expect(d.ex[0]?.main).toBeTruthy()
+    }
   })
   it('prescribes every conditioning day in every week', () => {
     for (const w of WEEKS) {

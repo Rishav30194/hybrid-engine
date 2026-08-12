@@ -62,7 +62,8 @@ export const CONDINFO: Record<CondKey, string> = {
 export const OFF_DAYS =
   "Walk briskly, 20 min or more, most days. Friday's Zone 2 tail is a thin base on its own — the walking holds it up."
 
-export const WEEKS: Week[] = [
+/** Typed non-empty so `WEEKS[0]` is a `Week`, which makes `weekAt` total. */
+export const WEEKS: [Week, ...Week[]] = [
   { wk: 1, phase: 'base', tag: 'BLOCK 1 · BASE', rpe: '7',
     main: { squat: { sr: '4×5', rpe: '7', pct: 0.785 }, bench: { sr: '4×6', rpe: '7', pct: 0.76 }, tbdl: { sr: '4×5', rpe: '7', pct: 0.785 }, ohp: { sr: '4×6', rpe: '7', pct: 0.72 } },
     cond: { mon: 'Sled push 6 × 20 m · Carry 3 × 30 m', wed: '6 × 1:30 hard / 1:00 easy', fri: 'Zone 2 · 15 min easy' } },
@@ -114,6 +115,13 @@ export const DAYS: Day[] = [
       { id: 'fri-e3', name: 'Standing Calf Raise', sr: '2×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'During cooldown. Full stretch, one-second squeeze.' },
     ] },
 ]
+
+/**
+ * The prescription for a 1-based week. `clampWeek` should already keep `week`
+ * in 1..8, so the fallback is a second line of defence, not the normal path —
+ * a corrupt value shows week 1 instead of white-screening the app mid-session.
+ */
+export const weekAt = (week: number): Week => WEEKS[week - 1] ?? WEEKS[0]
 
 export const NOTES: string[] = [
   "Loads auto-update from your 1RM and the week's %1RM. Update a 1RM and the whole plan recalculates.",

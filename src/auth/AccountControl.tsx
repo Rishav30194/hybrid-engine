@@ -7,10 +7,14 @@ import {
   type FormEvent,
 } from 'react'
 import { isSupabaseConfigured } from '../lib/supabase'
-import { getSyncStatus, subscribeSyncStatus } from '../sync/syncStatus'
+import {
+  getSyncStatus,
+  subscribeSyncStatus,
+  type SyncState,
+} from '../sync/syncStatus'
 import { useAuth } from './context'
 
-const SYNC_LABEL: Record<string, string> = {
+const SYNC_LABEL: Record<SyncState, string> = {
   idle: 'Signed in',
   syncing: 'Syncing…',
   synced: 'Synced ✓',

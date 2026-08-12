@@ -2,7 +2,7 @@
  * The recalculation engine — the heart of the app.
  * Working load = round(1RM × pct / increment) × increment.
  */
-import { LIFTS, pressForWeek, WEEKS } from '../data/program'
+import { LIFTS, pressForWeek, weekAt } from '../data/program'
 import type { Exercise, LiftKey } from '../data/types'
 
 /** Parse a possibly-empty/edited numeric value; non-numbers become 0. */
@@ -32,7 +32,7 @@ export function computeLoad(
   lift: LiftKey,
   increment: number | string,
 ): number {
-  return roundLoad(oneRepMax, WEEKS[week - 1].main[lift].pct, increment)
+  return roundLoad(oneRepMax, weekAt(week).main[lift].pct, increment)
 }
 
 /** Meta line for a main lift: `sets×reps · RPE x[ · nn%]`. */
@@ -41,7 +41,7 @@ export function mainLiftMeta(
   lift: LiftKey,
   showPercents = true,
 ): string {
-  const m = WEEKS[week - 1].main[lift]
+  const m = weekAt(week).main[lift]
   let meta = `${m.sr} · RPE ${m.rpe}`
   if (showPercents) meta += ` · ${Math.round(m.pct * 100)}%`
   return meta
@@ -62,7 +62,7 @@ export function exerciseMeta(e: Exercise): string {
 export function resolveExercise(
   e: Exercise,
   week: number,
-): { main?: LiftKey; name: string } {
+): { main: LiftKey | undefined; name: string } {
   if (e.main !== 'bench') return { main: e.main, name: e.name }
   const lift = pressForWeek(week)
   return { main: lift, name: LIFTS.find((l) => l.key === lift)?.name ?? e.name }

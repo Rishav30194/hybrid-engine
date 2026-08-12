@@ -89,7 +89,7 @@ describe('Template', () => {
 
   it("names Wednesday's anchor after the lift that week programs", () => {
     const { container } = renderAtWeek(<Template />, 6)
-    fireEvent.click(screen.getByText(DAYS[1].title))
+    fireEvent.click(screen.getByText(DAYS[1]!.title))
     expect(textsOf(container, '.ex-row__name')[0]).toBe('Overhead Press')
   })
 })

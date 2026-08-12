@@ -13,7 +13,9 @@ const targets = [
   ['apple-touch-icon.png', 180],
 ]
 
-for (const [name, size] of targets) {
-  await sharp(svg).resize(size, size).png().toFile(pub(name))
-  console.log(`wrote public/${name} (${size}×${size})`)
-}
+await Promise.all(
+  targets.map(async ([name, size]) => {
+    await sharp(svg).resize(size, size).png().toFile(pub(name))
+    console.log(`wrote public/${name} (${size}×${size})`)
+  }),
+)

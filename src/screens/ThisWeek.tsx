@@ -1,5 +1,5 @@
 import './ThisWeek.css'
-import { anchorLifts, COND, CONDINFO, LIFTS, OFF_DAYS, WEEKS } from '../data/program'
+import { anchorLifts, COND, CONDINFO, LIFTS, OFF_DAYS, weekAt } from '../data/program'
 import type { ConditioningDay, Lift } from '../data/types'
 import { computeLoad, mainLiftMeta } from '../engine/loads'
 import { condDoneKey, mainDoneKey } from '../engine/keys'
@@ -37,7 +37,7 @@ export function ThisWeek() {
 }
 
 function WeekHero({ week }: { week: number }) {
-  const w = WEEKS[week - 1]
+  const w = weekAt(week)
   return (
     <div className="week-hero">
       <PhasePill phase={w.phase} tag={w.tag} />
@@ -143,7 +143,7 @@ function ConditioningRow({ cond }: { cond: ConditioningDay }) {
       />
       <div className="cond-row__body">
         <div className="cond-row__label">{cond.label}</div>
-        <div className="cond-row__desc">{WEEKS[week - 1].cond[cond.key]}</div>
+        <div className="cond-row__desc">{weekAt(week).cond[cond.key]}</div>
         <div className="cond-row__how">{CONDINFO[cond.key]}</div>
       </div>
     </div>
