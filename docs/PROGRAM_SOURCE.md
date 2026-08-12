@@ -9,13 +9,18 @@ Three sessions a week, **≤45 minutes each**.
 
 | Day | Anchor | Conditioning | Budget |
 | --- | --- | --- | --- |
-| Monday | Back Squat | Sled push + farmer's carry | 43 min (55 with the optional extension) |
+| Monday | Back Squat | Sled push + farmer's carry | 43 min |
 | Wednesday | Bench Press (OHP in weeks 3 & 6) | Bike / row intervals | 45 min |
-| Friday | Trap-Bar Deadlift | Zone 2 tail, every week without exception | 44 min |
+| Friday | Sumo Deadlift | Zone 2 tail, every week without exception | 44 min |
 
-Those time budgets are the reason the accessory work is paired (`A1`/`A2`/`A3`, `B1`/`B2`) and
-why Monday's extension is optional. They are not encoded anywhere in `program.ts` — adding
-exercises to a day spends a budget the data doesn't track.
+Those time budgets are the reason the accessory work is paired (`A1`/`A2`/`A3`, `B1`/`B2`).
+They are not encoded anywhere in `program.ts` — adding exercises to a day spends a budget the
+data doesn't track.
+
+Monday once carried an optional "+10 min extension" for weeks with more time. It was removed:
+the requirement is **≤45 min**, the per-week prescription already progresses volume
+(6 → 7 → 8 sled lengths, deload, restart heavier), and a conditional bolt-on forced a judgement
+call mid-session. If Monday needs more work, raise the week's prescribed numbers deliberately.
 
 ## What three days a week costs
 

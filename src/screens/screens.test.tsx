@@ -49,7 +49,7 @@ describe('This Week', () => {
     expect(textsOf(container, '.lift-row__name')).toEqual([
       'Back Squat',
       'Bench Press',
-      'Trap-Bar Deadlift',
+      'Sumo Deadlift',
     ])
   })
 
@@ -59,7 +59,7 @@ describe('This Week', () => {
       expect(textsOf(container, '.lift-row__name')).toEqual([
         'Back Squat',
         'Overhead Press',
-        'Trap-Bar Deadlift',
+        'Sumo Deadlift',
       ])
       unmount()
       localStorage.clear()
@@ -81,10 +81,33 @@ describe('Template', () => {
     )
   })
 
-  it('opens Monday by default, with its conditioning and extension', () => {
-    renderAtWeek(<Template />, 1)
+  it('logs sled and carry weight per week, like an accessory', () => {
+    const { container } = renderAtWeek(<Template />, 2)
+    const loads = container.querySelectorAll<HTMLInputElement>('.cond-load__input')
+    expect(loads).toHaveLength(2) // Monday only: sled + carry
+
+    fireEvent.change(loads[0]!, { target: { value: '90' } })
+    fireEvent.change(loads[1]!, { target: { value: '70' } })
+
+    const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+    expect(saved.log['w2:t:mon-sled']).toBe('90')
+    expect(saved.log['w2:t:mon-carry']).toBe('70')
+  })
+
+  it('offers no weight field on unloaded conditioning', () => {
+    // Wednesday is bike/row intervals and Friday is Zone 2 — nothing to load.
+    const { container } = renderAtWeek(<Template />, 1)
+    fireEvent.click(screen.getByText(DAYS[1]!.title))
+    expect(container.querySelectorAll('.cond-load__input')).toHaveLength(0)
+  })
+
+  it('opens Monday by default, with its conditioning', () => {
+    const { container } = renderAtWeek(<Template />, 1)
     expect(screen.getByText(/CONDITIONING · Sled Push/)).toBeDefined()
-    expect(screen.getByText(/Extension · \+10 min/)).toBeDefined()
+    // The optional +10 min extension was removed: the plan states one
+    // unconditional prescription, with volume progressing week to week.
+    expect(container.querySelector('.ex-ext')).toBeNull()
+    expect(screen.queryByText(/Extension/)).toBeNull()
   })
 
   it("names Wednesday's anchor after the lift that week programs", () => {

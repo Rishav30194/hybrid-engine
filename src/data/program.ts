@@ -18,7 +18,7 @@ import type {
 export const LIFTS: Lift[] = [
   { key: 'squat', name: 'Back Squat', abbr: 'SQ', note: 'Fresh — strength anchor.' },
   { key: 'bench', name: 'Bench Press', abbr: 'BN', note: 'Wednesday anchor, except weeks 3 and 6.' },
-  { key: 'tbdl', name: 'Trap-Bar Deadlift', abbr: 'DL', note: 'Posterior-chain anchor.' },
+  { key: 'tbdl', name: 'Sumo Deadlift', abbr: 'DL', note: 'Posterior-chain anchor.' },
   { key: 'ohp', name: 'Overhead Press', abbr: 'OHP', note: 'Takes the Wednesday press slot in weeks 3 and 6.' },
 ]
 
@@ -92,7 +92,10 @@ export const WEEKS: [Week, ...Week[]] = [
 
 export const DAYS: Day[] = [
   { n: 1, title: 'MONDAY — SQUAT + PULL', sub: 'Strength + Sled Push & Carry', condLabel: "Sled Push + Farmer's Carry", condKey: 'mon',
-    extension: 'Extension · +10 min — only on the weeks you have 55 minutes. Base weeks (1–4): two more sled lengths and a fourth carry. Build weeks (5–8): three rounds of 250 m row + 10 kettlebell swings + 10 step-ups.',
+    condLoads: [
+      { id: 'mon-sled', label: 'Sled' },
+      { id: 'mon-carry', label: 'Carry' },
+    ],
     ex: [
       { id: 'mon-e0', name: 'Back Squat', main: 'squat', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Strength anchor — do it fresh. Brace, knees out.' },
       { id: 'mon-e1', name: 'A1 · Chest-Supported Row', sr: '3×10', rpe: '8', rest: '—', load: 'RPE-based', note: 'Squeeze blades, control down.' },
@@ -109,7 +112,7 @@ export const DAYS: Day[] = [
     ] },
   { n: 3, title: 'FRIDAY — HINGE + ZONE 2', sub: 'Strength + easy aerobic tail', condLabel: 'Zone 2 Tail', condKey: 'fri',
     ex: [
-      { id: 'fri-e0', name: 'Trap-Bar Deadlift', main: 'tbdl', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Posterior-chain anchor. Chest tall, push the floor away.' },
+      { id: 'fri-e0', name: 'Sumo Deadlift', main: 'tbdl', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Posterior-chain anchor. Wide stance, hands inside knees, hips down, push the floor apart.' },
       { id: 'fri-e1', name: 'A1 · Bulgarian Split Squat', sr: '3×8/leg', rpe: '7', rest: '—', load: 'RPE-based', note: 'Drop straight down, drive the front heel.' },
       { id: 'fri-e2', name: 'A2 · Incline DB Press', sr: '3×10', rpe: '8', rest: '75s', load: 'RPE-based', note: 'Stretch at the bottom, squeeze the upper chest.' },
       { id: 'fri-e3', name: 'Standing Calf Raise', sr: '2×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'During cooldown. Full stretch, one-second squeeze.' },

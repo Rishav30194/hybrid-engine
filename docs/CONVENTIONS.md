@@ -65,6 +65,7 @@ are intentional.
 | Adding                        | Goes                                                                                                                                                            |
 | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | An exercise                   | `DAYS` in `program.ts`, with a **fresh unique `id`**. Day progress totals update automatically                                                      |
+| A loggable conditioning load  | `condLoads` on that `Day` (`{ id, label }`). Stored in `log` under the existing `w{week}:t:{id}` key, so no new key format and no migration. The `id` is a storage key — never reuse one |
 | A per-week prescription field | `MainPrescription`/`Week` in `data/types.ts`, then all 8 entries in `WEEKS`. Partial fills fail type-check — that's the point                          |
 | A persisted field             | `PersistedState` → `pickPersisted` → `mergePersisted` default → `hydrateRemote` → a `persistence.test.ts` case. **All five, or it desyncs** |
 | UI-only state                 | `AppState` only. Keep it out of `PersistedState`                                                                                                            |
