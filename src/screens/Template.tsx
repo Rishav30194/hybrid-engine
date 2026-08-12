@@ -1,5 +1,5 @@
 import './Template.css'
-import { CONDINFO, DAYS, WEEKS } from '../data/program'
+import { CONDINFO, DAYS, weekAt } from '../data/program'
 import type { Day, Exercise } from '../data/types'
 import { computeLoad, exerciseMeta, resolveExercise } from '../engine/loads'
 import { dayProgress } from '../engine/progress'
@@ -125,7 +125,7 @@ function ConditioningBlock({ day }: { day: Day }) {
       />
       <div className="ex-cond__body">
         <div className="ex-cond__label">CONDITIONING · {day.condLabel}</div>
-        <div className="ex-cond__desc">{WEEKS[week - 1].cond[day.condKey]}</div>
+        <div className="ex-cond__desc">{weekAt(week).cond[day.condKey]}</div>
         <div className="ex-cond__how">{CONDINFO[day.condKey]}</div>
       </div>
     </div>

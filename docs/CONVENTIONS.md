@@ -74,6 +74,21 @@ are intentional.
 
 ---
 
+## Type safety
+
+`tsconfig.app.json` runs `strict` plus `noUncheckedIndexedAccess` and
+`exactOptionalPropertyTypes`. `strict` is TypeScript 7's default but is declared explicitly so
+it can't lapse silently.
+
+- **Indexing an array or a `Record<string, …>` yields `T | undefined`.** Handle it — don't reach
+  for `!` in production code. For the week's prescription use `weekAt(week)`; for a lookup table,
+  type the key as a finite union (`Record<SyncState, string>`) so the keys are known.
+- **`!` is acceptable in tests** for literal indices into program-data fixtures (`DAYS[0]!.ex[0]!`),
+  because `loads.test.ts` → `program data integrity` asserts that shape and fails first with a
+  clear message. It is not acceptable in `src/`.
+
+Linting runs oxlint's `correctness`, `suspicious` and `perf` categories as errors.
+
 ## Testing
 
 Extend the file that owns the behaviour:

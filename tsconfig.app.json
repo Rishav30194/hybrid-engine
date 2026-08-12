@@ -17,6 +17,14 @@
     "jsx": "react-jsx",
 
     /* Linting */
+    /* `strict` is TypeScript 7's default, but it is load-bearing here — declared
+       explicitly so it can't silently lapse on a downgrade or a default change. */
+    "strict": true,
+    /* WEEKS[week - 1] is dereferenced in several places; this makes the compiler,
+       not just clampWeek, the thing standing between corrupt data and a white
+       screen. See docs/ARCHITECTURE.md → State. */
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,

@@ -4,7 +4,7 @@ import { tmplCondDoneKey, tmplDoneKey } from './keys'
 import { DAYS } from '../data/program'
 
 describe('dayProgress', () => {
-  const day = DAYS[0] // 4 exercises + 1 conditioning = 5
+  const day = DAYS[0]! // 4 exercises + 1 conditioning = 5
 
   it('counts nothing done for an empty state', () => {
     expect(dayProgress(day, 1, {})).toEqual({ done: 0, total: 5, complete: false })
@@ -12,7 +12,7 @@ describe('dayProgress', () => {
 
   it('counts checked exercises and the conditioning block', () => {
     const done = {
-      [tmplDoneKey(1, day.ex[0].id)]: true,
+      [tmplDoneKey(1, day.ex[0]!.id)]: true,
       [tmplCondDoneKey(1, day.condKey)]: true,
     }
     expect(dayProgress(day, 1, done)).toEqual({ done: 2, total: 5, complete: false })
@@ -27,7 +27,7 @@ describe('dayProgress', () => {
   })
 
   it('is keyed per week — week 1 checks do not count for week 2', () => {
-    const done = { [tmplDoneKey(1, day.ex[0].id)]: true }
+    const done = { [tmplDoneKey(1, day.ex[0]!.id)]: true }
     expect(dayProgress(day, 2, done).done).toBe(0)
   })
 })

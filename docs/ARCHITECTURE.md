@@ -70,8 +70,11 @@ three lifts a week actually programs; the 1RM editor still edits all four. Cover
 - **The reducer is pure.** Time enters via `now` on the action (`timerStart`, `timerTick`,
   `timerAdd`, `timerStartPause`). Never call `Date.now()` inside it — the timer suite depends
   on this.
-- **`week` is clamped 1..8** by `clampWeek`. `WEEKS[week - 1]` is dereferenced unguarded in
-  several places; that clamp is the only thing between corrupt data and a white screen.
+- **`week` is clamped 1..8** by `clampWeek`, and every read of the week's prescription goes
+  through **`weekAt(week)`** (`data/program.ts`), which falls back to week 1 rather than
+  white-screening. `WEEKS` is typed as a non-empty tuple so that fallback is total, and
+  `noUncheckedIndexedAccess` makes the compiler enforce it — index `WEEKS` directly and it
+  won't type-check.
 - **A 1RM may legitimately be `''`** while the field is being cleared. Parse with `toNum`, never
   bare `Number()`/`parseFloat`, and never coerce the blank back to a number in the reducer or
   the field can't be emptied.

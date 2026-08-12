@@ -30,7 +30,7 @@ function readTokens(): Record<string, string> {
   const css = readFileSync(join(SRC, 'styles', 'tokens.css'), 'utf8')
   const out: Record<string, string> = {}
   for (const [, name, value] of css.matchAll(/(--[\w-]+):\s*([^;]+);/g)) {
-    out[name] = value.trim()
+    if (name && value) out[name] = value.trim()
   }
   return out
 }
@@ -42,10 +42,11 @@ function readFontSizes(): Record<string, number> {
   for (const file of walk(SRC, '.css')) {
     const css = readFileSync(file, 'utf8')
     for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      if (!selector || !body) continue
       const size = /font-size:\s*([^;]+);/.exec(body)?.[1]?.trim()
       if (!size) continue
-      const token = /var\((--[\w-]+)\)/.exec(size)
-      const px = parseFloat(token ? (tokens[token[1]] ?? '') : size)
+      const tokenName = /var\((--[\w-]+)\)/.exec(size)?.[1]
+      const px = parseFloat(tokenName ? (tokens[tokenName] ?? '') : size)
       if (Number.isNaN(px)) continue
       // Last class in the selector is the one the rule targets.
       const cls = selector.trim().match(/\.([\w-]+)/g)?.pop()
@@ -63,12 +64,12 @@ function readControls(): { cls: string; where: string }[] {
     const src = readFileSync(file, 'utf8')
     const where = file.slice(SRC.length + 1)
     for (const [, , attrs] of src.matchAll(/<(input|select|textarea)\b([^>]*)>/g)) {
-      const literal = /className="([^"]+)"/.exec(attrs)
+      const names = attrs ? /className="([^"]+)"/.exec(attrs)?.[1] : undefined
       expect(
-        literal,
+        names,
         `${where}: control has a non-literal className; extend this test to cover it`,
-      ).not.toBeNull()
-      for (const cls of literal![1].split(/\s+/)) {
+      ).toBeDefined()
+      for (const cls of (names ?? '').split(/\s+/).filter(Boolean)) {
         found.push({ cls, where: `${where} .${cls}` })
       }
     }
