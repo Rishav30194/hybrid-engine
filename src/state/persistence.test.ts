@@ -2,8 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   loadState,
   mergePersisted,
+  persistedSnapshot,
   pickPersisted,
-  saveState,
+  writeSnapshot,
 } from './persistence'
 import { INITIAL_STATE } from './reducer'
 import type { AppState } from './types'
@@ -34,17 +35,10 @@ describe('mergePersisted', () => {
   it('returns defaults for a null blob', () => {
     expect(mergePersisted(null)).toEqual(INITIAL_STATE)
   })
-  it('drops retired 5-day keys but keeps main lifts and current state', () => {
+  it('carries check-offs and logged weights through untouched', () => {
     const merged = mergePersisted({
-      done: {
-        'w1:c:d4': true, // retired conditioning
-        'w1:tc:d4': true,
-        'w1:t:d1e1': true, // retired exercise id (a different movement now)
-        'w1:c:mon': true,
-        'w1:m:squat': true,
-        'w1:t:mon-e1': true,
-      },
-      log: { 'w1:t:d1e1': '185', 'w1:t:mon-e1': '95' },
+      done: { 'w1:c:mon': true, 'w1:m:squat': true, 'w1:t:mon-e1': true },
+      log: { 'w1:t:mon-e1': '95' },
     })
     expect(Object.keys(merged.done).sort()).toEqual([
       'w1:c:mon',
@@ -74,7 +68,8 @@ describe('round-trip', () => {
       done: { 'w4:m:squat': true },
       log: { 'w4:t:mon-e1': '95' },
     }
-    saveState(state)
+    // Mirrors what StoreProvider does on every persisted change.
+    writeSnapshot(persistedSnapshot(state), Date.now())
     const reloaded = loadState()
 
     expect(reloaded.week).toBe(4)

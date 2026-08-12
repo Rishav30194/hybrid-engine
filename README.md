@@ -6,7 +6,7 @@ training program — **three sessions a week (Mon / Wed / Fri), 45 minutes each*
 Three tabs — **This Week**, **8-Week Plan**, **Template** — plus a floating rest timer and per-day
 check-off. All state persists locally (localStorage).
 
-Built from the design bundle in [`design_handoff_3day_rewire/`](design_handoff_3day_rewire/).
+Why the program is shaped this way: [`docs/PROGRAM_SOURCE.md`](docs/PROGRAM_SOURCE.md).
 Build plan and decisions: [`docs/IMPLEMENTATION_PHASES.md`](docs/IMPLEMENTATION_PHASES.md).
 
 ## Stack

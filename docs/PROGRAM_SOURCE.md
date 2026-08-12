@@ -1,0 +1,39 @@
+# Program source — why the plan is shaped this way
+
+`src/data/program.ts` holds the athlete's real prescription and is the source of truth for it.
+This file holds the *reasoning* behind it — the part that isn't recoverable by reading the data.
+
+## The constraint
+
+Three sessions a week, **≤45 minutes each**.
+
+| Day | Anchor | Conditioning | Budget |
+| --- | --- | --- | --- |
+| Monday | Back Squat | Sled push + farmer's carry | 43 min (55 with the optional extension) |
+| Wednesday | Bench Press (OHP in weeks 3 & 6) | Bike / row intervals | 45 min |
+| Friday | Trap-Bar Deadlift | Zone 2 tail, 15 min, every week | 44 min |
+
+Those time budgets are the reason the accessory work is paired (`A1`/`A2`/`A3`, `B1`/`B2`) and
+why Monday's extension is optional. They are not encoded anywhere in `program.ts` — adding
+exercises to a day spends a budget the data doesn't track.
+
+## What three days a week costs
+
+Weekly volume is **~38 hard sets**. That sits above the one-third maintenance threshold and above
+the growth floor for every major muscle group **except arms and calves**, which are deliberately
+at maintenance — hence the single direct arm movement (`B2 · EZ-Bar Curl`, 2×12) and the single
+calf movement.
+
+Structured Zone 2 is **15 min/week**. That is a thin aerobic base on its own; it is backstopped by
+daily brisk walking on off days. This is why `OFF_DAYS` copy exists on This Week, and why Friday's
+Zone 2 tail runs every week including deloads — it does not get cut when the session runs long.
+
+## Changing any of this
+
+Percentages, sets/reps, RPE and exercise selection are training decisions, not code changes.
+See `CLAUDE.md` §2 (class C) — they need explicit approval, and `src/engine/loads.test.ts`
+expectations must move with them.
+
+Exercise `id`s in `program.ts` are storage keys. Renaming an exercise is free; **reusing an
+existing `id` for a different movement is not** — a previously logged weight would resurface on
+the wrong lift. Issue a fresh id instead.

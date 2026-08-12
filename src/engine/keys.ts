@@ -1,7 +1,7 @@
 /**
  * Per-week state keys. Check-off (`done`) and logged weights (`log`) are keyed
- * per week so each week tracks its own completion and loads. Format mirrors the
- * authored source exactly — do not change without a persistence migration.
+ * per week so each week tracks its own completion and loads. These formats are a
+ * storage contract — do not change one without a persistence migration.
  */
 import type { CondKey, LiftKey } from '../data/types'
 
@@ -17,6 +17,3 @@ export const tmplDoneKey = (week: number, exId: string) => `w${week}:t:${exId}`
 /** Template conditioning check-off: `w{week}:tc:{cond}` */
 export const tmplCondDoneKey = (week: number, cond: CondKey) =>
   `w${week}:tc:${cond}`
-
-/** Logged accessory weight, keyed the same as the template exercise check-off. */
-export const logKey = tmplDoneKey

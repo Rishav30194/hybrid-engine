@@ -28,10 +28,3 @@ export function getSupabase(): Promise<SupabaseClient> | null {
   )
   return client
 }
-
-/** The single row shape in public.user_state. */
-export interface UserStateRow {
-  user_id: string
-  data: Record<string, unknown>
-  updated_at: string
-}

@@ -1,4 +1,3 @@
-import { dropRetiredKeys } from './migrate'
 import { clampWeek, INITIAL_STATE } from './reducer'
 import type { AppState, PersistedState } from './types'
 
@@ -18,8 +17,8 @@ export function mergePersisted(saved: Partial<PersistedState> | null): AppState 
     week: clampWeek(saved.week || INITIAL_STATE.week),
     rounding: saved.rounding || INITIAL_STATE.rounding,
     rm: { ...INITIAL_STATE.rm, ...(saved.rm ?? {}) },
-    done: dropRetiredKeys(saved.done ?? {}),
-    log: dropRetiredKeys(saved.log ?? {}),
+    done: saved.done ?? {},
+    log: saved.log ?? {},
   }
 }
 
@@ -54,11 +53,6 @@ export function writeSnapshot(contentJson: string, updatedAt: number): void {
   } catch {
     /* storage unavailable or full — ignore */
   }
-}
-
-/** Convenience: write the persisted slice with a fresh timestamp. */
-export function saveState(state: AppState): void {
-  writeSnapshot(persistedSnapshot(state), Date.now())
 }
 
 /** Read the stored blob split into its persisted slice and updatedAt stamp. */

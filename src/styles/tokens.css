@@ -1,5 +1,4 @@
-/* Design tokens — Hybrid Engine
- * Source of truth: design_handoff_3day_rewire/README.md → "Design Tokens"
+/* Design tokens — Hybrid Engine. This file is the source of truth for the palette.
  * Options are hardcoded (see docs/IMPLEMENTATION_PHASES.md): orange accent, percents on, normal load size.
  */
 
@@ -55,7 +54,6 @@
   /* Type scale (px) */
   --fs-hero: 46px;
   --fs-load: 40px;
-  --fs-load-big: 52px;
   --fs-timer: 54px;
   --fs-1rm-input: 22px;
   --fs-card-title: 16px;
