@@ -1,5 +1,5 @@
 /* Design tokens — Hybrid Engine. This file is the source of truth for the palette.
- * Options are hardcoded (see docs/IMPLEMENTATION_PHASES.md): orange accent, percents on, normal load size.
+ * No raw hex in component CSS; add a token here instead (docs/CONVENTIONS.md → CSS).
  */
 
 :root {

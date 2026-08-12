@@ -11,7 +11,7 @@ Three sessions a week, **≤45 minutes each**.
 | --- | --- | --- | --- |
 | Monday | Back Squat | Sled push + farmer's carry | 43 min (55 with the optional extension) |
 | Wednesday | Bench Press (OHP in weeks 3 & 6) | Bike / row intervals | 45 min |
-| Friday | Trap-Bar Deadlift | Zone 2 tail, 15 min, every week | 44 min |
+| Friday | Trap-Bar Deadlift | Zone 2 tail, every week without exception | 44 min |
 
 Those time budgets are the reason the accessory work is paired (`A1`/`A2`/`A3`, `B1`/`B2`) and
 why Monday's extension is optional. They are not encoded anywhere in `program.ts` — adding
@@ -24,9 +24,13 @@ the growth floor for every major muscle group **except arms and calves**, which 
 at maintenance — hence the single direct arm movement (`B2 · EZ-Bar Curl`, 2×12) and the single
 calf movement.
 
-Structured Zone 2 is **15 min/week**. That is a thin aerobic base on its own; it is backstopped by
-daily brisk walking on off days. This is why `OFF_DAYS` copy exists on This Week, and why Friday's
-Zone 2 tail runs every week including deloads — it does not get cut when the session runs long.
+Structured Zone 2 is **15 min/week** in weeks 1–3 and 5–8, and **20 min in week 4** — the deload,
+where lifting volume drops and the aerobic tail lengthens slightly. Either way it is a thin
+aerobic base on its own, backstopped by daily brisk walking on off days. This is why `OFF_DAYS`
+copy exists on This Week, and why Friday's Zone 2 tail runs every week including deloads — it
+does not get cut when the session runs long.
+
+(`WEEKS` in `program.ts` is authoritative for these values; this paragraph is a summary of it.)
 
 ## Changing any of this
 

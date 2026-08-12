@@ -1,17 +1,25 @@
 # Hybrid Engine
 
 Mobile-first PWA for a single athlete running a fixed 8-week hybrid (strength + endurance)
-training program — **three sessions a week (Mon / Wed / Fri), 45 minutes each**. Enter your four
-1-rep maxes once, pick the current week (1–8), and every working load recalculates automatically.
-Three tabs — **This Week**, **8-Week Plan**, **Template** — plus a floating rest timer and per-day
-check-off. All state persists locally (localStorage).
+training program — **three sessions a week (Mon / Wed / Fri), 45 minutes each**.
 
-Why the program is shaped this way: [`docs/PROGRAM_SOURCE.md`](docs/PROGRAM_SOURCE.md).
-Build plan and decisions: [`docs/IMPLEMENTATION_PHASES.md`](docs/IMPLEMENTATION_PHASES.md).
+Enter your four 1-rep maxes once, pick the current week (1–8), and every working load
+recalculates automatically. Three tabs — **This Week**, **8-Week Plan**, **Template** — plus a
+floating rest timer and per-day check-off. Everything persists locally; signing in adds optional
+cloud backup and cross-device sync.
+
+**Live:** <https://rishav30194.github.io/hybrid-engine/> — auto-deploys on every push to `main`.
+
+## Install on iPhone
+
+Open the live URL in Safari, then **Share → Add to Home Screen** for a standalone,
+offline-capable install. This also makes local storage considerably more durable — see
+[Durability](docs/ARCHITECTURE.md#durability).
 
 ## Stack
 
-React + Vite + TypeScript. PWA target for iPhone Home Screen install.
+React + Vite + TypeScript. PWA via `vite-plugin-pwa`. Vitest for tests, oxlint for linting.
+No router, no UI framework, no state library — one `useReducer` store.
 
 ## Develop
 
@@ -21,28 +29,24 @@ npm run dev        # start dev server
 npm run build      # type-check + production build (also emits the PWA service worker)
 npm run preview    # preview the production build
 npm test           # run the Vitest suite
+npm run lint       # oxlint
 npm run gen-icons  # regenerate PWA icons from public/icon.svg
 ```
 
+The app targets iPhone Safari in portrait — develop at **390px wide**.
+
 ## Cloud sync (optional)
 
-Sign-in and cross-device sync via Supabase are opt-in and off by default — the
-app works fully on localStorage without an account. To enable, see
+Sign-in and cross-device sync via Supabase are opt-in and off by default; with the env vars
+unset the app runs entirely on localStorage. To enable it, see
 [`docs/CLOUD_SYNC.md`](docs/CLOUD_SYNC.md).
 
-## Live
+## Documentation
 
-Deployed to GitHub Pages: **https://rishav30194.github.io/hybrid-engine/**
-(auto-deploys on every push to `main`).
-
-## Install on iPhone
-
-The production build is a PWA. Open the live URL in Safari, then
-**Share → Add to Home Screen** for a standalone, offline-capable install.
-
-## Status
-
-Complete and deployed — recalculation engine, three screens (This Week /
-8-Week Plan / Template), rest timer, PWA install, and optional Supabase cloud
-sync. See [`docs/IMPLEMENTATION_PHASES.md`](docs/IMPLEMENTATION_PHASES.md) and
-[`docs/CLOUD_SYNC.md`](docs/CLOUD_SYNC.md).
+| Doc | Covers |
+|---|---|
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | How it's built, and the invariants that must not break |
+| [`docs/CONVENTIONS.md`](docs/CONVENTIONS.md) | Rules for changing it — mobile, CSS, placement, testing |
+| [`docs/PROGRAM_SOURCE.md`](docs/PROGRAM_SOURCE.md) | Why the training program is shaped the way it is |
+| [`docs/CLOUD_SYNC.md`](docs/CLOUD_SYNC.md) | Supabase setup for optional sync |
+| [`CLAUDE.md`](CLAUDE.md) | Working agreement for AI-assisted changes |
