@@ -108,7 +108,8 @@ export const DAYS: Day[] = [
       { id: 'wed-e1', name: 'A1 · Weighted Pull-up / Pulldown', sr: '3×8', rpe: '8', rest: '—', load: 'RPE-based', note: 'Full hang to chest, elbows down and in.' },
       { id: 'wed-e2', name: 'A2 · Romanian Deadlift', sr: '3×8', rpe: '7', rest: '75s', load: 'RPE-based', note: 'Hinge, soft knees, hamstring stretch.' },
       { id: 'wed-e3', name: 'B1 · DB Lateral Raise', sr: '3×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'Side delts. Raise out, not up.' },
-      { id: 'wed-e4', name: 'B2 · EZ-Bar Curl', sr: '2×12', rpe: '8', rest: '45s', load: 'RPE-based', note: 'Your only direct arm work. Squeeze the top.' },
+      { id: 'wed-e4', name: 'B2 · EZ-Bar Curl', sr: '2×12', rpe: '8', rest: '45s', load: 'RPE-based', note: 'Direct biceps work. Squeeze the top.' },
+      { id: 'wed-e5', name: 'Cable Overhead Triceps Extension', sr: '2×12', rpe: '8', rest: '45s', load: 'RPE-based', note: 'Straight set, not part of the B pair — take it at the cable on your way to conditioning. Elbows in, full stretch overhead.' },
     ] },
   { n: 3, title: 'FRIDAY — HINGE + ZONE 2', sub: 'Strength + easy aerobic tail', condLabel: 'Zone 2 Tail', condKey: 'fri',
     ex: [
