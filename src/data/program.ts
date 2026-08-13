@@ -53,7 +53,7 @@ export const COND: ConditioningDay[] = [
 ]
 
 export const CONDINFO: Record<CondKey, string> = {
-  mon: "Sled push: hard but unbroken ~20 m lengths, walk back = rest. Long aggressive steps, drive through the balls of your feet. Then heavy farmer's carries — grip, core and traps in one.",
+  mon: "Sled push: hard but unbroken ~20 m lengths, walk back = rest. Long aggressive steps, drive through the balls of your feet. Then heavy farmer's carries — grip, core and traps in one. Turf booked? Stair climber for the sled — same number of rounds, 40 s hard / 60 s easy. Carries unchanged.",
   wed: 'Hard = RPE 8–9: breathing heavily, not an all-out sprint. Keep pedalling / pulling easy through the rest — don\'t fully stop. Pick an output you can repeat on the last round.',
   fri: 'Conversational, nose-breathing — it should feel too easy. This is the whole aerobic base now, so it does not get cut when the session runs long.',
 }
