@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 import { ThisWeek } from './ThisWeek'
 import { Template } from './Template'
 import { StoreProvider } from '../state/store'
-import { COND, DAYS } from '../data/program'
+import { DAYS } from '../data/program'
 
 /**
  * jsdom's localStorage isn't exposed as a bare global here, so stub the same
@@ -38,37 +38,65 @@ const textsOf = (root: HTMLElement, selector: string) =>
   [...root.querySelectorAll(selector)].map((n) => n.textContent)
 
 describe('This Week', () => {
-  it('lists one conditioning row per session plus the off-days note', () => {
-    renderAtWeek(<ThisWeek />, 1)
-    for (const c of COND) expect(screen.getByText(c.label)).toBeDefined()
-    expect(screen.getByText('OFF DAYS')).toBeDefined()
-  })
-
-  it('shows only the three lifts programmed that week', () => {
-    const { container } = renderAtWeek(<ThisWeek />, 1)
-    expect(textsOf(container, '.lift-row__name')).toEqual([
-      'Back Squat',
-      'Bench Press',
-      'Sumo Deadlift',
-    ])
-  })
-
-  it('swaps the press overhead in weeks 3 and 6', () => {
-    for (const wk of [3, 6]) {
-      const { container, unmount } = renderAtWeek(<ThisWeek />, wk)
-      expect(textsOf(container, '.lift-row__name')).toEqual([
-        'Back Squat',
-        'Overhead Press',
-        'Sumo Deadlift',
-      ])
-      unmount()
-      localStorage.clear()
-    }
-  })
-
   it('keeps all four 1RMs editable even when a lift is not programmed', () => {
     const { container } = renderAtWeek(<ThisWeek />, 1)
     expect(container.querySelectorAll('.rm-tile')).toHaveLength(4)
+  })
+
+  it('shows the off-days note', () => {
+    renderAtWeek(<ThisWeek />, 1)
+    expect(screen.getByText('OFF DAYS')).toBeDefined()
+  })
+
+  // The screen is a dashboard now. It used to restate the week's lifts and
+  // conditioning with its own check-offs, which meant two independent records
+  // of the same session; that duplication must not come back.
+  it('does not restate the lifts or conditioning', () => {
+    const { container } = renderAtWeek(<ThisWeek />, 1)
+    expect(container.querySelectorAll('.lift-row')).toHaveLength(0)
+    expect(container.querySelectorAll('.cond-row')).toHaveLength(0)
+    expect(container.querySelectorAll('.check-btn')).toHaveLength(0)
+  })
+
+  it('shows one block-progress row per week, counting 17 items each', () => {
+    const { container } = renderAtWeek(<ThisWeek />, 1)
+    expect(container.querySelectorAll('.block__row')).toHaveLength(8)
+    expect(textsOf(container, '.block__wk')).toEqual([
+      'W1',
+      'W2',
+      'W3',
+      'W4',
+      'W5',
+      'W6',
+      'W7',
+      'W8',
+    ])
+    // Mon 5 + Wed 7 + Fri 5
+    expect(textsOf(container, '.block__count')).toEqual(Array(8).fill('0/17'))
+  })
+
+  it('counts only the active week and marks it', () => {
+    localStorage.setItem(
+      'hybridEngine.v1',
+      JSON.stringify({
+        week: 3,
+        done: { 'w3:t:mon-e0': true, 'w3:tc:mon': true, 'w1:t:mon-e0': true },
+      }),
+    )
+    const { container } = render(
+      <StoreProvider>
+        <ThisWeek />
+      </StoreProvider>,
+    )
+    const counts = textsOf(container, '.block__count')
+    expect(counts[0]).toBe('1/17') // week 1 keeps its own tally
+    expect(counts[2]).toBe('2/17') // week 3
+    expect(counts[3]).toBe('0/17')
+    expect(container.querySelectorAll('.block__row--active')).toHaveLength(1)
+    expect(
+      container.querySelector('.block__row--active')?.querySelector('.block__wk')
+        ?.textContent,
+    ).toBe('W3')
   })
 })
 
@@ -108,6 +136,14 @@ describe('Template', () => {
     // unconditional prescription, with volume progressing week to week.
     expect(container.querySelector('.ex-ext')).toBeNull()
     expect(screen.queryByText(/Extension/)).toBeNull()
+  })
+
+  // This Week used to be the only place showing the week-specific prescription
+  // and the %1RM. It no longer lists lifts, so the main-lift row carries both.
+  it('shows the active week’s prescription and percent on a main lift', () => {
+    const { container } = renderAtWeek(<Template />, 1)
+    // wk1 squat is 4×5 @ RPE 7, 78.5% — not the block range 4×5→4×4.
+    expect(textsOf(container, '.ex-row__meta')[0]).toBe('4×5 · RPE 7 · 79% · rest 2 min')
   })
 
   it("names Wednesday's anchor after the lift that week programs", () => {

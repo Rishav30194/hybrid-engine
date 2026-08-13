@@ -138,101 +138,68 @@
   color: var(--text-muted-alt);
 }
 
-/* --- Main lift row --- */
-.lift-row {
+/* --- Block progress --- */
+.block {
+  border: 1px solid var(--border-hair);
+  border-radius: 12px;
+  background: var(--surface-2);
+  padding: 12px 13px;
+}
+
+.block__row {
   display: flex;
   align-items: center;
-  gap: 14px;
-  border: 1px solid var(--border-soft);
-  border-radius: var(--r-card);
-  padding: 14px;
-  background: var(--surface-3);
-  margin-bottom: 10px;
+  gap: 10px;
+  padding: 4px 0;
 }
 
-.lift-row__body {
-  flex: 1;
-  min-width: 0;
-}
-
-.lift-row__name {
+.block__wk {
+  flex: 0 0 26px;
   font-family: var(--font-head);
   font-weight: 600;
-  font-size: 16px;
-  letter-spacing: 0.02em;
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
-.lift-row__meta {
-  font-size: 12.5px;
-  color: var(--text-secondary-alt);
-  margin-top: 3px;
+.block__track {
+  flex: 1;
+  height: 7px;
+  border-radius: var(--r-pill);
+  background: var(--well);
+  overflow: hidden;
 }
 
-.lift-row__note {
-  font-size: 11.5px;
-  color: var(--text-faint);
-  margin-top: 3px;
+.block__fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--text-faint);
 }
 
-.lift-row__load {
+.block__count {
+  flex: 0 0 42px;
   text-align: right;
-  flex: 0 0 auto;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
-.lift-row__load-num {
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: var(--fs-load);
-  line-height: 0.85;
+/* Active week: the one the header chips are pointing at. */
+.block__row--active .block__wk,
+.block__row--active .block__count {
   color: var(--accent);
 }
 
-.lift-row__load-unit {
-  font-size: 10px;
-  color: var(--text-muted-alt);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-top: 3px;
+.block__row--active .block__fill {
+  background: var(--accent);
 }
 
-/* --- Conditioning row --- */
-.cond-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  border: 1px solid var(--border-hair);
-  border-radius: 12px;
-  padding: 12px 13px;
-  background: var(--surface-2);
-  margin-bottom: 8px;
+.block__row--complete .block__fill {
+  background: var(--phase-base);
 }
 
-.cond-row__body {
-  flex: 1;
-  min-width: 0;
-}
-
-.cond-row__label {
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted-alt);
-  font-weight: 600;
-}
-
-.cond-row__desc {
-  font-family: var(--font-body);
-  font-size: 14.5px;
-  color: var(--text-primary);
-  margin-top: 3px;
-  font-weight: 600;
-}
-
-.cond-row__how {
-  font-size: 11.5px;
-  color: var(--text-faint);
-  margin-top: 5px;
-  line-height: 1.5;
+.block__row--active.block__row--complete .block__fill {
+  background: var(--accent);
 }
 
 .off-days {

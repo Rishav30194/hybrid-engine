@@ -28,7 +28,7 @@ main.tsx → AuthProvider → StoreProvider → App
 | State | `src/state/` | Reducer, contexts, localStorage persistence |
 | Sync | `src/sync/` | Supabase reconcile, push/pull, status |
 | Auth | `src/auth/` | Session provider + the header account control |
-| Screens | `src/screens/` | This Week, 8-Week Plan, Template |
+| Screens | `src/screens/` | This Week (1RM + block progress), 8-Week Plan, Template (the session) |
 | Components | `src/components/` | Header, BottomNav, RestTimer, CheckButton, PhasePill, SectionLabel |
 
 Everything below the data layer is data-driven. `dayProgress` computes `day.ex.length + 1`, and
@@ -51,9 +51,13 @@ there is nothing to invalidate.
 
 **The week 3 / 6 press swap is real, not copy.** Wednesday's slot is authored as the bench but
 runs overhead in weeks 3 and 6. `pressForWeek()` → `anchorLifts()` → `resolveExercise()` carry
-that through: the row's *name* and its *computed load* both follow the week. This Week lists the
-three lifts a week actually programs; the 1RM editor still edits all four. Covered by
+that through: the row's *name* and its *computed load* both follow the week. The 8-Week cards
+show the three lifts a week actually programs; the 1RM editor still edits all four. Covered by
 `loads.test.ts` and `screens.test.tsx`.
+
+**Template rows show the active week's prescription for main lifts.** `mainLiftMeta()` reads
+`WEEKS`, so a row reads `4×5 · RPE 7 · 79%` in week 1 rather than the block range `4×5→4×4`
+stored on the exercise. Accessories use their static `sr`/`rpe` via `exerciseMeta()`.
 
 ---
 
@@ -92,8 +96,11 @@ three lifts a week actually programs; the 1RM editor still edits all four. Cover
 - **`STORAGE_KEY = 'hybridEngine.v1'`** (`state/persistence.ts`). Changing or bumping it abandons
   every device's data.
 - **Key formats in `engine/keys.ts` are a storage contract**, not an implementation detail:
-  `w{week}:m:{lift}` · `w{week}:c:{cond}` · `w{week}:t:{exId}` · `w{week}:tc:{cond}`. Change a
-  format and existing check-offs and logged weights orphan.
+  `w{week}:t:{exId}` (exercise check-off *and* logged weight) · `w{week}:tc:{cond}`
+  (conditioning check-off). Change a format and existing check-offs and logged weights orphan.
+  Template is the only screen that checks work off. Two further formats — `w{week}:m:{lift}` and
+  `w{week}:c:{cond}` — were written by the old This Week lift and conditioning rows; those rows
+  are gone and any such keys still in storage are inert.
 - **Exercise `id`s in `program.ts` are storage keys.** Renaming an exercise is free; reusing an
   existing `id` for a *different* movement is the dangerous case — a logged weight resurfaces on
   the wrong lift. Always issue a fresh id.
