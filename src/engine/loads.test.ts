@@ -143,6 +143,14 @@ describe('program data integrity', () => {
       expect(d.ex[0]?.main).toBeTruthy()
     }
   })
+  // Arms sit at maintenance on a 3-day plan, so each gets exactly one direct
+  // movement. Triceps were missing until they were added deliberately — this
+  // stops either slot being dropped again without someone noticing.
+  it('gives both arms one direct movement', () => {
+    const names = DAYS.flatMap((d) => d.ex.map((e) => e.name))
+    expect(names.filter((n) => /Curl/.test(n))).toHaveLength(1)
+    expect(names.filter((n) => /Triceps/.test(n))).toHaveLength(1)
+  })
   it('prescribes every conditioning day in every week', () => {
     for (const w of WEEKS) {
       for (const c of COND) expect(w.cond[c.key]).toBeTruthy()
