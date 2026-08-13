@@ -1,7 +1,13 @@
 import './Template.css'
 import { CONDINFO, DAYS, weekAt } from '../data/program'
 import type { Day, Exercise } from '../data/types'
-import { computeLoad, exerciseMeta, resolveExercise } from '../engine/loads'
+import {
+  computeLoad,
+  exerciseMeta,
+  mainLiftMeta,
+  resolveExercise,
+} from '../engine/loads'
+import { SHOW_PERCENTS } from '../config'
 import { dayProgress } from '../engine/progress'
 import { tmplCondDoneKey, tmplDoneKey } from '../engine/keys'
 import { useAppDispatch, useAppState } from '../state/context'
@@ -103,7 +109,13 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
             />
           )}
         </div>
-        <div className="ex-row__meta">{exerciseMeta(ex)}</div>
+        {/* Main lifts read the active week's prescription, which narrows across
+            the block (4×5→4×4 becomes 4×5 in week 1); accessories are static. */}
+        <div className="ex-row__meta">
+          {main
+            ? `${mainLiftMeta(week, main, SHOW_PERCENTS)} · rest ${ex.rest}`
+            : exerciseMeta(ex)}
+        </div>
         <div className="ex-row__note">{ex.note}</div>
       </div>
     </div>

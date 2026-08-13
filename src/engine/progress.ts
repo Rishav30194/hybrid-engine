@@ -25,3 +25,19 @@ export function dayProgress(
   if (done[tmplCondDoneKey(week, day.condKey)]) count++
   return { done: count, total, complete: count === total }
 }
+
+/** Completion across a whole week — every day's exercises plus its conditioning. */
+export function weekProgress(
+  days: Day[],
+  week: number,
+  done: Record<string, boolean>,
+): DayProgress {
+  let count = 0
+  let total = 0
+  for (const d of days) {
+    const p = dayProgress(d, week, done)
+    count += p.done
+    total += p.total
+  }
+  return { done: count, total, complete: total > 0 && count === total }
+}

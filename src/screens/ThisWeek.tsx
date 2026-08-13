@@ -1,15 +1,17 @@
 import './ThisWeek.css'
-import { anchorLifts, COND, CONDINFO, LIFTS, OFF_DAYS, weekAt } from '../data/program'
-import type { ConditioningDay, Lift } from '../data/types'
-import { computeLoad, mainLiftMeta } from '../engine/loads'
-import { condDoneKey, mainDoneKey } from '../engine/keys'
-import { SHOW_PERCENTS } from '../config'
+import { DAYS, LIFTS, OFF_DAYS, WEEKS, weekAt } from '../data/program'
+import { weekProgress } from '../engine/progress'
 import { useAppDispatch, useAppState } from '../state/context'
-import { CheckButton } from '../components/CheckButton'
 import { PhasePill } from '../components/PhasePill'
 import { SectionLabel } from '../components/SectionLabel'
 
-/** Screen 1 — the athlete's "what am I lifting today" view for the active week. */
+/**
+ * Screen 1 — the dashboard. Deliberately does *not* restate the week's lifts or
+ * conditioning: those live on 8-Week and Template, and duplicating them here
+ * meant two independent sets of check-offs for the same session. This screen
+ * owns the 1RM editor — the input every load derives from — and shows how far
+ * through the block you actually are.
+ */
 export function ThisWeek() {
   const { week } = useAppState()
 
@@ -18,15 +20,8 @@ export function ThisWeek() {
       <WeekHero week={week} />
       <OneRepMaxEditor />
 
-      <SectionLabel>MAIN LIFTS</SectionLabel>
-      {anchorLifts(week).map((lift) => (
-        <MainLiftRow key={lift.key} lift={lift} />
-      ))}
-
-      <SectionLabel>CONDITIONING</SectionLabel>
-      {COND.map((c) => (
-        <ConditioningRow key={c.key} cond={c} />
-      ))}
+      <SectionLabel>BLOCK PROGRESS</SectionLabel>
+      <BlockProgress />
 
       <div className="off-days">
         <div className="off-days__label">OFF DAYS</div>
@@ -101,51 +96,35 @@ function OneRepMaxEditor() {
   )
 }
 
-function MainLiftRow({ lift }: { lift: Lift }) {
-  const { week, rm, rounding, done } = useAppState()
-  const dispatch = useAppDispatch()
-  const id = mainDoneKey(week, lift.key)
-
-  return (
-    <div className="lift-row">
-      <CheckButton
-        checked={!!done[id]}
-        onToggle={() => dispatch({ type: 'toggleDone', id })}
-      />
-      <div className="lift-row__body">
-        <div className="lift-row__name">{lift.name}</div>
-        <div className="lift-row__meta">
-          {mainLiftMeta(week, lift.key, SHOW_PERCENTS)}
-        </div>
-        <div className="lift-row__note">{lift.note}</div>
-      </div>
-      <div className="lift-row__load">
-        <div className="lift-row__load-num">
-          {computeLoad(rm[lift.key], week, lift.key, rounding)}
-        </div>
-        <div className="lift-row__load-unit">lb</div>
-      </div>
-    </div>
-  )
-}
-
-function ConditioningRow({ cond }: { cond: ConditioningDay }) {
+/** One row per week: number, fill bar, count. No prose — a glance, not a report. */
+function BlockProgress() {
   const { week, done } = useAppState()
-  const dispatch = useAppDispatch()
-  const id = condDoneKey(week, cond.key)
 
   return (
-    <div className="cond-row">
-      <CheckButton
-        size="cond"
-        checked={!!done[id]}
-        onToggle={() => dispatch({ type: 'toggleDone', id })}
-      />
-      <div className="cond-row__body">
-        <div className="cond-row__label">{cond.label}</div>
-        <div className="cond-row__desc">{weekAt(week).cond[cond.key]}</div>
-        <div className="cond-row__how">{CONDINFO[cond.key]}</div>
-      </div>
+    <div className="block">
+      {WEEKS.map((w) => {
+        const p = weekProgress(DAYS, w.wk, done)
+        const pct = p.total ? (p.done / p.total) * 100 : 0
+        const cls = [
+          'block__row',
+          w.wk === week ? 'block__row--active' : '',
+          p.complete ? 'block__row--complete' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')
+
+        return (
+          <div key={w.wk} className={cls}>
+            <span className="block__wk">W{w.wk}</span>
+            <span className="block__track">
+              <span className="block__fill" style={{ width: `${pct}%` }} />
+            </span>
+            <span className="block__count">
+              {p.done}/{p.total}
+            </span>
+          </div>
+        )
+      })}
     </div>
   )
 }
