@@ -127,6 +127,9 @@ export const DAYS: Day[] = [
  */
 export const weekAt = (week: number): Week => WEEKS[week - 1] ?? WEEKS[0]
 
+/** The block's test week — where new 1RMs are measured and the next block starts. */
+export const TEST_WEEK = WEEKS.length
+
 export const NOTES: string[] = [
   "Loads auto-update from your 1RM and the week's %1RM. Update a 1RM and the whole plan recalculates.",
   "Strength: when the top set feels easier than the listed RPE, bump that lift's 1RM by 5 lb (lower) / 2.5 lb (upper).",

@@ -51,6 +51,12 @@ export type Action =
   | { type: 'toggleWeek'; week: number }
   | { type: 'toggleDay'; day: number }
   | { type: 'setPillHidden'; hidden: boolean }
+  /**
+   * Finish the block and start again at week 1. Sets the new 1RMs, carries the
+   * accessory and conditioning weights forward, and clears every check-off.
+   * Destructive and not undoable — the UI confirms first.
+   */
+  | { type: 'startNewBlock'; rm: Rm; carry: Record<string, string> }
   // Replace the persisted slice from a remote (cloud) blob.
   | { type: 'hydrateRemote'; data: Partial<PersistedState> }
   // Rest timer. Time-dependent actions carry `now` so the reducer stays pure.

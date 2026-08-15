@@ -10,6 +10,8 @@ import {
 import { SHOW_PERCENTS } from '../config'
 import { dayProgress } from '../engine/progress'
 import { tmplCondDoneKey, tmplDoneKey } from '../engine/keys'
+import { testRepsId, testRpeId } from '../engine/e1rm'
+import { TEST_WEEK } from '../data/program'
 import { useAppDispatch, useAppState } from '../state/context'
 import { CheckButton } from '../components/CheckButton'
 
@@ -117,7 +119,57 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
             : exerciseMeta(ex)}
         </div>
         <div className="ex-row__note">{ex.note}</div>
+        {main && week === TEST_WEEK && <TestSet ex={ex} week={week} log={log} />}
       </div>
+    </div>
+  )
+}
+
+/**
+ * Week 8 only. What you actually tested, so the next block's 1RM can be
+ * estimated from it — weight is pre-filled with the calculated load, reps with
+ * the prescription, and RPE is the one thing only you know.
+ */
+function TestSet({
+  ex,
+  week,
+  log,
+}: {
+  ex: Exercise
+  week: number
+  log: Record<string, string>
+}) {
+  const dispatch = useAppDispatch()
+  const { rm, rounding } = useAppState()
+  const { main } = resolveExercise(ex, week)
+
+  const fields = [
+    {
+      id: tmplDoneKey(week, ex.id),
+      label: 'Weight',
+      hint: main ? String(computeLoad(rm[main], week, main, rounding)) : '',
+    },
+    { id: tmplDoneKey(week, testRepsId(ex.id)), label: 'Reps', hint: '3' },
+    { id: tmplDoneKey(week, testRpeId(ex.id)), label: 'RPE', hint: '8' },
+  ]
+
+  return (
+    <div className="test-set">
+      {fields.map((f) => (
+        <label key={f.id} className="test-set__field">
+          <span className="test-set__label">{f.label}</span>
+          <input
+            type="text"
+            inputMode="decimal"
+            className="ex-row__input test-set__input"
+            value={log[f.id] ?? ''}
+            placeholder={f.hint}
+            onChange={(e) =>
+              dispatch({ type: 'setLog', id: f.id, value: e.target.value })
+            }
+          />
+        </label>
+      ))}
     </div>
   )
 }

@@ -224,3 +224,119 @@
   margin-top: 4px;
   line-height: 1.5;
 }
+
+/* --- Start new block (week 8 only) --- */
+.new-block__open {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--accent);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.new-block {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: var(--surface-3);
+}
+
+.new-block__title {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.13em;
+  color: var(--accent);
+  margin-bottom: 11px;
+}
+
+.new-block__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.new-block__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.new-block__lift {
+  flex: 0 0 34px;
+  font-family: var(--font-head);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.new-block__was {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.new-block__arrow {
+  color: var(--text-faint);
+}
+
+.new-block__next {
+  font-family: var(--font-head);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.new-block__next--est {
+  color: var(--accent);
+}
+
+.new-block__src {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.new-block__note {
+  margin-top: 11px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.new-block__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.new-block__cancel,
+.new-block__go {
+  flex: 1;
+  padding: 11px;
+  border-radius: var(--r-input);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.new-block__cancel {
+  border: 1px solid var(--border-mid);
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.new-block__go {
+  border: none;
+  background: var(--accent);
+  color: var(--on-accent);
+}
