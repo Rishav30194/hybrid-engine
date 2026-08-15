@@ -103,6 +103,9 @@ Extend the file that owns the behaviour:
 | Persisted slice, merge, round-trip        | `src/state/persistence.test.ts`   |
 | Rendered screens                          | `src/screens/screens.test.tsx`    |
 | Form-control font-size floor (iOS zoom)   | `src/styles/controls.test.ts`     |
+| Estimated 1RM from a logged set           | `src/engine/e1rm.test.ts`         |
+| Closing a block: new 1RMs + carry-forward  | `src/engine/newBlock.test.ts`     |
+| Username ↔ account identifier              | `src/auth/username.test.ts`       |
 
 Vitest + Testing Library, jsdom. No real network in tests. CI runs `npm test` before it will
 deploy — don't route around a red test with `.skip`.

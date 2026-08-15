@@ -105,18 +105,18 @@ export const DAYS: Day[] = [
   { n: 2, title: 'WEDNESDAY — PRESS + INTERVALS', sub: 'Push / Pull + Hard Intervals', condLabel: 'Bike / Row Intervals', condKey: 'wed',
     ex: [
       { id: 'wed-e0', name: 'Bench Press', main: 'bench', sr: '4×6→4×5', rpe: '7→8', rest: '2 min', note: 'Strength anchor. OHP takes this slot in weeks 3 and 6.' },
-      { id: 'wed-e1', name: 'A1 · Weighted Pull-up / Pulldown', sr: '3×8', rpe: '8', rest: '—', load: 'RPE-based', note: 'Full hang to chest, elbows down and in.' },
+      { id: 'wed-e1', name: 'A1 · Weighted Pull-up / Pulldown', sr: '3×8', rpe: '10', rest: '—', load: 'RPE-based', note: 'Full hang to chest, elbows down and in. Every set to failure — reps will fall across the three, that is expected.' },
       { id: 'wed-e2', name: 'A2 · Romanian Deadlift', sr: '3×8', rpe: '7', rest: '75s', load: 'RPE-based', note: 'Hinge, soft knees, hamstring stretch.' },
-      { id: 'wed-e3', name: 'B1 · DB Lateral Raise', sr: '3×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'Side delts. Raise out, not up.' },
-      { id: 'wed-e4', name: 'B2 · EZ-Bar Curl', sr: '2×12', rpe: '8', rest: '45s', load: 'RPE-based', note: 'Direct biceps work. Squeeze the top.' },
-      { id: 'wed-e5', name: 'Cable Overhead Triceps Extension', sr: '2×12', rpe: '8', rest: '45s', load: 'RPE-based', note: 'Straight set, not part of the B pair — take it at the cable on your way to conditioning. Elbows in, full stretch overhead.' },
+      { id: 'wed-e3', name: 'B1 · DB Lateral Raise', sr: '3×15', rpe: '9–10', rest: '—', load: 'RPE-based', note: 'Side delts. Raise out, not up. Last rep should be a real struggle.' },
+      { id: 'wed-e4', name: 'B2 · EZ-Bar Curl', sr: '2×12', rpe: '9–10', rest: '45s', load: 'RPE-based', note: 'Direct biceps work. Squeeze the top, take it to the edge.' },
+      { id: 'wed-e5', name: 'Cable Overhead Triceps Extension', sr: '2×12', rpe: '9–10', rest: '45s', load: 'RPE-based', note: 'Straight set, not part of the B pair — take it at the cable on your way to conditioning. Elbows in, full stretch overhead, near failure.' },
     ] },
   { n: 3, title: 'FRIDAY — HINGE + ZONE 2', sub: 'Strength + easy aerobic tail', condLabel: 'Zone 2 Tail', condKey: 'fri',
     ex: [
       { id: 'fri-e0', name: 'Sumo Deadlift', main: 'tbdl', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Posterior-chain anchor. Wide stance, hands inside knees, hips down, push the floor apart.' },
       { id: 'fri-e1', name: 'A1 · Bulgarian Split Squat', sr: '3×8/leg', rpe: '7', rest: '—', load: 'RPE-based', note: 'Drop straight down, drive the front heel.' },
       { id: 'fri-e2', name: 'A2 · Incline DB Press', sr: '3×10', rpe: '8', rest: '75s', load: 'RPE-based', note: 'Stretch at the bottom, squeeze the upper chest.' },
-      { id: 'fri-e3', name: 'Standing Calf Raise', sr: '2×15', rpe: '8', rest: '—', load: 'RPE-based', note: 'During cooldown. Full stretch, one-second squeeze.' },
+      { id: 'fri-e3', name: 'Standing Calf Raise', sr: '2×15', rpe: '9–10', rest: '—', load: 'RPE-based', note: 'During cooldown. Full stretch, one-second squeeze, near failure.' },
     ] },
 ]
 
@@ -134,8 +134,11 @@ export const NOTES: string[] = [
   "Loads auto-update from your 1RM and the week's %1RM. Update a 1RM and the whole plan recalculates.",
   "Strength: when the top set feels easier than the listed RPE, bump that lift's 1RM by 5 lb (lower) / 2.5 lb (upper).",
   'Cut volume, never intensity. Lightening the bar to make a session easier is what causes detraining.',
+  'Accessories are RPE-based: log the weight you used, then beat it at the same RPE next week.',
+  'Isolation work (lateral raise, curl, triceps, calves) runs at RPE 9–10, and pull-ups at 10. Two or three sets a week only earns anything if the last rep is a fight — expect reps or weight to drop across sets.',
   'Conditioning: progress ONE dial at a time — more rounds OR longer work OR heavier sled.',
-  'Weeks 4 and 8 are mandatory. Week 8 is a test week — log the numbers.',
   "Miss a day? Skip it, don't stack two sessions. Carry the missed anchor into next week.",
-  'After Week 8: nudge starting 1RMs up 2.5–5% and repeat the block.',
+  'Weeks 4 and 8 are mandatory. Week 4 is the deload — take it, it is what makes weeks 5–7 work.',
+  'Week 8 tests: work up to 90% and take one all-out set. Log weight, reps and RPE on each main lift.',
+  'Then tap Start new block on This Week. Your AMRAP sets the new 1RMs, accessory weights carry over, and everything resets to week 1.',
 ]

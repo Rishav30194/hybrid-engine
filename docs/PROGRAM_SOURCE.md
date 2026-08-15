@@ -37,6 +37,33 @@ does not get cut when the session runs long.
 
 (`WEEKS` in `program.ts` is authoritative for these values; this paragraph is a summary of it.)
 
+## Effort is the lever, not volume
+
+Arms and calves sit at maintenance, so the isolation work is two or three sets a week. That only
+buys anything if the effort is genuinely high — hence **RPE 9–10 on lateral raise, curl, triceps
+extension and calf raise, and RPE 10 on pull-ups**. Expect reps or weight to fall across sets;
+that's the prescription working, not you failing it.
+
+The one deliberate exception is the **Hanging Leg Raise at RPE 7**. Its job is to fill the rest
+inside Monday's A-series, so pushing it near failure would steal from the row and press it's
+paired with — and form (swinging) breaks down before effort does.
+
+## Closing a block
+
+Week 8 doesn't run working sets. Each main lift is **work up, then one all-out AMRAP at 90%**,
+and the reps you get set the next block's 1RM.
+
+AMRAP over a true 1RM attempt because it needs no spotter, costs far less fatigue, and repeats
+more reliably — a max single swings with technique and adrenaline on the day. 90% rather than
+80% because the estimate degrades as reps climb: 90% lands around 3–5 reps, where the maths is
+solid.
+
+It self-corrects. At a 200 lb max the week-8 load is 180, and the result reads: 2 reps → 190,
+3 → 195, **4 → 200 (the old max was accurate)**, 5 → 210, 6 → 215.
+
+**Start new block** on This Week then applies it — new 1RMs in, accessory and conditioning
+weights carried into week 1, every check-off cleared.
+
 ## Changing any of this
 
 Percentages, sets/reps, RPE and exercise selection are training decisions, not code changes.
