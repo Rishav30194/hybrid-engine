@@ -13,7 +13,7 @@ import {
   type SyncState,
 } from '../sync/syncStatus'
 import { useAuth } from './context'
-import { toEmail, toUsername } from './username'
+import { toEmail, toUsername, validateAccountId } from './username'
 
 const SYNC_LABEL: Record<SyncState, string> = {
   idle: 'Signed in',
@@ -131,6 +131,11 @@ function SignInForm({ onSignedIn }: { onSignedIn: () => void }) {
     e.preventDefault()
     setError(null)
     setMessage(null)
+    const invalid = validateAccountId(username)
+    if (invalid) {
+      setError(invalid)
+      return
+    }
     setBusy(true)
     const run = mode === 'signin' ? signIn : signUp
     const { error: err } = await run(toEmail(username), password)
