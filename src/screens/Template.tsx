@@ -126,9 +126,9 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
 }
 
 /**
- * Week 8 only. What you actually tested, so the next block's 1RM can be
- * estimated from it — weight is pre-filled with the calculated load, reps with
- * the prescription, and RPE is the one thing only you know.
+ * Week 8 only. What the AMRAP actually produced, so the next block's 1RM can be
+ * estimated from it. Weight pre-fills with the calculated 90% — which is the
+ * set you're doing — leaving reps and RPE as the two things only you know.
  */
 function TestSet({
   ex,
@@ -149,8 +149,9 @@ function TestSet({
       label: 'Weight',
       hint: main ? String(computeLoad(rm[main], week, main, rounding)) : '',
     },
-    { id: tmplDoneKey(week, testRepsId(ex.id)), label: 'Reps', hint: '3' },
-    { id: tmplDoneKey(week, testRpeId(ex.id)), label: 'RPE', hint: '8' },
+    // Reps are the unknown in an AMRAP, so there's nothing sensible to suggest.
+    { id: tmplDoneKey(week, testRepsId(ex.id)), label: 'Reps', hint: 'reps' },
+    { id: tmplDoneKey(week, testRpeId(ex.id)), label: 'RPE', hint: '10' },
   ]
 
   return (
