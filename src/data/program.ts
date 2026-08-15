@@ -86,7 +86,7 @@ export const WEEKS: [Week, ...Week[]] = [
     main: { squat: { sr: '4×4', rpe: '8 hold', pct: 0.835 }, bench: { sr: '4×5', rpe: '8 hold', pct: 0.81 }, tbdl: { sr: '4×4', rpe: '8 hold', pct: 0.835 }, ohp: { sr: '4×5', rpe: '8 hold', pct: 0.77 } },
     cond: { mon: 'Sled push 8 × 20 m heaviest · Carry 4 × 45 m', wed: '3 × 4:00 / 1:00', fri: 'Zone 2 · 15 min easy' } },
   { wk: 8, phase: 'test', tag: 'TEST WEEK', rpe: 'test',
-    main: { squat: { sr: '3×3 / test', rpe: '6', pct: 0.72 }, bench: { sr: '3×4 / test', rpe: '6', pct: 0.72 }, tbdl: { sr: '3×3 / test', rpe: '6', pct: 0.72 }, ohp: { sr: '3×4 / test', rpe: '6', pct: 0.68 } },
+    main: { squat: { sr: 'work up, then AMRAP', rpe: '9–10', pct: 0.90 }, bench: { sr: 'work up, then AMRAP', rpe: '9–10', pct: 0.90 }, tbdl: { sr: 'work up, then AMRAP', rpe: '9–10', pct: 0.90 }, ohp: { sr: 'work up, then AMRAP', rpe: '9–10', pct: 0.90 } },
     cond: { mon: 'Sled 20 m for time · max-distance carry', wed: '2 km row for time', fri: 'Zone 2 · 15 min easy' } },
 ]
 
