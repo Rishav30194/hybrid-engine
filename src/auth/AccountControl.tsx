@@ -13,6 +13,7 @@ import {
   type SyncState,
 } from '../sync/syncStatus'
 import { useAuth } from './context'
+import { toEmail, toUsername } from './username'
 
 const SYNC_LABEL: Record<SyncState, string> = {
   idle: 'Signed in',
@@ -76,7 +77,7 @@ function Control() {
         <div className="acct__pop">
           {signedIn ? (
             <SignedInMenu
-              email={user.email ?? ''}
+              email={toUsername(user.email ?? '')}
               label={SYNC_LABEL[sync.state]}
               error={sync.state === 'error'}
               onSignOut={() => {
@@ -120,7 +121,7 @@ function SignedInMenu({
 function SignInForm({ onSignedIn }: { onSignedIn: () => void }) {
   const { signIn, signUp } = useAuth()
   const [mode, setMode] = useState<'signin' | 'signup'>('signin')
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
@@ -132,14 +133,14 @@ function SignInForm({ onSignedIn }: { onSignedIn: () => void }) {
     setMessage(null)
     setBusy(true)
     const run = mode === 'signin' ? signIn : signUp
-    const { error: err } = await run(email.trim(), password)
+    const { error: err } = await run(toEmail(username), password)
     setBusy(false)
     if (err) {
       setError(err)
       return
     }
     if (mode === 'signup') {
-      setMessage('Account created. If email confirmation is on, confirm then sign in.')
+      setMessage('Account created. Sign in to start syncing.')
       setMode('signin')
       setPassword('')
     } else {
@@ -154,12 +155,14 @@ function SignInForm({ onSignedIn }: { onSignedIn: () => void }) {
       <form className="acct-form__body" onSubmit={submit}>
         <input
           className="acct-form__input"
-          type="email"
-          inputMode="email"
-          autoComplete="email"
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          autoComplete="username"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          placeholder="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
         />
         <input
