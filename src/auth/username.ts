@@ -21,6 +21,20 @@ export function toEmail(input: string): string {
   return v.includes('@') ? v : `${v}@${ACCOUNT_DOMAIN}`
 }
 
+/**
+ * Why this exists: a username with a space has no `@`, so it would get the
+ * domain appended and reach Supabase as `rishav singh@example.com` — rejected
+ * with an opaque provider error. Fail here with something readable instead.
+ * Returns null when the input is usable.
+ */
+export function validateAccountId(input: string): string | null {
+  const v = input.trim()
+  if (!v) return 'Enter a username'
+  if (/\s/.test(v)) return 'Username cannot contain spaces'
+  if (v.startsWith('@') || v.endsWith('@')) return 'That is not a valid username'
+  return null
+}
+
 /** The stored identifier → what the signed-in menu shows. */
 export function toUsername(email: string): string {
   const suffix = `@${ACCOUNT_DOMAIN}`

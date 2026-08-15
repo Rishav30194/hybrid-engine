@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { ACCOUNT_DOMAIN, toEmail, toUsername } from './username'
+import {
+  ACCOUNT_DOMAIN,
+  toEmail,
+  toUsername,
+  validateAccountId,
+} from './username'
 
 describe('toEmail', () => {
   it('appends the account domain to a bare username', () => {
@@ -33,5 +38,22 @@ describe('toUsername', () => {
 
   it('round-trips', () => {
     expect(toUsername(toEmail('rishavsingh'))).toBe('rishavsingh')
+  })
+})
+
+describe('validateAccountId', () => {
+  it('accepts a bare username and a full email', () => {
+    expect(validateAccountId('rishavsingh')).toBeNull()
+    expect(validateAccountId('someone@gmail.com')).toBeNull()
+  })
+
+  it('rejects spaces, which would otherwise reach Supabase as a broken address', () => {
+    expect(validateAccountId('rishav singh')).toBe('Username cannot contain spaces')
+  })
+
+  it('rejects an empty field and a stray @', () => {
+    expect(validateAccountId('   ')).toBe('Enter a username')
+    expect(validateAccountId('@gmail.com')).toBe('That is not a valid username')
+    expect(validateAccountId('rishav@')).toBe('That is not a valid username')
   })
 })
