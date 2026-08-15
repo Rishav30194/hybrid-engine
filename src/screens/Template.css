@@ -213,3 +213,31 @@
   font-size: 11px;
   color: var(--text-muted-alt);
 }
+
+/* Week 8 only: what you actually tested, for the next block's 1RM. */
+.test-set {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.test-set__field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.test-set__label {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-muted-alt);
+}
+
+.test-set__input {
+  width: 100%;
+  text-align: center;
+}

@@ -62,6 +62,17 @@ export function reducer(state: AppState, action: Action): AppState {
       }
     }
 
+    case 'startNewBlock':
+      return {
+        ...state,
+        week: 1,
+        rm: action.rm,
+        done: {},
+        log: action.carry,
+        openWeek: 0,
+        openDay: 1,
+      }
+
     case 'timerToggleOpen':
       return { ...state, timer: { ...state.timer, open: !state.timer.open } }
     case 'timerClose':

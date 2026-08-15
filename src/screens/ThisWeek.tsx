@@ -1,6 +1,8 @@
 import './ThisWeek.css'
-import { DAYS, LIFTS, OFF_DAYS, WEEKS, weekAt } from '../data/program'
+import { useState } from 'react'
+import { DAYS, LIFTS, OFF_DAYS, TEST_WEEK, WEEKS, weekAt } from '../data/program'
 import { weekProgress } from '../engine/progress'
+import { planNewBlock } from '../engine/newBlock'
 import { useAppDispatch, useAppState } from '../state/context'
 import { PhasePill } from '../components/PhasePill'
 import { SectionLabel } from '../components/SectionLabel'
@@ -22,6 +24,8 @@ export function ThisWeek() {
 
       <SectionLabel>BLOCK PROGRESS</SectionLabel>
       <BlockProgress />
+
+      {week === TEST_WEEK && <NewBlock />}
 
       <div className="off-days">
         <div className="off-days__label">OFF DAYS</div>
@@ -125,6 +129,85 @@ function BlockProgress() {
           </div>
         )
       })}
+    </div>
+  )
+}
+
+/**
+ * Week 8 only. Turns the tested sets into the next block's 1RMs, carries the
+ * accessory and conditioning weights forward, and clears every check-off.
+ * Two taps, because it is not undoable and there is no export.
+ */
+function NewBlock() {
+  const { week, rm, log } = useAppState()
+  const dispatch = useAppDispatch()
+  const [confirming, setConfirming] = useState(false)
+
+  const plan = planNewBlock(DAYS, week, rm, log)
+  const carried = Object.keys(plan.carry).length
+
+  if (!confirming) {
+    return (
+      <button
+        type="button"
+        className="new-block__open"
+        onClick={() => setConfirming(true)}
+      >
+        Start new block
+      </button>
+    )
+  }
+
+  return (
+    <div className="new-block">
+      <div className="new-block__title">START NEW BLOCK</div>
+
+      <div className="new-block__rows">
+        {LIFTS.map((l) => {
+          const next = plan.rm[l.key]
+          const estimated = plan.estimated[l.key] !== undefined
+          return (
+            <div key={l.key} className="new-block__row">
+              <span className="new-block__lift">{l.abbr}</span>
+              <span className="new-block__was">{rm[l.key]}</span>
+              <span className="new-block__arrow">→</span>
+              <span
+                className={`new-block__next${estimated ? ' new-block__next--est' : ''}`}
+              >
+                {next}
+              </span>
+              <span className="new-block__src">
+                {estimated ? 'from test' : 'unchanged'}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="new-block__note">
+        Carries {carried} logged weight{carried === 1 ? '' : 's'} into week 1.
+        Clears every check-off. Cannot be undone.
+      </div>
+
+      <div className="new-block__actions">
+        <button
+          type="button"
+          className="new-block__cancel"
+          onClick={() => setConfirming(false)}
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          className="new-block__go"
+          onClick={() => {
+            dispatch({ type: 'startNewBlock', rm: plan.rm, carry: plan.carry })
+            setConfirming(false)
+          }}
+        >
+          Start week 1
+        </button>
+      </div>
     </div>
   )
 }

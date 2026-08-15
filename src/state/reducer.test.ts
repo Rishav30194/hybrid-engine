@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { INITIAL_STATE, reducer } from './reducer'
+import type { AppState } from './types'
 
 describe('reducer', () => {
   it('sets the active week', () => {
@@ -71,5 +72,38 @@ describe('reducer', () => {
     const s = reducer(withTab, { type: 'hydrateRemote', data: { week: 3 } })
     expect(s.tab).toBe('template')
     expect(s.week).toBe(3)
+  })
+})
+
+describe('startNewBlock', () => {
+  it('resets to week 1, sets the new 1RMs, keeps only the carried weights', () => {
+    const started: AppState = {
+      ...INITIAL_STATE,
+      week: 8,
+      openWeek: 8,
+      openDay: 3,
+      done: { 'w8:t:mon-e0': true, 'w1:tc:mon': true },
+      log: { 'w8:t:mon-e1': '120', 'w3:t:mon-e1': '110' },
+    }
+    const s = reducer(started, {
+      type: 'startNewBlock',
+      rm: { squat: 209, bench: 230, tbdl: 380, ohp: 140 },
+      carry: { 'w1:t:mon-e1': '120' },
+    })
+
+    expect(s.week).toBe(1)
+    expect(s.rm.squat).toBe(209)
+    expect(s.done).toEqual({})
+    expect(s.log).toEqual({ 'w1:t:mon-e1': '120' })
+    expect(s.openDay).toBe(1)
+  })
+
+  it('leaves the timer and tab alone', () => {
+    const s = reducer(
+      { ...INITIAL_STATE, tab: 'template' },
+      { type: 'startNewBlock', rm: INITIAL_STATE.rm, carry: {} },
+    )
+    expect(s.tab).toBe('template')
+    expect(s.timer).toEqual(INITIAL_STATE.timer)
   })
 })
