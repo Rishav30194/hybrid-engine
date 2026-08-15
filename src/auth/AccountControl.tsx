@@ -13,7 +13,12 @@ import {
   type SyncState,
 } from '../sync/syncStatus'
 import { useAuth } from './context'
-import { toEmail, toUsername, validateAccountId } from './username'
+import {
+  toEmail,
+  toUsername,
+  validateAccountId,
+  validateSignUp,
+} from './username'
 
 const SYNC_LABEL: Record<SyncState, string> = {
   idle: 'Signed in',
@@ -131,7 +136,10 @@ function SignInForm({ onSignedIn }: { onSignedIn: () => void }) {
     e.preventDefault()
     setError(null)
     setMessage(null)
-    const invalid = validateAccountId(username)
+    // Sign-up must land on the standard domain; sign-in stays permissive so an
+    // account created elsewhere isn't locked out.
+    const invalid =
+      mode === 'signup' ? validateSignUp(username) : validateAccountId(username)
     if (invalid) {
       setError(invalid)
       return

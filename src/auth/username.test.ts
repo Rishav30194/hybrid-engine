@@ -4,6 +4,7 @@ import {
   toEmail,
   toUsername,
   validateAccountId,
+  validateSignUp,
 } from './username'
 
 describe('toEmail', () => {
@@ -55,5 +56,35 @@ describe('validateAccountId', () => {
     expect(validateAccountId('   ')).toBe('Enter a username')
     expect(validateAccountId('@gmail.com')).toBe('That is not a valid username')
     expect(validateAccountId('rishav@')).toBe('That is not a valid username')
+  })
+})
+
+describe('validateSignUp', () => {
+  it('accepts a bare username', () => {
+    expect(validateSignUp('rishavsingh')).toBeNull()
+  })
+
+  it('accepts the standard domain typed out in full', () => {
+    expect(validateSignUp(`rishavsingh@${ACCOUNT_DOMAIN}`)).toBeNull()
+  })
+
+  // The account would be unreachable by username afterwards, and resolving it
+  // would need a pre-auth lookup table that publishes everyone's address.
+  it('refuses a foreign domain', () => {
+    expect(validateSignUp('rishavsingh@gyahoo.com')).toBe(
+      'Sign up with a username, not an email address',
+    )
+    expect(validateSignUp('someone@gmail.com')).toBe(
+      'Sign up with a username, not an email address',
+    )
+  })
+
+  it('still applies the basic rules', () => {
+    expect(validateSignUp('rishav singh')).toBe('Username cannot contain spaces')
+    expect(validateSignUp('')).toBe('Enter a username')
+  })
+
+  it('sign-in remains permissive, so nothing existing is locked out', () => {
+    expect(validateAccountId('rishavsingh@gyahoo.com')).toBeNull()
   })
 })
