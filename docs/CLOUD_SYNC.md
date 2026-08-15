@@ -21,8 +21,15 @@ stays offline-first either way.
    email-shaped identifier, so `src/auth/username.ts` appends a fixed domain:
    type `rishavsingh`, and `rishavsingh@example.com` is what's stored. That
    domain is reserved by RFC 2606 and can never route anywhere real, so nothing
-   is tied to a personal address. Typing a genuine email still works and is
-   passed through untouched.
+   is tied to a personal address.
+
+   **Every account is standardised on that domain, and sign-up enforces it.**
+   That's what makes `rishavsingh` alone able to reach the account — sign in with
+   either the username or `rishavsingh@example.com`. Signing up with a real
+   address is refused, because such an account could never be reached by username:
+   resolving one would need a lookup table readable *before* authentication, which
+   means publishing every user's address to anyone with the app URL. Sign-in stays
+   permissive, so an account created on another domain isn't locked out.
 
    **There is therefore no password recovery by email.** Reset it as project
    owner: Authentication → Users → pick the user → set a new password. Passwords

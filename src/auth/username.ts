@@ -35,6 +35,29 @@ export function validateAccountId(input: string): string | null {
   return null
 }
 
+/**
+ * Sign-up is stricter than sign-in, on purpose.
+ *
+ * Every account must end up on ACCOUNT_DOMAIN, because that is the only way
+ * `rishavsingh` alone can always reach it. Let someone sign up as
+ * `rishavsingh@gyahoo.com` and that account becomes unreachable by username —
+ * resolving it would need a lookup table readable *before* authentication,
+ * i.e. one that publishes everyone's address to anyone with the URL.
+ *
+ * Sign-in stays permissive (`validateAccountId`) so any account that already
+ * exists on another domain can still get in.
+ */
+export function validateSignUp(input: string): string | null {
+  const invalid = validateAccountId(input)
+  if (invalid) return invalid
+
+  const v = input.trim().toLowerCase()
+  if (v.includes('@') && !v.endsWith(`@${ACCOUNT_DOMAIN}`)) {
+    return 'Sign up with a username, not an email address'
+  }
+  return null
+}
+
 /** The stored identifier → what the signed-in menu shows. */
 export function toUsername(email: string): string {
   const suffix = `@${ACCOUNT_DOMAIN}`
