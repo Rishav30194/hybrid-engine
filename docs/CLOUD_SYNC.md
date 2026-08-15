@@ -13,9 +13,20 @@ stays offline-first either way.
    the contents of [`supabase/schema.sql`](../supabase/schema.sql), and Run.
 
 3. **Auth settings** — Authentication → Providers → Email is on by default.
-   For a single user you may turn **"Confirm email"** off (Authentication →
-   Sign In / Providers) so sign-up logs you straight in; otherwise confirm via
-   the email link before signing in.
+   **Turn "Confirm email" off** (Authentication → Sign In / Providers). The app
+   signs in with a username, not a real address, so there is no inbox for a
+   confirmation link to arrive in — leave it on and you can never confirm.
+
+   The form takes a **username**. Supabase's email provider needs an
+   email-shaped identifier, so `src/auth/username.ts` appends a fixed domain:
+   type `rishavsingh`, and `rishavsingh@example.com` is what's stored. That
+   domain is reserved by RFC 2606 and can never route anywhere real, so nothing
+   is tied to a personal address. Typing a genuine email still works and is
+   passed through untouched.
+
+   **There is therefore no password recovery by email.** Reset it as project
+   owner: Authentication → Users → pick the user → set a new password. Passwords
+   are bcrypt-hashed, so they can't be read back from the database — only replaced.
 
 4. **Grab your keys** — Project Settings → API:
    - `Project URL` → `VITE_SUPABASE_URL`
