@@ -155,6 +155,34 @@ in [`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
 - **All four 1RMs stay editable**, even in a week that only programs three lifts.
 - The percentages decide what goes on the bar. Changing one is a training decision — see
   `CLAUDE.md` §3.
+- **`TEST_WEEK` is the last week** and behaves differently: main lifts prescribe an AMRAP at 90%
+  rather than working sets, and only that week renders the test inputs and the new-block button.
+
+---
+
+## Closing a block
+
+Two engine modules, both pure, both driven from what week 8 logged.
+
+**`engine/e1rm.ts`** estimates a max from a set. RPE gives reps-in-reserve, reps plus reserve
+gives reps-to-failure, and a lookup turns that into a percentage — `180 × 3 @ RPE 8` is 5 to
+failure, 86.3%, so 210. The result is **rounded to the nearest 5 lb**, deliberately *not* to the
+"Round loads to" setting: that governs working loads, this is the reference they derive from.
+Bad input (missing fields, text, negatives, `NaN`, RPE outside 1–10, more than 12 reps to
+failure) returns `null` rather than a garbage number.
+
+**`engine/newBlock.ts`** turns those entries into the next block: an estimated 1RM per main lift
+where week 8 has a usable set, and a `carry` map seeding week 1 with week 8's accessory and
+conditioning weights — their prescriptions are identical every week, so last block's number is
+where the new one starts. A main lift's test weight is *not* carried; it became the 1RM. A lift
+with no usable set keeps its current 1RM rather than guessing, which is the normal case for OHP
+since week 8 programs bench in the Wednesday slot.
+
+The reducer's `startNewBlock` applies it: new `rm`, `week` back to 1, `done` emptied, `log`
+replaced by `carry`.
+
+**Test entries reuse the existing keyspace.** `w{week}:t:{exId}` with suffixed ids
+(`mon-e0:reps`, `mon-e0:rpe`), exactly like `mon-sled` — no new key format, no migration.
 
 ---
 
