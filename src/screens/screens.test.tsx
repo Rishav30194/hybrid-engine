@@ -109,17 +109,23 @@ describe('Template', () => {
     )
   })
 
-  it('logs sled and carry weight per week, like an accessory', () => {
+  it('logs carry weight and climber level per week, like an accessory', () => {
     const { container } = renderAtWeek(<Template />, 2)
     const loads = container.querySelectorAll<HTMLInputElement>('.cond-load__input')
-    expect(loads).toHaveLength(2) // Monday only: sled + carry
+    expect(loads).toHaveLength(2) // Monday only: carry + climber level
 
-    fireEvent.change(loads[0]!, { target: { value: '90' } })
-    fireEvent.change(loads[1]!, { target: { value: '70' } })
+    // The carry logs pounds; the climber logs a machine level, so it carries
+    // neither the "weight" placeholder nor the lb suffix.
+    expect(loads[0]!.placeholder).toBe('weight')
+    expect(loads[1]!.placeholder).toBe('level')
+    expect(textsOf(container, '.cond-load__unit')).toEqual(['lb', ''])
+
+    fireEvent.change(loads[0]!, { target: { value: '70' } })
+    fireEvent.change(loads[1]!, { target: { value: '6' } })
 
     const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-    expect(saved.log['w2:t:mon-sled']).toBe('90')
-    expect(saved.log['w2:t:mon-carry']).toBe('70')
+    expect(saved.log['w2:t:mon-carry-suitcase']).toBe('70')
+    expect(saved.log['w2:t:mon-climber']).toBe('6')
   })
 
   it('offers no weight field on unloaded conditioning', () => {
@@ -131,7 +137,7 @@ describe('Template', () => {
 
   it('opens Monday by default, with its conditioning', () => {
     const { container } = renderAtWeek(<Template />, 1)
-    expect(screen.getByText(/CONDITIONING · Sled Push/)).toBeDefined()
+    expect(screen.getByText(/CONDITIONING · Suitcase Carry/)).toBeDefined()
     // The optional +10 min extension was removed: the plan states one
     // unconditional prescription, with volume progressing week to week.
     expect(container.querySelector('.ex-ext')).toBeNull()

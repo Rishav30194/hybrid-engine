@@ -80,7 +80,7 @@ describe('exerciseMeta', () => {
     expect(exerciseMeta(main)).toBe('4×5→4×4 · RPE 7→8 · rest 2 min')
   })
   it('omits rest when it is an em dash', () => {
-    const accessory = DAYS[0]!.ex[1]! // Chest-Supported Row, rest "—"
+    const accessory = DAYS[0]!.ex[1]! // Cable Row, rest "—"
     expect(exerciseMeta(accessory)).toBe('3×10 · RPE 8')
   })
 })

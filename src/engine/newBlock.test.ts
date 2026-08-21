@@ -28,14 +28,14 @@ describe('planNewBlock', () => {
 
   it('carries accessory and conditioning weights into week 1', () => {
     const log = {
-      [at8('mon-e1')]: '120', // chest-supported row
-      [at8('mon-sled')]: '90',
-      [at8('mon-carry')]: '70',
+      [at8('mon-row-cable')]: '120',
+      [at8('mon-carry-suitcase')]: '70',
+      [at8('mon-climber')]: '6',
     }
     const { carry } = planNewBlock(DAYS, 8, rm, log)
-    expect(carry[tmplDoneKey(1, 'mon-e1')]).toBe('120')
-    expect(carry[tmplDoneKey(1, 'mon-sled')]).toBe('90')
-    expect(carry[tmplDoneKey(1, 'mon-carry')]).toBe('70')
+    expect(carry[tmplDoneKey(1, 'mon-row-cable')]).toBe('120')
+    expect(carry[tmplDoneKey(1, 'mon-carry-suitcase')]).toBe('70')
+    expect(carry[tmplDoneKey(1, 'mon-climber')]).toBe('6')
   })
 
   it('does not carry a main lift’s test weight — it became the 1RM', () => {
@@ -108,10 +108,10 @@ describe('planNewBlock edge cases', () => {
 
   it('only reads the week it is given', () => {
     const log = {
-      [tmplDoneKey(7, 'mon-e1')]: '999', // last week's row — not week 8
-      [at8('mon-e1')]: '120',
+      [tmplDoneKey(7, 'mon-row-cable')]: '999', // last week's row — not week 8
+      [at8('mon-row-cable')]: '120',
     }
     const { carry } = planNewBlock(DAYS, 8, rm, log)
-    expect(carry[tmplDoneKey(1, 'mon-e1')]).toBe('120')
+    expect(carry[tmplDoneKey(1, 'mon-row-cable')]).toBe('120')
   })
 })

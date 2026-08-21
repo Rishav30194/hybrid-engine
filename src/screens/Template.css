@@ -187,7 +187,7 @@
 }
 
 
-/* Logged weight for a loaded conditioning piece (sled, carry). */
+/* Logged weight for a loaded conditioning piece (carry weight, climber level). */
 .cond-load {
   display: flex;
   align-items: center;
