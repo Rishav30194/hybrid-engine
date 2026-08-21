@@ -199,15 +199,17 @@ function ConditioningBlock({ day }: { day: Day }) {
   )
 }
 
-/** Logged weight for one loaded conditioning piece — same storage as accessory
- *  weights (`log` keyed per week), so it progresses week to week alongside them. */
+/** Logged value for one loaded conditioning piece — same storage as accessory
+ *  weights (`log` keyed per week), so it progresses week to week alongside them.
+ *  Not always a weight: the climber logs a machine level, so unit and
+ *  placeholder are per-piece. */
 function CondLoadRow({
   week,
   load,
   log,
 }: {
   week: number
-  load: { id: string; label: string }
+  load: NonNullable<Day['condLoads']>[number]
   log: Record<string, string>
 }) {
   const dispatch = useAppDispatch()
@@ -221,10 +223,10 @@ function CondLoadRow({
         inputMode="decimal"
         className="ex-row__input cond-load__input"
         value={log[id] ?? ''}
-        placeholder="weight"
+        placeholder={load.placeholder ?? 'weight'}
         onChange={(e) => dispatch({ type: 'setLog', id, value: e.target.value })}
       />
-      <span className="cond-load__unit">lb</span>
+      <span className="cond-load__unit">{load.unit ?? 'lb'}</span>
     </label>
   )
 }

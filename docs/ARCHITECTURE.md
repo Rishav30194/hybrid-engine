@@ -182,7 +182,7 @@ The reducer's `startNewBlock` applies it: new `rm`, `week` back to 1, `done` emp
 replaced by `carry`.
 
 **Test entries reuse the existing keyspace.** `w{week}:t:{exId}` with suffixed ids
-(`mon-e0:reps`, `mon-e0:rpe`), exactly like `mon-sled` — no new key format, no migration.
+(`mon-e0:reps`, `mon-e0:rpe`), exactly like `mon-climber` — no new key format, no migration.
 
 ---
 

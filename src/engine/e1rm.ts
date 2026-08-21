@@ -47,7 +47,7 @@ export function estimateOneRepMax(
 
 /**
  * Log keys for a main lift's test set. These reuse the existing
- * `w{week}:t:{exId}` format with suffixed ids, exactly like `mon-sled` — no new
+ * `w{week}:t:{exId}` format with suffixed ids, exactly like `mon-climber` — no new
  * key format, nothing existing can orphan.
  */
 export const testRepsId = (exId: string) => `${exId}:reps`

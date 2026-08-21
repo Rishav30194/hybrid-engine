@@ -60,10 +60,17 @@ export interface Day {
   condKey: CondKey
   ex: Exercise[]
   /**
-   * Loggable loads on this day's conditioning block, e.g. sled and carry
-   * weight. Omitted where the conditioning isn't loaded (intervals, Zone 2).
+   * Loggable loads on this day's conditioning block, e.g. carry weight and
+   * climber level. Omitted where the conditioning isn't loaded (intervals, Zone 2).
    * Each `id` is a storage key — treat it like an exercise id and never reuse
    * one for a different movement.
    */
-  condLoads?: { id: string; label: string }[]
+  condLoads?: {
+    id: string
+    label: string
+    /** Unit suffix and input placeholder. Defaults to a weight in pounds —
+     *  override for a piece measured in something else, like a machine level. */
+    unit?: string
+    placeholder?: string
+  }[]
 }
