@@ -59,8 +59,15 @@ isn't stamped yet, using the *pre-edit* basis; an already-stamped week is never 
 is why no stamp is needed on week advance.
 
 Past weeks expose their frozen basis for editing on the 8-Week card (`PastWeekRm` in
-`WeekPlan.tsx`) via `setRmAt` and `setRoundingAt` — the only way to correct a week after the
-fact, and the escape hatch that keeps a bad freeze from being permanent.
+`WeekPlan.tsx`) via `setRmAt` and `setRoundingAt` — the way to correct a week after the fact,
+and the escape hatch that keeps a bad freeze from being permanent.
+
+**This Week's 1RM editor targets the active week's basis, not always the live one.** When the
+active week is frozen it displays that week's values and its edits dispatch `setRmAt` /
+`setRoundingAt`; otherwise it edits `rm` / `rounding` as before. Without that, editing while a
+past week is active would move every week *except* the one on screen — `freezePastWeeks` stamps
+weeks strictly before the active one, so there is nothing left to protect the active week itself.
+The header hint reads `week N only ↻` in that state so the target is visible.
 
 **The week 3 / 6 press swap is real, not copy.** Wednesday's slot is authored as the bench but
 runs overhead in weeks 3 and 6. `pressForWeek()` → `anchorLifts()` → `resolveExercise()` carry
@@ -95,9 +102,10 @@ stored on the exercise. Accessories use their static `sr`/`rpe` via `exerciseMet
 - **A 1RM may legitimately be `''`** while the field is being cleared. Parse with `toNum`, never
   bare `Number()`/`parseFloat`, and never coerce the blank back to a number in the reducer or
   the field can't be emptied. This holds for the per-week values in `basisAt` too.
-- **Never read `state.rm` or `state.rounding` directly to compute a load.** Go through
-  `basisForWeek`, or a past week silently starts tracking the live values again — the bug the
-  freeze exists to prevent.
+- **Never read `state.rm` or `state.rounding` directly to compute a load *or to render an
+  editor for one*.** Go through `basisForWeek`, or a past week silently starts tracking the live
+  values again — the bug the freeze exists to prevent. Two screens showing different 1RMs for the
+  same week is the symptom.
 - **`startNewBlock` clears `basisAt`.** A new block re-runs weeks 1–8 against the new 1RMs, so
   last block's frozen values would misprice them.
 - **The rest timer is `endAt`-anchored, not tick-counted** — it stays correct when iOS suspends

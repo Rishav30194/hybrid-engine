@@ -44,6 +44,76 @@ describe('This Week', () => {
     expect(container.querySelectorAll('.rm-tile')).toHaveLength(4)
   })
 
+  describe('the 1RM editor follows the active week', () => {
+    function renderWeek(blob: Record<string, unknown>) {
+      localStorage.setItem('hybridEngine.v1', JSON.stringify(blob))
+      return render(
+        <StoreProvider>
+          <ThisWeek />
+        </StoreProvider>,
+      )
+    }
+
+    const frozenWeek1 = {
+      week: 1,
+      rounding: 5,
+      rm: { squat: 190, bench: 145, tbdl: 225, ohp: 95 },
+      basisAt: {
+        1: { rm: { squat: 145, bench: 135, tbdl: 205, ohp: 95 }, rounding: 2.5 },
+      },
+    }
+
+    it('shows the live 1RM on a week that is not frozen', () => {
+      const { container } = renderWeek({ ...frozenWeek1, week: 2 })
+      const squat = container.querySelector<HTMLInputElement>('.rm-tile__input')!
+      expect(squat.value).toBe('190')
+      expect(screen.getByText('edit to recalc ↻')).toBeDefined()
+    })
+
+    it('shows the frozen 1RM and rounding when the active week is frozen', () => {
+      const { container } = renderWeek(frozenWeek1)
+      const squat = container.querySelector<HTMLInputElement>('.rm-tile__input')!
+      expect(squat.value).toBe('145') // not the live 190
+      expect(
+        container.querySelector<HTMLSelectElement>('.rm-editor__select')!.value,
+      ).toBe('2.5')
+      expect(screen.getByText('week 1 only ↻')).toBeDefined()
+    })
+
+    it('edits the frozen week rather than the live 1RM', () => {
+      const { container } = renderWeek(frozenWeek1)
+      fireEvent.change(container.querySelector('.rm-tile__input')!, {
+        target: { value: '150' },
+      })
+
+      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+      expect(saved.basisAt['1'].rm.squat).toBe(150)
+      expect(saved.rm.squat).toBe(190) // live 1RM untouched
+    })
+
+    it('edits the live 1RM on a week that is not frozen', () => {
+      const { container } = renderWeek({ ...frozenWeek1, week: 2 })
+      fireEvent.change(container.querySelector('.rm-tile__input')!, {
+        target: { value: '200' },
+      })
+
+      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+      expect(saved.rm.squat).toBe(200)
+      expect(saved.basisAt['1'].rm.squat).toBe(145) // frozen week untouched
+    })
+
+    it('edits the frozen week rounding rather than the live one', () => {
+      const { container } = renderWeek(frozenWeek1)
+      fireEvent.change(container.querySelector('.rm-editor__select')!, {
+        target: { value: '1' },
+      })
+
+      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+      expect(saved.basisAt['1'].rounding).toBe(1)
+      expect(saved.rounding).toBe(5)
+    })
+  })
+
   it('shows the off-days note', () => {
     renderAtWeek(<ThisWeek />, 1)
     expect(screen.getByText('OFF DAYS')).toBeDefined()
