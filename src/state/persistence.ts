@@ -6,8 +6,8 @@ const STORAGE_KEY = 'hybridEngine.v1'
 
 /** The persisted slice of state — never includes tab/timer/accordions/pillHidden. */
 export function pickPersisted(state: AppState): PersistedState {
-  const { week, rounding, rm, done, log } = state
-  return { week, rounding, rm, done, log }
+  const { week, rounding, rm, basisAt, done, log } = state
+  return { week, rounding, rm, basisAt, done, log }
 }
 
 /** Merge a (possibly partial/untrusted) persisted blob onto the defaults. */
@@ -18,6 +18,7 @@ export function mergePersisted(saved: Partial<PersistedState> | null): AppState 
     week: clampWeek(saved.week || INITIAL_STATE.week),
     rounding: saved.rounding || INITIAL_STATE.rounding,
     rm: { ...INITIAL_STATE.rm, ...(saved.rm ?? {}) },
+    basisAt: saved.basisAt ?? {},
     done: saved.done ?? {},
     log: saved.log ?? {},
   }

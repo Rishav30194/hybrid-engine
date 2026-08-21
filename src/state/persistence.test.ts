@@ -58,7 +58,14 @@ describe('storage failure is reported, not swallowed', () => {
 describe('pickPersisted', () => {
   it('keeps only the persisted slice', () => {
     const picked = pickPersisted(INITIAL_STATE)
-    expect(Object.keys(picked).sort()).toEqual(['done', 'log', 'rm', 'rounding', 'week'])
+    expect(Object.keys(picked).sort()).toEqual([
+      'basisAt',
+      'done',
+      'log',
+      'rm',
+      'rounding',
+      'week',
+    ])
   })
 })
 
@@ -78,6 +85,19 @@ describe('mergePersisted', () => {
     ])
     expect(merged.log).toEqual({ 'w1:t:mon-e1': '95' })
   })
+  it('defaults basisAt to empty, so an old blob behaves exactly as before', () => {
+    // Pre-feature blobs have no basisAt; every week falls back to the live basis.
+    expect(mergePersisted({ week: 3 }).basisAt).toEqual({})
+  })
+  it('carries a frozen per-week basis through', () => {
+    const merged = mergePersisted({
+      basisAt: {
+        1: { rm: { squat: 145, bench: 135, tbdl: 205, ohp: 95 }, rounding: 2.5 },
+      },
+    })
+    expect(merged.basisAt[1]?.rm.squat).toBe(145)
+    expect(merged.basisAt[1]?.rounding).toBe(2.5)
+  })
   it('merges saved rm over defaults and keeps non-persisted defaults', () => {
     const merged = mergePersisted({ week: 6, rm: { squat: 300 } as AppState['rm'] })
     expect(merged.week).toBe(6)
@@ -96,6 +116,7 @@ describe('round-trip', () => {
       week: 4,
       rounding: 10,
       rm: { ...INITIAL_STATE.rm, squat: 275 },
+      basisAt: { 1: { rm: { ...INITIAL_STATE.rm, squat: 145 }, rounding: 2.5 } },
       done: { 'w4:m:squat': true },
       log: { 'w4:t:mon-e1': '95' },
     }
@@ -106,6 +127,8 @@ describe('round-trip', () => {
     expect(reloaded.week).toBe(4)
     expect(reloaded.rounding).toBe(10)
     expect(reloaded.rm.squat).toBe(275)
+    expect(reloaded.basisAt[1]?.rm.squat).toBe(145)
+    expect(reloaded.basisAt[1]?.rounding).toBe(2.5)
     expect(reloaded.done['w4:m:squat']).toBe(true)
     expect(reloaded.log['w4:t:mon-e1']).toBe('95')
     // transient fields are NOT restored

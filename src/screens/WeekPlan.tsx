@@ -1,7 +1,7 @@
 import './WeekPlan.css'
 import { anchorLifts, COND, NOTES, WEEKS } from '../data/program'
 import type { Week } from '../data/types'
-import { computeLoad } from '../engine/loads'
+import { basisForWeek, computeLoad } from '../engine/loads'
 import { useAppDispatch, useAppState } from '../state/context'
 import { PhasePill } from '../components/PhasePill'
 
@@ -22,10 +22,12 @@ export function WeekPlan() {
 }
 
 function WeekCard({ w }: { w: Week }) {
-  const { week, rm, rounding, openWeek } = useAppState()
+  const { week, rm, basisAt, rounding, openWeek } = useAppState()
   const dispatch = useAppDispatch()
   const active = w.wk === week
   const open = openWeek === w.wk
+  const past = w.wk < week
+  const basis = basisForWeek({ rm, rounding }, basisAt, w.wk)
 
   return (
     <div className={`week-card${active ? ' week-card--active' : ''}`}>
@@ -53,7 +55,7 @@ function WeekCard({ w }: { w: Week }) {
           <div key={l.key} className="load-tile">
             <div className="load-tile__abbr">{l.abbr}</div>
             <div className="load-tile__num">
-              {computeLoad(rm[l.key], w.wk, l.key, rounding)}
+              {computeLoad(basis.rm[l.key], w.wk, l.key, basis.rounding)}
             </div>
           </div>
         ))}
@@ -69,6 +71,7 @@ function WeekCard({ w }: { w: Week }) {
 
       {open && (
         <div className="week-card__cond">
+          {past && <PastWeekRm w={w} />}
           {COND.map((c) => (
             <div key={c.key} className="week-card__cond-row">
               <span className="week-card__cond-label">{c.short}</span>
@@ -77,6 +80,72 @@ function WeekCard({ w }: { w: Week }) {
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+/**
+ * The basis a finished week was trained on. Shown only on past weeks, because
+ * the current and future ones follow the live values by design. Editable so a
+ * week that froze at the wrong numbers can be corrected after the fact.
+ */
+function PastWeekRm({ w }: { w: Week }) {
+  const { rm, rounding, basisAt } = useAppState()
+  const dispatch = useAppDispatch()
+  const frozen = basisAt[w.wk]
+  const basis = frozen ?? { rm, rounding }
+
+  return (
+    <div className="week-rm">
+      <div className="week-rm__head">
+        <span className="week-rm__title">1RM USED</span>
+        {!frozen && (
+          <span className="week-rm__hint">still follows current</span>
+        )}
+      </div>
+      <div className="week-rm__grid">
+        {anchorLifts(w.wk).map((l) => (
+          <label key={l.key} className="week-rm__tile">
+            <span className="week-rm__abbr">{l.abbr}</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              className="week-rm__input"
+              aria-label={`Week ${w.wk} ${l.name} 1RM`}
+              value={basis.rm[l.key]}
+              onChange={(e) =>
+                dispatch({
+                  type: 'setRmAt',
+                  week: w.wk,
+                  lift: l.key,
+                  value: e.target.value,
+                })
+              }
+            />
+          </label>
+        ))}
+      </div>
+      <label className="week-rm__round">
+        <span className="week-rm__round-label">Rounded to</span>
+        <select
+          className="week-rm__select"
+          aria-label={`Week ${w.wk} rounding`}
+          value={basis.rounding}
+          onChange={(e) =>
+            dispatch({
+              type: 'setRoundingAt',
+              week: w.wk,
+              rounding: e.target.value,
+            })
+          }
+        >
+          <option value="1">1</option>
+          <option value="2.5">2.5</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+        </select>
+        <span className="week-rm__round-unit">lb</span>
+      </label>
     </div>
   )
 }

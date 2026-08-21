@@ -1,6 +1,6 @@
 import { WEEKS } from '../data/program'
 import { toNum } from '../engine/loads'
-import type { Action, AppState } from './types'
+import type { Action, AppState, BasisAt, LoadBasis } from './types'
 
 /** Keep week within 1..8 so WEEKS[week-1] is always valid (guards corrupt data). */
 export const clampWeek = (n: unknown): number =>
@@ -11,12 +11,36 @@ export const INITIAL_STATE: AppState = {
   week: 1,
   rounding: 5,
   rm: { squat: 245, bench: 225, tbdl: 375, ohp: 135 },
+  basisAt: {},
   done: {},
   log: {},
   openWeek: 0,
   openDay: 1,
   timer: { open: false, running: false, duration: 90, remaining: 90, endAt: null },
   pillHidden: false,
+}
+
+/** What the current week computes its loads from, right now. */
+const liveBasis = (state: AppState): LoadBasis => ({
+  rm: state.rm,
+  rounding: state.rounding,
+})
+
+/**
+ * Stamp every week before the active one with the basis it was trained on, so
+ * changing a 1RM or the rounding mid-block only moves the current week forward
+ * instead of rewriting weeks already done. An already-stamped week is left
+ * alone: its stamp is the pre-edit basis, which is the history this protects.
+ */
+function freezePastWeeks(state: AppState): BasisAt {
+  const unstamped: number[] = []
+  for (let w = 1; w < state.week; w++) if (!state.basisAt[w]) unstamped.push(w)
+  if (unstamped.length === 0) return state.basisAt
+
+  const frozen = liveBasis(state)
+  const next = { ...state.basisAt }
+  for (const w of unstamped) next[w] = frozen
+  return next
 }
 
 export function reducer(state: AppState, action: Action): AppState {
@@ -26,16 +50,48 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'setWeek':
       return { ...state, week: clampWeek(action.week) }
     case 'setRounding':
-      return { ...state, rounding: toNum(action.rounding) || 1 }
+      return {
+        ...state,
+        basisAt: freezePastWeeks(state),
+        rounding: toNum(action.rounding) || 1,
+      }
     case 'setRm':
       // Keep "" as-is so the input can be cleared; the engine treats it as 0.
       return {
         ...state,
+        basisAt: freezePastWeeks(state),
         rm: {
           ...state.rm,
           [action.lift]: action.value === '' ? '' : toNum(action.value),
         },
       }
+    case 'setRmAt': {
+      // An unstamped week shows the live basis, so seed from it before editing.
+      const base = state.basisAt[action.week] ?? liveBasis(state)
+      return {
+        ...state,
+        basisAt: {
+          ...state.basisAt,
+          [action.week]: {
+            ...base,
+            rm: {
+              ...base.rm,
+              [action.lift]: action.value === '' ? '' : toNum(action.value),
+            },
+          },
+        },
+      }
+    }
+    case 'setRoundingAt': {
+      const base = state.basisAt[action.week] ?? liveBasis(state)
+      return {
+        ...state,
+        basisAt: {
+          ...state.basisAt,
+          [action.week]: { ...base, rounding: toNum(action.rounding) || 1 },
+        },
+      }
+    }
     case 'setLog':
       return { ...state, log: { ...state.log, [action.id]: action.value } }
     case 'toggleDone':
@@ -57,6 +113,7 @@ export function reducer(state: AppState, action: Action): AppState {
         week: clampWeek(d.week ?? state.week),
         rounding: d.rounding ?? state.rounding,
         rm: { ...state.rm, ...(d.rm ?? {}) },
+        basisAt: d.basisAt ?? {},
         done: d.done ?? {},
         log: d.log ?? {},
       }
@@ -67,6 +124,7 @@ export function reducer(state: AppState, action: Action): AppState {
         ...state,
         week: 1,
         rm: action.rm,
+        basisAt: {},
         done: {},
         log: action.carry,
         openWeek: 0,
