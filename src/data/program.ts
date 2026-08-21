@@ -1,8 +1,9 @@
 /**
  * The program's real prescription data — this file is the source of truth.
  * Do not edit values casually; this is the athlete's actual 8-week plan, three
- * sessions a week (Mon / Wed / Fri, ≤45 min each). The reasoning behind the
- * shape (time budgets, volume trade-offs) is in docs/PROGRAM_SOURCE.md.
+ * sessions a week (Mon / Wed / Fri, ~45 min each; Monday overruns on purpose).
+ * The reasoning behind the shape (time budgets, volume trade-offs) is in
+ * docs/PROGRAM_SOURCE.md.
  */
 import type {
   CondKey,
@@ -53,7 +54,7 @@ export const COND: ConditioningDay[] = [
 ]
 
 export const CONDINFO: Record<CondKey, string> = {
-  mon: 'Suitcase carry first: one heavy dumbbell, ribs stacked over hips, no leaning away from it. Walk the distance, swap hands — that is one round. Then the climber, steady at the logged level from the first minute. It has no easy gear, so this is one continuous effort, not intervals — pick a level you can still hold on the last minute.',
+  mon: 'Suitcase carry first: one heavy dumbbell, ribs stacked over hips, no leaning away from it. Walk the distance, swap hands — that is one round. Then the climber, steady at the logged level from the first minute. It has no easy gear, so this is one continuous effort, not intervals — pick a level you can still hold on the last minute. Week 8 is the exception: that one is all-out for max floors.',
   wed: 'Hard = RPE 8–9: breathing heavily, not an all-out sprint. Keep pedalling / pulling easy through the rest — don\'t fully stop. Pick an output you can repeat on the last round.',
   fri: 'Conversational, nose-breathing — it should feel too easy. This is the whole aerobic base now, so it does not get cut when the session runs long.',
 }

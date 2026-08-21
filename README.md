@@ -1,7 +1,8 @@
 # Hybrid Engine
 
 Mobile-first PWA for a single athlete running a fixed 8-week hybrid (strength + endurance)
-training program — **three sessions a week (Mon / Wed / Fri), 45 minutes each**.
+training program — **three sessions a week (Mon / Wed / Fri), around 45 minutes each** (Monday
+runs longer; see `docs/PROGRAM_SOURCE.md`).
 
 Enter your four 1-rep maxes once, pick the current week (1–8), and every working load
 recalculates automatically. Everything persists locally; signing in adds optional cloud backup

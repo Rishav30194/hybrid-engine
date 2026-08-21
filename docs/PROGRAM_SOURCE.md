@@ -5,23 +5,30 @@ This file holds the *reasoning* behind it — the part that isn't recoverable by
 
 ## The constraint
 
-Three sessions a week, **≤45 minutes each**.
+Three sessions a week, **≤45 minutes each — except Monday**, which now overruns deliberately.
 
 | Day | Anchor | Conditioning | Budget |
 | --- | --- | --- | --- |
-| Monday | Back Squat | Suitcase carry + stair climber | 43 min |
+| Monday | Back Squat | Suitcase carry + stair climber | ~50 min, rising toward ~55 by week 7 |
 | Wednesday | Bench Press (OHP in weeks 3 & 6) | Bike / row intervals | 45 min |
 | Friday | Sumo Deadlift | Zone 2 tail, every week without exception | 44 min |
+
+Monday used to fit in 43 minutes on a sled push and a farmer's carry. The 2026-08-20 rework
+spent that headroom knowingly — a 10–12 min continuous climber replaces ~5 min of sled lengths
+with walk-back rest, and the carry walks further than it used to (see the following section).
+Rishav accepted the longer Monday when he chose steady-state over intervals. **Wednesday and
+Friday are unchanged and still hold the ≤45 min line.**
 
 Those time budgets are the reason the accessory work is paired (`A1`/`A2`/`A3`, `B1`/`B2`).
 They are not encoded anywhere in `program.ts` — adding exercises to a day spends a budget the
 data doesn't track.
 
-Monday once carried an optional "+10 min extension" for weeks with more time. It was removed:
-the requirement is **≤45 min**, the per-week prescription already progresses volume
-(3 → 4 carry rounds and 10 → 12 climber minutes, deload, restart at a higher level), and a
-conditional bolt-on forced a judgement call mid-session. If Monday needs more work, raise the
-week's prescribed numbers deliberately.
+Monday once carried an optional "+10 min extension" for weeks with more time. It was removed
+because the per-week prescription already progresses volume (3 → 4 carry rounds and 10 → 12
+climber minutes, deload, restart at a higher level), and a conditional bolt-on forced a
+judgement call mid-session. If Monday needs more work, raise the week's prescribed numbers
+deliberately. That reasoning still stands now that Monday runs long: the overrun is written into
+the prescription, not left to a decision on the day.
 
 ## Why Monday is a carry and a climber
 
@@ -46,11 +53,15 @@ The level itself is **logged, not written into `WEEKS`**. `WEEKS` is static acro
 hardcoded level would still read "level 6" on the next block's week 1. The `mon-climber` load
 field carries the real number forward instead.
 
-**Suitcase carry for the farmer's carry.** One dumbbell, not a matched pair, and half the
-walking space — the availability problem the farmer's carry had. It also trains a vector nothing
-else in the program does: the ab wheel resists extension, the suitcase carry resists lateral
-flexion. Distances are **per side**, so they are roughly halved against the old bilateral
-prescription to keep the 43-minute budget.
+**Suitcase carry for the farmer's carry.** One dumbbell, not a matched pair — the availability
+problem the farmer's carry had. It also trains a vector nothing else in the program does: the ab
+wheel resists extension, the suitcase carry resists lateral flexion.
+
+Distances are **per side**, and a round is both sides, so the ground actually covered went *up*
+against the old bilateral prescription — 90 m to 120 m in week 1, 180 m to 240 m in week 7. That
+is intentional and it is the second half of Monday's overrun. The load is halved (one dumbbell,
+not two), so the extra distance is what keeps the round worth doing. Do not read the per-side
+numbers as a reduction.
 
 The carry survived the cull for one reason: it is the **only grip work in the program**, and grip
 is the limiter on Wednesday's RPE-10 pull-ups and Friday's sumo.
