@@ -6,12 +6,18 @@ export type Tab = 'week' | 'plan' | 'template'
 export type RmValue = number | string
 export type Rm = Record<LiftKey, RmValue>
 
+/** Everything a week's working loads are computed from. */
+export interface LoadBasis {
+  rm: Rm
+  rounding: number
+}
+
 /**
- * The 1RMs a past week was trained at, keyed by 1-based week. A week absent
- * here follows the live `rm`; a week present here is frozen and no longer
- * moves when the 1RM is raised. See `freezePastWeeks` in the reducer.
+ * The basis a past week was trained on, keyed by 1-based week. A week absent
+ * here follows the live `rm` and `rounding`; a week present here is frozen and
+ * no longer moves when either changes. See `freezePastWeeks` in the reducer.
  */
-export type RmAt = Partial<Record<number, Rm>>
+export type BasisAt = Partial<Record<number, LoadBasis>>
 
 export interface TimerState {
   open: boolean
@@ -26,8 +32,8 @@ export interface AppState {
   week: number
   rounding: number
   rm: Rm
-  /** Frozen 1RMs for weeks already trained (see RmAt). */
-  rmAt: RmAt
+  /** Frozen load basis for weeks already trained (see BasisAt). */
+  basisAt: BasisAt
   /** Check-off flags, keyed per week (see engine/keys). */
   done: Record<string, boolean>
   /** Logged accessory weights, keyed per week. */
@@ -46,7 +52,7 @@ export interface PersistedState {
   week: number
   rounding: number
   rm: Rm
-  rmAt: RmAt
+  basisAt: BasisAt
   done: Record<string, boolean>
   log: Record<string, string>
 }
@@ -56,8 +62,9 @@ export type Action =
   | { type: 'setWeek'; week: number }
   | { type: 'setRounding'; rounding: RmValue }
   | { type: 'setRm'; lift: LiftKey; value: RmValue }
-  /** Correct the 1RM a past week was trained at, without touching the live one. */
+  /** Correct a past week's basis, without touching the live values. */
   | { type: 'setRmAt'; week: number; lift: LiftKey; value: RmValue }
+  | { type: 'setRoundingAt'; week: number; rounding: RmValue }
   | { type: 'setLog'; id: string; value: string }
   | { type: 'toggleDone'; id: string }
   | { type: 'toggleWeek'; week: number }

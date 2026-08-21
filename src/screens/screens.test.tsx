@@ -179,7 +179,9 @@ describe('8-Week — per-week 1RM', () => {
       week: 3,
       rounding: 5,
       rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
-      rmAt: { 1: { squat: 145, bench: 225, tbdl: 375, ohp: 135 } },
+      basisAt: {
+        1: { rm: { squat: 145, bench: 225, tbdl: 375, ohp: 135 }, rounding: 5 },
+      },
     })
     // Week 1 squat is 78.5% — 145 freezes to 115, while 200 would give 155.
     expect(squatTileOf(container, 1).textContent).toBe('115')
@@ -198,6 +200,40 @@ describe('8-Week — per-week 1RM', () => {
     expect(container.querySelectorAll('.week-rm')).toHaveLength(0)
   })
 
+  it('holds a frozen week at its own rounding', () => {
+    const { container } = renderPlan({
+      week: 2,
+      rounding: 5,
+      rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
+      basisAt: {
+        1: { rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 }, rounding: 2.5 },
+      },
+    })
+    // Same 1RM either side — only the rounding differs. 200 × 78.5% = 157.
+    expect(squatTileOf(container, 1).textContent).toBe('157.5')
+    expect(squatTileOf(container, 2).textContent).toBe('160')
+  })
+
+  it('edits a past week rounding without moving the live one', () => {
+    const { container } = renderPlan({
+      week: 2,
+      rounding: 5,
+      rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
+    })
+    fireEvent.click(
+      container.querySelectorAll('.week-card')[0]!.querySelector('.week-card__toggle')!,
+    )
+    fireEvent.change(container.querySelector('.week-rm__select')!, {
+      target: { value: '2.5' },
+    })
+
+    const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+    expect(saved.basisAt['1'].rounding).toBe(2.5)
+    expect(saved.rounding).toBe(5)
+    expect(squatTileOf(container, 1).textContent).toBe('157.5')
+    expect(squatTileOf(container, 2).textContent).toBe('160')
+  })
+
   it('edits a past week without moving the live 1RM', () => {
     const { container } = renderPlan({
       week: 2,
@@ -212,7 +248,7 @@ describe('8-Week — per-week 1RM', () => {
     })
 
     const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-    expect(saved.rmAt['1'].squat).toBe(145)
+    expect(saved.basisAt['1'].rm.squat).toBe(145)
     expect(saved.rm.squat).toBe(200)
     expect(squatTileOf(container, 1).textContent).toBe('115')
     expect(squatTileOf(container, 2).textContent).toBe('160')

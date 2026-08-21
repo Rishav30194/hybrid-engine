@@ -2,8 +2,8 @@ import './Template.css'
 import { CONDINFO, DAYS, weekAt } from '../data/program'
 import type { Day, Exercise } from '../data/types'
 import {
+  basisForWeek,
   computeLoad,
-  rmForWeek,
   exerciseMeta,
   mainLiftMeta,
   resolveExercise,
@@ -80,8 +80,8 @@ function DayAccordion({ day }: { day: Day }) {
 }
 
 function ExerciseRow({ ex }: { ex: Exercise }) {
-  const { week, rm, rmAt, rounding, done, log } = useAppState()
-  const weekRm = rmForWeek(rm, rmAt, week)
+  const { week, rm, basisAt, rounding, done, log } = useAppState()
+  const basis = basisForWeek({ rm, rounding }, basisAt, week)
   const dispatch = useAppDispatch()
   const id = tmplDoneKey(week, ex.id)
   const { main, name } = resolveExercise(ex, week)
@@ -98,7 +98,7 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
           <span className="ex-row__name">{name}</span>
           {main ? (
             <span className="ex-row__load">
-              {computeLoad(weekRm[main], week, main, rounding)} lb
+              {computeLoad(basis.rm[main], week, main, basis.rounding)} lb
             </span>
           ) : (
             <input
@@ -142,15 +142,17 @@ function TestSet({
   log: Record<string, string>
 }) {
   const dispatch = useAppDispatch()
-  const { rm, rmAt, rounding } = useAppState()
-  const weekRm = rmForWeek(rm, rmAt, week)
+  const { rm, basisAt, rounding } = useAppState()
+  const basis = basisForWeek({ rm, rounding }, basisAt, week)
   const { main } = resolveExercise(ex, week)
 
   const fields = [
     {
       id: tmplDoneKey(week, ex.id),
       label: 'Weight',
-      hint: main ? String(computeLoad(weekRm[main], week, main, rounding)) : '',
+      hint: main
+        ? String(computeLoad(basis.rm[main], week, main, basis.rounding))
+        : '',
     },
     // Reps are the unknown in an AMRAP, so there's nothing sensible to suggest.
     { id: tmplDoneKey(week, testRepsId(ex.id)), label: 'Reps', hint: 'reps' },

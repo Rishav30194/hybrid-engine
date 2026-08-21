@@ -1,7 +1,7 @@
 import './WeekPlan.css'
 import { anchorLifts, COND, NOTES, WEEKS } from '../data/program'
 import type { Week } from '../data/types'
-import { computeLoad, rmForWeek } from '../engine/loads'
+import { basisForWeek, computeLoad } from '../engine/loads'
 import { useAppDispatch, useAppState } from '../state/context'
 import { PhasePill } from '../components/PhasePill'
 
@@ -22,12 +22,12 @@ export function WeekPlan() {
 }
 
 function WeekCard({ w }: { w: Week }) {
-  const { week, rm, rmAt, rounding, openWeek } = useAppState()
+  const { week, rm, basisAt, rounding, openWeek } = useAppState()
   const dispatch = useAppDispatch()
   const active = w.wk === week
   const open = openWeek === w.wk
   const past = w.wk < week
-  const weekRm = rmForWeek(rm, rmAt, w.wk)
+  const basis = basisForWeek({ rm, rounding }, basisAt, w.wk)
 
   return (
     <div className={`week-card${active ? ' week-card--active' : ''}`}>
@@ -55,7 +55,7 @@ function WeekCard({ w }: { w: Week }) {
           <div key={l.key} className="load-tile">
             <div className="load-tile__abbr">{l.abbr}</div>
             <div className="load-tile__num">
-              {computeLoad(weekRm[l.key], w.wk, l.key, rounding)}
+              {computeLoad(basis.rm[l.key], w.wk, l.key, basis.rounding)}
             </div>
           </div>
         ))}
@@ -85,15 +85,15 @@ function WeekCard({ w }: { w: Week }) {
 }
 
 /**
- * The 1RMs a finished week was trained at. Shown only on past weeks, because
- * the current and future ones follow the live `rm` by design. Editable so a
- * week that froze at the wrong number can be corrected after the fact.
+ * The basis a finished week was trained on. Shown only on past weeks, because
+ * the current and future ones follow the live values by design. Editable so a
+ * week that froze at the wrong numbers can be corrected after the fact.
  */
 function PastWeekRm({ w }: { w: Week }) {
-  const { rm, rmAt } = useAppState()
+  const { rm, rounding, basisAt } = useAppState()
   const dispatch = useAppDispatch()
-  const frozen = rmAt[w.wk]
-  const values = frozen ?? rm
+  const frozen = basisAt[w.wk]
+  const basis = frozen ?? { rm, rounding }
 
   return (
     <div className="week-rm">
@@ -112,7 +112,7 @@ function PastWeekRm({ w }: { w: Week }) {
               inputMode="numeric"
               className="week-rm__input"
               aria-label={`Week ${w.wk} ${l.name} 1RM`}
-              value={values[l.key]}
+              value={basis.rm[l.key]}
               onChange={(e) =>
                 dispatch({
                   type: 'setRmAt',
@@ -125,6 +125,27 @@ function PastWeekRm({ w }: { w: Week }) {
           </label>
         ))}
       </div>
+      <label className="week-rm__round">
+        <span className="week-rm__round-label">Rounded to</span>
+        <select
+          className="week-rm__select"
+          aria-label={`Week ${w.wk} rounding`}
+          value={basis.rounding}
+          onChange={(e) =>
+            dispatch({
+              type: 'setRoundingAt',
+              week: w.wk,
+              rounding: e.target.value,
+            })
+          }
+        >
+          <option value="1">1</option>
+          <option value="2.5">2.5</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+        </select>
+        <span className="week-rm__round-unit">lb</span>
+      </label>
     </div>
   )
 }

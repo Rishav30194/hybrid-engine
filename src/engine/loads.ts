@@ -4,7 +4,7 @@
  */
 import { LIFTS, pressForWeek, weekAt } from '../data/program'
 import type { Exercise, LiftKey } from '../data/types'
-import type { Rm, RmAt } from '../state/types'
+import type { BasisAt, LoadBasis } from '../state/types'
 
 /** Parse a possibly-empty/edited numeric value; non-numbers become 0. */
 export function toNum(v: number | string | null | undefined): number {
@@ -27,12 +27,16 @@ export function roundLoad(
 }
 
 /**
- * The 1RMs a week's loads are computed from. A week already trained keeps the
- * values it was trained at; every other week follows the live `rm`, so raising
- * a 1RM moves the current and future weeks only.
+ * What a week's loads are computed from. A week already trained keeps the basis
+ * it was trained on; every other week follows the live one, so changing a 1RM
+ * or the rounding moves the current and future weeks only.
  */
-export function rmForWeek(rm: Rm, rmAt: RmAt, week: number): Rm {
-  return rmAt[week] ?? rm
+export function basisForWeek(
+  live: LoadBasis,
+  basisAt: BasisAt,
+  week: number,
+): LoadBasis {
+  return basisAt[week] ?? live
 }
 
 /** Working load for a lift in a given week (1-based), rounded to `increment`. */

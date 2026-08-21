@@ -205,6 +205,38 @@
   padding: 0;
 }
 
+.week-rm__round {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.week-rm__round-label,
+.week-rm__round-unit {
+  font-size: 11px;
+  color: var(--text-muted-alt);
+}
+
+.week-rm__select {
+  background-color: var(--surface-1);
+  border: 1px solid var(--border-mid);
+  border-radius: 7px;
+  color: var(--text-primary-alt);
+  font-family: var(--font-body);
+  /* 16px floor — iOS zooms the page when a focused control is smaller. */
+  font-size: 16px;
+  padding: 2px 20px 2px 7px;
+  outline: none;
+  appearance: none;
+  /* CSS-drawn caret, matching the 1RM editor's select. */
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted-alt) 50%),
+    linear-gradient(135deg, var(--text-muted-alt) 50%, transparent 50%);
+  background-position: calc(100% - 11px) 52%, calc(100% - 7px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+
 /* --- How to progress --- */
 .progress-card {
   border: 1px solid var(--border-soft);
