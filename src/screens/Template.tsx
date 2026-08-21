@@ -209,7 +209,7 @@ function CondLoadRow({
   log,
 }: {
   week: number
-  load: { id: string; label: string; unit?: string; placeholder?: string }
+  load: NonNullable<Day['condLoads']>[number]
   log: Record<string, string>
 }) {
   const dispatch = useAppDispatch()
