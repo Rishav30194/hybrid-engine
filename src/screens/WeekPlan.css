@@ -139,6 +139,72 @@
   font-weight: 500;
 }
 
+/* --- 1RM a past week was trained at --- */
+.week-rm {
+  border: 1px solid var(--border-hair);
+  border-radius: 9px;
+  background: var(--well);
+  padding: 9px 10px;
+  margin-bottom: 3px;
+}
+
+.week-rm__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.week-rm__title {
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted-alt);
+  font-weight: 600;
+}
+
+.week-rm__hint {
+  font-size: 10.5px;
+  color: var(--text-muted-alt);
+}
+
+.week-rm__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.week-rm__tile {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  border-bottom: 1px solid var(--border-hair);
+  padding-bottom: 3px;
+}
+
+.week-rm__abbr {
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted-alt);
+  font-weight: 600;
+  flex: 0 0 auto;
+}
+
+.week-rm__input {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary-alt);
+  font-family: var(--font-head);
+  font-weight: 700;
+  /* 16px floor — iOS zooms the page when a focused input is smaller. */
+  font-size: 16px;
+  padding: 0;
+}
+
 /* --- How to progress --- */
 .progress-card {
   border: 1px solid var(--border-soft);

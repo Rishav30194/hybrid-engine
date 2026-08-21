@@ -46,8 +46,18 @@ load = round(1RM × pct / increment) × increment
 ```
 
 `roundLoad()` in `engine/loads.ts`, with `increment` defaulting to 1. `computeLoad()` looks the
-percentage up as `WEEKS[week - 1].main[lift].pct`. Change a 1RM and every screen recalculates —
-there is nothing to invalidate.
+percentage up as `WEEKS[week - 1].main[lift].pct`. There is nothing to invalidate.
+
+**Which 1RM a week computes from is not always the live one.** `rmForWeek(rm, rmAt, week)`
+resolves it: a week present in `rmAt` is **frozen** at the 1RM it was trained at, and every other
+week follows the live `rm`. Raising a 1RM mid-block therefore moves the current and future weeks
+only — weeks already done keep the numbers they were done at. The freeze happens lazily in the
+reducer: `setRm` stamps every week before the active one that isn't stamped yet, using the
+*pre-edit* `rm`. An already-stamped week is never re-stamped.
+
+Past weeks expose their frozen 1RM for editing on the 8-Week card (`PastWeekRm` in
+`WeekPlan.tsx`), dispatching `setRmAt`. That is the only way to correct a week after the fact,
+and it is why the freeze can be lazy rather than needing a stamp on every week advance.
 
 **The week 3 / 6 press swap is real, not copy.** Wednesday's slot is authored as the bench but
 runs overhead in weeks 3 and 6. `pressForWeek()` → `anchorLifts()` → `resolveExercise()` carry
@@ -81,7 +91,11 @@ stored on the exercise. Accessories use their static `sr`/`rpe` via `exerciseMet
   won't type-check.
 - **A 1RM may legitimately be `''`** while the field is being cleared. Parse with `toNum`, never
   bare `Number()`/`parseFloat`, and never coerce the blank back to a number in the reducer or
-  the field can't be emptied.
+  the field can't be emptied. This holds for the per-week values in `rmAt` too.
+- **Never read `state.rm` directly to compute a load.** Go through `rmForWeek`, or a past week
+  silently starts tracking the live 1RM again — the bug the freeze exists to prevent.
+- **`startNewBlock` clears `rmAt`.** A new block re-runs weeks 1–8 against the new 1RMs, so
+  last block's frozen values would misprice them.
 - **The rest timer is `endAt`-anchored, not tick-counted** — it stays correct when iOS suspends
   the tab. Don't rewrite it as a decrementing counter.
 
@@ -133,7 +147,9 @@ behaves exactly as a localStorage-only app. Setup: [`CLOUD_SYNC.md`](CLOUD_SYNC.
 
 - **`PersistedState` is also the cloud wire format.** `RemoteBlob` extends it (`syncClient.ts`).
   A new field must be optional-safe: old blobs and old devices won't have it, so `mergePersisted`
-  must default it and `hydrateRemote` must tolerate its absence.
+  must default it and `hydrateRemote` must tolerate its absence. The cost of that tolerance is
+  real: a push from a device running an older build carries no `rmAt`, and last-write-wins then
+  clears the frozen weeks — the same way it already clears `done` and `log`.
 - **There are two paths into state**: localStorage hydrate (`mergePersisted`) and cloud pull
   (reducer `hydrateRemote`). Anything that cleans or migrates data must run on both.
 - **`updatedAt` lives outside `AppState` on purpose.** Last-write-wins needs a remote pull to

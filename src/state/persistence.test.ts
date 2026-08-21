@@ -58,7 +58,14 @@ describe('storage failure is reported, not swallowed', () => {
 describe('pickPersisted', () => {
   it('keeps only the persisted slice', () => {
     const picked = pickPersisted(INITIAL_STATE)
-    expect(Object.keys(picked).sort()).toEqual(['done', 'log', 'rm', 'rounding', 'week'])
+    expect(Object.keys(picked).sort()).toEqual([
+      'done',
+      'log',
+      'rm',
+      'rmAt',
+      'rounding',
+      'week',
+    ])
   })
 })
 
@@ -78,6 +85,16 @@ describe('mergePersisted', () => {
     ])
     expect(merged.log).toEqual({ 'w1:t:mon-e1': '95' })
   })
+  it('defaults rmAt to empty, so an old blob behaves exactly as before', () => {
+    // Pre-feature blobs have no rmAt; every week must fall back to the live rm.
+    expect(mergePersisted({ week: 3 }).rmAt).toEqual({})
+  })
+  it('carries frozen per-week 1RMs through', () => {
+    const merged = mergePersisted({
+      rmAt: { 1: { squat: 145, bench: 135, tbdl: 205, ohp: 95 } },
+    })
+    expect(merged.rmAt[1]?.squat).toBe(145)
+  })
   it('merges saved rm over defaults and keeps non-persisted defaults', () => {
     const merged = mergePersisted({ week: 6, rm: { squat: 300 } as AppState['rm'] })
     expect(merged.week).toBe(6)
@@ -96,6 +113,7 @@ describe('round-trip', () => {
       week: 4,
       rounding: 10,
       rm: { ...INITIAL_STATE.rm, squat: 275 },
+      rmAt: { 1: { ...INITIAL_STATE.rm, squat: 145 } },
       done: { 'w4:m:squat': true },
       log: { 'w4:t:mon-e1': '95' },
     }
@@ -106,6 +124,7 @@ describe('round-trip', () => {
     expect(reloaded.week).toBe(4)
     expect(reloaded.rounding).toBe(10)
     expect(reloaded.rm.squat).toBe(275)
+    expect(reloaded.rmAt[1]?.squat).toBe(145)
     expect(reloaded.done['w4:m:squat']).toBe(true)
     expect(reloaded.log['w4:t:mon-e1']).toBe('95')
     // transient fields are NOT restored

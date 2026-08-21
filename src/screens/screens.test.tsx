@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import type { ReactElement } from 'react'
 import { ThisWeek } from './ThisWeek'
 import { Template } from './Template'
+import { WeekPlan } from './WeekPlan'
 import { StoreProvider } from '../state/store'
 import { DAYS } from '../data/program'
 
@@ -156,5 +157,64 @@ describe('Template', () => {
     const { container } = renderAtWeek(<Template />, 6)
     fireEvent.click(screen.getByText(DAYS[1]!.title))
     expect(textsOf(container, '.ex-row__name')[0]).toBe('Overhead Press')
+  })
+})
+
+describe('8-Week — per-week 1RM', () => {
+  /** Hydrate with an explicit persisted blob so rmAt can be seeded. */
+  function renderPlan(blob: Record<string, unknown>) {
+    localStorage.setItem('hybridEngine.v1', JSON.stringify(blob))
+    return render(
+      <StoreProvider>
+        <WeekPlan />
+      </StoreProvider>,
+    )
+  }
+
+  const squatTileOf = (container: HTMLElement, wk: number) =>
+    container.querySelectorAll('.week-card')[wk - 1]!.querySelector('.load-tile__num')!
+
+  it('holds a frozen week at its own 1RM while later weeks follow the live one', () => {
+    const { container } = renderPlan({
+      week: 3,
+      rounding: 5,
+      rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
+      rmAt: { 1: { squat: 145, bench: 225, tbdl: 375, ohp: 135 } },
+    })
+    // Week 1 squat is 78.5% — 145 freezes to 115, while 200 would give 155.
+    expect(squatTileOf(container, 1).textContent).toBe('115')
+    expect(squatTileOf(container, 2).textContent).toBe('160') // 200 × 80%
+  })
+
+  it('offers the 1RM editor on past weeks only', () => {
+    const { container } = renderPlan({ week: 3 })
+    const cards = container.querySelectorAll('.week-card')
+
+    // Week 2 is past; week 3 is active and still follows the live 1RM.
+    fireEvent.click(cards[1]!.querySelector('.week-card__toggle')!)
+    expect(container.querySelectorAll('.week-rm')).toHaveLength(1)
+
+    fireEvent.click(cards[2]!.querySelector('.week-card__toggle')!)
+    expect(container.querySelectorAll('.week-rm')).toHaveLength(0)
+  })
+
+  it('edits a past week without moving the live 1RM', () => {
+    const { container } = renderPlan({
+      week: 2,
+      rounding: 5,
+      rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
+    })
+    fireEvent.click(
+      container.querySelectorAll('.week-card')[0]!.querySelector('.week-card__toggle')!,
+    )
+    fireEvent.change(container.querySelector('.week-rm__input')!, {
+      target: { value: '145' },
+    })
+
+    const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+    expect(saved.rmAt['1'].squat).toBe(145)
+    expect(saved.rm.squat).toBe(200)
+    expect(squatTileOf(container, 1).textContent).toBe('115')
+    expect(squatTileOf(container, 2).textContent).toBe('160')
   })
 })
