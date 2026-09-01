@@ -17,6 +17,11 @@ offline. Desktop-looking-fine is not the bar.
   smaller size on an `input`, `select` or `textarea`, however dense the row. A larger size is
   fine (the 1RM field is 22px). `src/styles/controls.test.ts` enforces this across every control
   in the app; it fails with the file and size named, so you'll hear about it before the phone does.
+- **A control can't be shrunk, so put it on a line that already exists.** The 16px floor makes
+  any input ~29px tall; giving it a caps label and a line of its own costs ~53px, multiplied by
+  every exercise in a day. Ride an existing text line instead and let it set that line's height —
+  the felt-RPE field sits on `.ex-row__meta` beside the prescription it's read against, which is
+  both denser and clearer than stacking it below.
 - **One scroll container: `.app__main`.** `.app` is `overflow: hidden; height: 100dvh`. Don't add
   nested scrollers, and don't add `position: fixed` children — the rest timer is
   `position: absolute` inside `.app` precisely so it rides the column, not the viewport.
