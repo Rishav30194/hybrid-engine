@@ -241,3 +241,59 @@
   width: 100%;
   text-align: center;
 }
+
+/* Last set RPE — every exercise row, every week except the main lift's week-8
+   TestSet slot. Main lifts add an implied-1RM readout and apply button. */
+.lsrpe {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.lsrpe__field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lsrpe__label {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-muted-alt);
+}
+
+.lsrpe__input {
+  width: 64px;
+  text-align: center;
+}
+
+.lsrpe__signal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.lsrpe__implied {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lsrpe__apply {
+  flex: 0 0 auto;
+  border: none;
+  border-radius: var(--r-input);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 6px 10px;
+}

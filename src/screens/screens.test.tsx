@@ -228,6 +228,49 @@ describe('Template', () => {
     fireEvent.click(screen.getByText(DAYS[1]!.title))
     expect(textsOf(container, '.ex-row__name')[0]).toBe('Overhead Press')
   })
+
+  describe('last set RPE', () => {
+    const rowNamed = (container: HTMLElement, name: string) =>
+      [...container.querySelectorAll('.ex-row')].find(
+        (r) => r.querySelector('.ex-row__name')?.textContent === name,
+      )!
+
+    it('logs an accessory RPE with no implied-1RM signal', () => {
+      const { container } = renderAtWeek(<Template />, 1)
+      const row = rowNamed(container, 'A1 · Cable Row')
+      const rpeInput = row.querySelector<HTMLInputElement>('.lsrpe__input')!
+      fireEvent.change(rpeInput, { target: { value: '9' } })
+
+      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+      expect(saved.log['w1:t:mon-row-cable:lsrpe']).toBe('9')
+      expect(row.querySelector('.lsrpe__apply')).toBeNull()
+    })
+
+    it('estimates a 1RM from a main lift set and applies it on tap', () => {
+      const { container } = renderAtWeek(<Template />, 1)
+      // Squat: default 245 1RM, wk1 load 192 @ 4×5.
+      const squatRow = rowNamed(container, 'Back Squat')
+      const squatRpeInput = squatRow.querySelector<HTMLInputElement>('.lsrpe__input')!
+      fireEvent.change(squatRpeInput, { target: { value: '9' } })
+
+      // Default rounding is 5, so wk1's 78.5% load is 190, not the raw 192.325.
+      // 190 lb × 5 reps @ RPE 9 → 6 to failure ≈ 83.7% → e1RM 225.
+      expect(squatRow.querySelector('.lsrpe__implied')?.textContent).toBe(
+        'implies 225 lb',
+      )
+      fireEvent.click(squatRow.querySelector<HTMLButtonElement>('.lsrpe__apply')!)
+
+      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+      expect(saved.rm.squat).toBe(225)
+    })
+
+    it('offers no LSRPE row for a main lift in week 8 — TestSet covers it', () => {
+      const { container } = renderAtWeek(<Template />, 8)
+      const squatRow = rowNamed(container, 'Back Squat')
+      expect(squatRow.querySelector('.lsrpe')).toBeNull()
+      expect(squatRow.querySelector('.test-set')).not.toBeNull()
+    })
+  })
 })
 
 describe('8-Week — per-week 1RM', () => {
