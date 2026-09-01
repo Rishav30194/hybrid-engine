@@ -134,10 +134,20 @@
   outline: none;
 }
 
+/* The felt-RPE field sits on this line, so it aligns as a row rather than
+   wrapping under the prescription it is read against. */
 .ex-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 12px;
   color: var(--text-muted);
   margin-top: 3px;
+}
+
+.ex-row__meta-text {
+  flex: 1;
+  min-width: 0;
 }
 
 .ex-row__note {
@@ -242,43 +252,37 @@
   text-align: center;
 }
 
-/* Last set RPE — every exercise row, every week except the main lift's week-8
-   TestSet slot. Main lifts add an implied-1RM readout and apply button. */
+/* Last set RPE — rides the meta line on every exercise row, every week except
+   the main lift's week-8 TestSet slot. */
 .lsrpe {
   display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.lsrpe__field {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
 }
 
 .lsrpe__label {
-  font-size: 10px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  font-weight: 600;
+  font-size: 12px;
   color: var(--text-muted-alt);
 }
 
 .lsrpe__input {
-  width: 64px;
+  width: 54px;
   text-align: center;
 }
 
-.lsrpe__signal {
+/* Main lifts only, and only once an RPE is entered — so an untouched row costs
+   nothing. */
+.lsrpe-signal {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 1;
-  min-width: 0;
+  margin-top: 5px;
 }
 
-.lsrpe__implied {
+.lsrpe-signal__text {
+  flex: 1;
+  min-width: 0;
   font-size: 12px;
   color: var(--text-muted);
   white-space: nowrap;
@@ -286,7 +290,7 @@
   text-overflow: ellipsis;
 }
 
-.lsrpe__apply {
+.lsrpe-signal__apply {
   flex: 0 0 auto;
   border: none;
   border-radius: var(--r-input);

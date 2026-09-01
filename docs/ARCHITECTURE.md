@@ -219,10 +219,14 @@ replaced by `carry`.
 ## Last set RPE
 
 Every Template row logs the actual felt RPE of its last set (`{exId}:lsrpe`, same suffixed-key
-reuse as the test entries above). On a main lift this is fed — together with the load already on
-screen and that week's own prescribed reps (`prescribedReps`, parsed from `WEEKS[week -
+reuse as the test entries above). The field rides the `.ex-row__meta` line rather than taking one
+of its own, so it reads directly against the RPE prescribed a few words to its left and the row
+keeps the height it had before the field existed — see the control-placement rule in
+[`CONVENTIONS.md`](CONVENTIONS.md). On a main lift the value is fed — together with the load
+already on screen and that week's own prescribed reps (`prescribedReps`, parsed from `WEEKS[week -
 1].main[lift].sr`) — through the same `estimateOneRepMax` week 8 uses, so any week can surface an
-implied 1RM, not only the AMRAP. **Apply** writes it into the basis via `setRmAt`/`setRm`, using
+implied 1RM, not only the AMRAP. The implied-1RM line renders only once an RPE is entered, so an
+untouched row costs nothing. **Apply** writes it into the basis via `setRmAt`/`setRm`, using
 the identical frozen/live rule as This Week's editor (`ThisWeek.tsx`'s `OneRepMaxEditor`) — see
 **The load engine** above. Week 8 keeps its own `TestSet` reps+RPE flow instead; accessories have
 no `rm` to estimate against, so they only log the number.

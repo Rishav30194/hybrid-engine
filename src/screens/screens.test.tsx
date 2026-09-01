@@ -220,7 +220,9 @@ describe('Template', () => {
   it('shows the active week’s prescription and percent on a main lift', () => {
     const { container } = renderAtWeek(<Template />, 1)
     // wk1 squat is 4×5 @ RPE 7, 78.5% — not the block range 4×5→4×4.
-    expect(textsOf(container, '.ex-row__meta')[0]).toBe('4×5 · RPE 7 · 79% · rest 2 min')
+    expect(textsOf(container, '.ex-row__meta-text')[0]).toBe(
+      '4×5 · RPE 7 · 79% · rest 2 min',
+    )
   })
 
   it("names Wednesday's anchor after the lift that week programs", () => {
@@ -243,7 +245,7 @@ describe('Template', () => {
 
       const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
       expect(saved.log['w1:t:mon-row-cable:lsrpe']).toBe('9')
-      expect(row.querySelector('.lsrpe__apply')).toBeNull()
+      expect(row.querySelector('.lsrpe-signal')).toBeNull()
     })
 
     it('estimates a 1RM from a main lift set and applies it on tap', () => {
@@ -255,10 +257,12 @@ describe('Template', () => {
 
       // Default rounding is 5, so wk1's 78.5% load is 190, not the raw 192.325.
       // 190 lb × 5 reps @ RPE 9 → 6 to failure ≈ 83.7% → e1RM 225.
-      expect(squatRow.querySelector('.lsrpe__implied')?.textContent).toBe(
+      expect(squatRow.querySelector('.lsrpe-signal__text')?.textContent).toBe(
         'implies 225 lb',
       )
-      fireEvent.click(squatRow.querySelector<HTMLButtonElement>('.lsrpe__apply')!)
+      fireEvent.click(
+        squatRow.querySelector<HTMLButtonElement>('.lsrpe-signal__apply')!,
+      )
 
       const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
       expect(saved.rm.squat).toBe(225)

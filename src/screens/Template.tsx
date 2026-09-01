@@ -1,5 +1,4 @@
 import './Template.css'
-import type { Dispatch } from 'react'
 import { CONDINFO, DAYS, weekAt } from '../data/program'
 import type { Day, Exercise } from '../data/types'
 import {
@@ -22,7 +21,6 @@ import {
 } from '../engine/e1rm'
 import { TEST_WEEK } from '../data/program'
 import { useAppDispatch, useAppState } from '../state/context'
-import type { Action } from '../state/types'
 import { CheckButton } from '../components/CheckButton'
 
 /** Screen 3 — the 3-day workout; main loads come live from the active week,
@@ -98,10 +96,13 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
   const mainLoad = main
     ? computeLoad(basis.rm[main], week, main, basis.rounding)
     : null
-  // A working set's felt RPE run back through the same estimator week 8 uses,
-  // so any week can surface a 1RM signal — not just the AMRAP.
-  const reps = main ? prescribedReps(weekAt(week).main[main].sr) : null
+  // Week 8's main lifts log reps and RPE through TestSet instead.
+  const testing = main != null && week === TEST_WEEK
   const rpeLogId = tmplDoneKey(week, lsrpeId(ex.id))
+  // A working set's felt RPE run back through the same estimator week 8 uses,
+  // so any week can surface a 1RM signal — not just the AMRAP. Week 8's own
+  // `work up, then AMRAP` has no fixed reps, so it yields no estimate here.
+  const reps = main ? prescribedReps(weekAt(week).main[main].sr) : null
   const estimate =
     main != null && reps != null && mainLoad != null
       ? estimateOneRepMax(mainLoad, reps, toNum(log[rpeLogId]))
@@ -134,86 +135,55 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
           )}
         </div>
         {/* Main lifts read the active week's prescription, which narrows across
-            the block (4×5→4×4 becomes 4×5 in week 1); accessories are static. */}
+            the block (4×5→4×4 becomes 4×5 in week 1); accessories are static.
+            The felt RPE rides this line rather than taking one of its own: it
+            reads directly against the RPE prescribed a few words to its left,
+            and the row keeps the height it had before the field existed. */}
         <div className="ex-row__meta">
-          {main
-            ? `${mainLiftMeta(week, main, SHOW_PERCENTS)} · rest ${ex.rest}`
-            : exerciseMeta(ex)}
+          <span className="ex-row__meta-text">
+            {main
+              ? `${mainLiftMeta(week, main, SHOW_PERCENTS)} · rest ${ex.rest}`
+              : exerciseMeta(ex)}
+          </span>
+          {!testing && (
+            <label className="lsrpe">
+              <span className="lsrpe__label">felt</span>
+              <input
+                type="text"
+                inputMode="decimal"
+                className="ex-row__input lsrpe__input"
+                value={log[rpeLogId] ?? ''}
+                placeholder="RPE"
+                onChange={(e) =>
+                  dispatch({ type: 'setLog', id: rpeLogId, value: e.target.value })
+                }
+              />
+            </label>
+          )}
         </div>
         <div className="ex-row__note">{ex.note}</div>
-        {main && week === TEST_WEEK && <TestSet ex={ex} week={week} log={log} />}
-        {!(main && week === TEST_WEEK) && (
-          <LsrpeRow
-            week={week}
-            exId={ex.id}
-            log={log}
-            dispatch={dispatch}
-            estimate={main ? estimate : undefined}
-            onApply={
-              main != null && estimate != null
-                ? () =>
-                    dispatch(
-                      frozen
-                        ? { type: 'setRmAt', week, lift: main, value: estimate }
-                        : { type: 'setRm', lift: main, value: estimate },
-                    )
-                : undefined
-            }
-          />
+        {testing && <TestSet ex={ex} week={week} log={log} />}
+        {/* Accessories have no 1RM to estimate against, so they only log the
+            number — you read it back next week and set the weight yourself. */}
+        {main && estimate != null && (
+          <div className="lsrpe-signal">
+            <span className="lsrpe-signal__text">implies {estimate} lb</span>
+            <button
+              type="button"
+              className="lsrpe-signal__apply"
+              onClick={() =>
+                dispatch(
+                  frozen
+                    ? { type: 'setRmAt', week, lift: main, value: estimate }
+                    : { type: 'setRm', lift: main, value: estimate },
+                )
+              }
+            >
+              Apply
+            </button>
+          </div>
         )}
       </div>
-    </div>
-  )
-}
-
-/**
- * Actual RPE of the last set — logged like an accessory weight. Main lifts
- * (weeks 1–7; week 8 has its own `TestSet` flow) get an implied 1RM computed
- * from what's already on screen, with a one-tap apply into the basis using the
- * same frozen/live rule as This Week's editor. Accessories have no 1RM to
- * apply to, so they just log the number for you to read back and act on
- * manually.
- */
-function LsrpeRow({
-  week,
-  exId,
-  log,
-  dispatch,
-  estimate,
-  onApply,
-}: {
-  week: number
-  exId: string
-  log: Record<string, string>
-  dispatch: Dispatch<Action>
-  estimate: number | null | undefined
-  onApply: (() => void) | undefined
-}) {
-  const id = tmplDoneKey(week, lsrpeId(exId))
-
-  return (
-    <div className="lsrpe">
-      <label className="lsrpe__field">
-        <span className="lsrpe__label">Last set RPE</span>
-        <input
-          type="text"
-          inputMode="decimal"
-          className="ex-row__input lsrpe__input"
-          value={log[id] ?? ''}
-          placeholder="RPE"
-          onChange={(e) =>
-            dispatch({ type: 'setLog', id, value: e.target.value })
-          }
-        />
-      </label>
-      {estimate != null && (
-        <div className="lsrpe__signal">
-          <span className="lsrpe__implied">implies {estimate} lb</span>
-          <button type="button" className="lsrpe__apply" onClick={onApply}>
-            Apply
-          </button>
-        </div>
-      )}
     </div>
   )
 }
