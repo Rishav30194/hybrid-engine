@@ -248,24 +248,59 @@ describe('Template', () => {
       expect(row.querySelector('.lsrpe-signal')).toBeNull()
     })
 
-    it('estimates a 1RM from a main lift set and applies it on tap', () => {
+    it('reads a harder-than-prescribed set down, and applies it on tap', () => {
       const { container } = renderAtWeek(<Template />, 1)
-      // Squat: default 245 1RM, wk1 load 192 @ 4×5.
+      // Squat: default 245 1RM, wk1 is 4×5 prescribed at RPE 7.
       const squatRow = rowNamed(container, 'Back Squat')
       const squatRpeInput = squatRow.querySelector<HTMLInputElement>('.lsrpe__input')!
       fireEvent.change(squatRpeInput, { target: { value: '9' } })
 
-      // Default rounding is 5, so wk1's 78.5% load is 190, not the raw 192.325.
-      // 190 lb × 5 reps @ RPE 9 → 6 to failure ≈ 83.7% → e1RM 225.
+      // 5 reps: prescribed RPE 7 is 8 to failure (78.6%), felt RPE 9 is 6
+      // (83.7%). 245 × 0.786 / 0.837 → 230.
       expect(squatRow.querySelector('.lsrpe-signal__text')?.textContent).toBe(
-        'implies 225 lb',
+        'implies 230 lb',
       )
       fireEvent.click(
         squatRow.querySelector<HTMLButtonElement>('.lsrpe-signal__apply')!,
       )
 
       const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-      expect(saved.rm.squat).toBe(225)
+      expect(saved.rm.squat).toBe(230)
+    })
+
+    it('reads an easier-than-prescribed set up', () => {
+      const { container } = renderAtWeek(<Template />, 1)
+      const squatRow = rowNamed(container, 'Back Squat')
+      fireEvent.change(squatRow.querySelector<HTMLInputElement>('.lsrpe__input')!, {
+        target: { value: '5' },
+      })
+      // felt RPE 5 is 10 to failure (73.9%): 245 × 0.786 / 0.739 → 260.
+      expect(squatRow.querySelector('.lsrpe-signal__text')?.textContent).toBe(
+        'implies 260 lb',
+      )
+    })
+
+    // The bug this replaced: an absolute e1RM read the week-4 deload as 15 lb
+    // under the real max even when it went exactly to plan, because 68% is
+    // deliberately lighter than the chart's RPE-5 load.
+    it('leaves the 1RM alone when the set hits the prescribed RPE', () => {
+      for (const [week, rpe] of [
+        [1, '7'],
+        [4, '5'],
+        [7, '8'],
+      ] as const) {
+        const { container } = renderAtWeek(<Template />, week)
+        const squatRow = rowNamed(container, 'Back Squat')
+        fireEvent.change(squatRow.querySelector<HTMLInputElement>('.lsrpe__input')!, {
+          target: { value: rpe },
+        })
+        expect(squatRow.querySelector('.lsrpe-signal__text')?.textContent).toBe(
+          'on plan — no change',
+        )
+        // Nothing to apply, so no button to tap by mistake.
+        expect(squatRow.querySelector('.lsrpe-signal__apply')).toBeNull()
+        cleanup()
+      }
     })
 
     it('offers no LSRPE row for a main lift in week 8 — TestSet covers it', () => {

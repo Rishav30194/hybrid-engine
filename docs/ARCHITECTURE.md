@@ -190,16 +190,18 @@ in [`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
 
 ## Closing a block
 
-Two engine modules, both pure. `newBlock.ts` is driven only from what week 8 logged;
-`e1rm.ts`'s estimator is also used every other week, on any working set — see **Last set RPE**
-below.
+Two engine modules, both pure. `newBlock.ts` is driven only from what week 8 logged; `e1rm.ts`
+also serves every other week through `impliedOneRepMax` — see **Last set RPE** below.
 
 **`engine/e1rm.ts`** estimates a max from a set. RPE gives reps-in-reserve, reps plus reserve
 gives reps-to-failure, and a lookup turns that into a percentage — `180 × 3 @ RPE 8` is 5 to
-failure, 86.3%, so 210. The result is **rounded to the nearest 5 lb**, deliberately *not* to the
-"Round loads to" setting: that governs working loads, this is the reference they derive from.
-Bad input (missing fields, text, negatives, `NaN`, RPE outside 1–10, more than 12 reps to
-failure) returns `null` rather than a garbage number.
+failure, 86.3%, so 210. That lookup (`pctForSet`) backs both exported estimators. The result is
+**rounded to the nearest 5 lb**, deliberately *not* to the "Round loads to" setting: that governs
+working loads, this is the reference they derive from. Bad input (missing fields, text, negatives,
+`NaN`, RPE outside 1–10, more than 12 reps to failure) returns `null` rather than a garbage number.
+
+`estimateOneRepMax` is the absolute form and belongs to week 8, where the AMRAP's rep count is the
+unknown and no prescribed RPE exists to measure against.
 
 **`engine/newBlock.ts`** turns those entries into the next block: an estimated 1RM per main lift
 where week 8 has a usable set, and a `carry` map seeding week 1 with week 8's accessory and
@@ -222,11 +224,25 @@ Every Template row logs the actual felt RPE of its last set (`{exId}:lsrpe`, sam
 reuse as the test entries above). The field rides the `.ex-row__meta` line rather than taking one
 of its own, so it reads directly against the RPE prescribed a few words to its left and the row
 keeps the height it had before the field existed — see the control-placement rule in
-[`CONVENTIONS.md`](CONVENTIONS.md). On a main lift the value is fed — together with the load
-already on screen and that week's own prescribed reps (`prescribedReps`, parsed from `WEEKS[week -
-1].main[lift].sr`) — through the same `estimateOneRepMax` week 8 uses, so any week can surface an
-implied 1RM, not only the AMRAP. The implied-1RM line renders only once an RPE is entered, so an
-untouched row costs nothing. **Apply** writes it into the basis via `setRmAt`/`setRm`, using
+[`CONVENTIONS.md`](CONVENTIONS.md).
+
+On a main lift the value feeds **`impliedOneRepMax`**, which reads the set *against the effort the
+week asked for* rather than in absolute terms: it scales the current 1RM by
+`pct(prescribed) / pct(felt)`, taking reps and target RPE from that week's own prescription
+(`prescribedReps` / `prescribedRpe`, parsed off `WEEKS[week - 1].main[lift]`).
+
+**Anchoring on the prescribed RPE is the correctness requirement, not a refinement.** A plain
+`estimateOneRepMax` here disagrees with the program's own percentages. Weeks 1, 3, 6 and 7 happen
+to sit on the chart, but week 4 loads the deload at 68% and calls it RPE 5 while the chart puts
+5 reps at RPE 5 at 73.9% — so a deload taken exactly to plan "implied" a 1RM 15 lb light, and
+applying that would walk the max down every block. Scaling by the ratio cancels the weight out and
+makes an on-plan set return the current 1RM exactly, on every week; `e1rm.test.ts` asserts that
+property across all of `WEEKS`. The cost is that it trusts the bar to have carried the prescribed
+load, which is what the row displays and has no field to contradict.
+
+The signal line renders only once an RPE is entered, so an untouched row costs nothing; when the
+implied value matches the current 1RM it reads `on plan — no change` and offers no Apply, since
+applying would be a no-op write that still stamps `basisAt` through `freezePastWeeks`. **Apply** writes it into the basis via `setRmAt`/`setRm`, using
 the identical frozen/live rule as This Week's editor (`ThisWeek.tsx`'s `OneRepMaxEditor`) — see
 **The load engine** above. Week 8 keeps its own `TestSet` reps+RPE flow instead; accessories have
 no `rm` to estimate against, so they only log the number.

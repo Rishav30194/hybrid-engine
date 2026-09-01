@@ -13,11 +13,13 @@ import { SHOW_PERCENTS } from '../config'
 import { dayProgress } from '../engine/progress'
 import { tmplCondDoneKey, tmplDoneKey } from '../engine/keys'
 import {
-  estimateOneRepMax,
+  impliedOneRepMax,
   lsrpeId,
   prescribedReps,
+  prescribedRpe,
   testRepsId,
   testRpeId,
+  toReference,
 } from '../engine/e1rm'
 import { TEST_WEEK } from '../data/program'
 import { useAppDispatch, useAppState } from '../state/context'
@@ -99,14 +101,19 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
   // Week 8's main lifts log reps and RPE through TestSet instead.
   const testing = main != null && week === TEST_WEEK
   const rpeLogId = tmplDoneKey(week, lsrpeId(ex.id))
-  // A working set's felt RPE run back through the same estimator week 8 uses,
-  // so any week can surface a 1RM signal — not just the AMRAP. Week 8's own
-  // `work up, then AMRAP` has no fixed reps, so it yields no estimate here.
-  const reps = main ? prescribedReps(weekAt(week).main[main].sr) : null
-  const estimate =
-    main != null && reps != null && mainLoad != null
-      ? estimateOneRepMax(mainLoad, reps, toNum(log[rpeLogId]))
+  // How far the set landed from the effort this week asked for, read back as a
+  // 1RM. Week 8's `work up, then AMRAP` has no fixed reps, so it yields nothing
+  // here — its own TestSet covers that week.
+  const prescription = main ? weekAt(week).main[main] : null
+  const reps = prescription ? prescribedReps(prescription.sr) : null
+  const target = prescription ? prescribedRpe(prescription.rpe) : null
+  const currentRm = main ? toNum(basis.rm[main]) : 0
+  const implied =
+    reps != null && target != null
+      ? impliedOneRepMax(currentRm, reps, target, toNum(log[rpeLogId]))
       : null
+  // Equal means the set went to plan: say so, but offer no no-op Apply.
+  const onPlan = implied != null && implied === toReference(currentRm)
   const frozen = basisAt[week]
 
   return (
@@ -165,22 +172,26 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
         {testing && <TestSet ex={ex} week={week} log={log} />}
         {/* Accessories have no 1RM to estimate against, so they only log the
             number — you read it back next week and set the weight yourself. */}
-        {main && estimate != null && (
+        {main && implied != null && (
           <div className="lsrpe-signal">
-            <span className="lsrpe-signal__text">implies {estimate} lb</span>
-            <button
-              type="button"
-              className="lsrpe-signal__apply"
-              onClick={() =>
-                dispatch(
-                  frozen
-                    ? { type: 'setRmAt', week, lift: main, value: estimate }
-                    : { type: 'setRm', lift: main, value: estimate },
-                )
-              }
-            >
-              Apply
-            </button>
+            <span className="lsrpe-signal__text">
+              {onPlan ? 'on plan — no change' : `implies ${implied} lb`}
+            </span>
+            {!onPlan && (
+              <button
+                type="button"
+                className="lsrpe-signal__apply"
+                onClick={() =>
+                  dispatch(
+                    frozen
+                      ? { type: 'setRmAt', week, lift: main, value: implied }
+                      : { type: 'setRm', lift: main, value: implied },
+                  )
+                }
+              >
+                Apply
+              </button>
+            )}
           </div>
         )}
       </div>
