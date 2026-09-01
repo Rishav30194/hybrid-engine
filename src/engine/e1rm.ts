@@ -52,3 +52,20 @@ export function estimateOneRepMax(
  */
 export const testRepsId = (exId: string) => `${exId}:reps`
 export const testRpeId = (exId: string) => `${exId}:rpe`
+
+/**
+ * Reps per set from a main lift's own prescription for the week, e.g. `4×5` →
+ * 5. Week 8 prescribes `work up, then AMRAP` instead of a fixed scheme, so this
+ * returns null there — a working-set LSRPE estimate only applies to weeks 1–7,
+ * week 8 already has its own reps+RPE test-set flow.
+ */
+export function prescribedReps(sr: string): number | null {
+  const n = Number(sr.split('×')[1])
+  return Number.isFinite(n) && n > 0 ? n : null
+}
+
+/**
+ * Log key for a set's actual felt RPE ("last set RPE"). Same suffixed-id
+ * pattern as the test-set fields above — no new key format.
+ */
+export const lsrpeId = (exId: string) => `${exId}:lsrpe`

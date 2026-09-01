@@ -190,7 +190,9 @@ in [`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
 
 ## Closing a block
 
-Two engine modules, both pure, both driven from what week 8 logged.
+Two engine modules, both pure. `newBlock.ts` is driven only from what week 8 logged;
+`e1rm.ts`'s estimator is also used every other week, on any working set — see **Last set RPE**
+below.
 
 **`engine/e1rm.ts`** estimates a max from a set. RPE gives reps-in-reserve, reps plus reserve
 gives reps-to-failure, and a lookup turns that into a percentage — `180 × 3 @ RPE 8` is 5 to
@@ -211,6 +213,19 @@ replaced by `carry`.
 
 **Test entries reuse the existing keyspace.** `w{week}:t:{exId}` with suffixed ids
 (`mon-e0:reps`, `mon-e0:rpe`), exactly like `mon-climber` — no new key format, no migration.
+
+---
+
+## Last set RPE
+
+Every Template row logs the actual felt RPE of its last set (`{exId}:lsrpe`, same suffixed-key
+reuse as the test entries above). On a main lift this is fed — together with the load already on
+screen and that week's own prescribed reps (`prescribedReps`, parsed from `WEEKS[week -
+1].main[lift].sr`) — through the same `estimateOneRepMax` week 8 uses, so any week can surface an
+implied 1RM, not only the AMRAP. **Apply** writes it into the basis via `setRmAt`/`setRm`, using
+the identical frozen/live rule as This Week's editor (`ThisWeek.tsx`'s `OneRepMaxEditor`) — see
+**The load engine** above. Week 8 keeps its own `TestSet` reps+RPE flow instead; accessories have
+no `rm` to estimate against, so they only log the number.
 
 ---
 

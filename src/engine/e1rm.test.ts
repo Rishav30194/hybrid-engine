@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { estimateOneRepMax } from './e1rm'
+import { estimateOneRepMax, lsrpeId, prescribedReps } from './e1rm'
 
 describe('estimateOneRepMax', () => {
   it('matches the worked examples', () => {
@@ -59,5 +59,23 @@ describe('estimateOneRepMax', () => {
       expect(estimateOneRepMax(180, NaN, 8)).toBeNull()
       expect(estimateOneRepMax(180, 3, NaN)).toBeNull()
     })
+  })
+})
+
+describe('prescribedReps', () => {
+  it('reads the reps out of a week\'s sr', () => {
+    expect(prescribedReps('4×5')).toBe(5)
+    expect(prescribedReps('4×6')).toBe(6)
+    expect(prescribedReps('3×5')).toBe(5)
+  })
+
+  it('returns null for week 8\'s AMRAP prescription', () => {
+    expect(prescribedReps('work up, then AMRAP')).toBeNull()
+  })
+})
+
+describe('lsrpeId', () => {
+  it('suffixes the exercise id, same pattern as the test-set ids', () => {
+    expect(lsrpeId('mon-e0')).toBe('mon-e0:lsrpe')
   })
 })
