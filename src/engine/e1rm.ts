@@ -28,22 +28,62 @@ export const MAX_REPS_TO_FAILURE = PCT_AT_REPS.length
  */
 export const ROUND_TO = 5
 
-export function estimateOneRepMax(
-  weight: number,
-  reps: number,
-  rpe: number,
-): number | null {
+/** What fraction of a max `reps` at `rpe` represents, or null if off the chart. */
+function pctForSet(reps: number, rpe: number): number | null {
   // RPE is a 1–10 scale; anything outside it is a typo, not a hard set.
-  if (!(weight > 0) || !(reps > 0) || !(rpe > 0) || rpe > 10) return null
+  if (!(reps > 0) || !(rpe > 0) || rpe > 10) return null
 
   const repsInReserve = 10 - rpe
   const toFailure = Math.round(reps + repsInReserve)
   if (toFailure < 1 || toFailure > MAX_REPS_TO_FAILURE) return null
 
-  const pct = PCT_AT_REPS[toFailure - 1]
-  if (!pct) return null
+  return PCT_AT_REPS[toFailure - 1] ?? null
+}
+
+export function estimateOneRepMax(
+  weight: number,
+  reps: number,
+  rpe: number,
+): number | null {
+  if (!(weight > 0)) return null
+  const pct = pctForSet(reps, rpe)
+  if (pct == null) return null
   return Math.round(weight / pct / ROUND_TO) * ROUND_TO
 }
+
+/**
+ * The 1RM a working set implies, measured against the RPE it was *prescribed*
+ * at rather than in absolute terms.
+ *
+ * `estimateOneRepMax` alone disagrees with the program's own percentages. Week 4
+ * loads the deload at 68% and calls it RPE 5, but the chart above puts 5 reps at
+ * RPE 5 at 73.9% — so a deload that went exactly to plan would "imply" a 1RM
+ * 15 lb below the real one, and following that number would walk the max down
+ * every block. The working weeks mostly agree with the chart, which is why this
+ * only shows up badly on the deload.
+ *
+ * Scaling by the ratio of the two percentages cancels the weight out entirely:
+ * hitting the prescribed RPE returns the current 1RM exactly, on every week, and
+ * what's left is the only thing the signal is for — how far off the prescribed
+ * effort the set actually landed. It assumes the bar carried the prescribed
+ * load, which is what the row displays and has no field to contradict.
+ */
+export function impliedOneRepMax(
+  oneRepMax: number,
+  reps: number,
+  prescribed: number,
+  felt: number,
+): number | null {
+  if (!(oneRepMax > 0)) return null
+  const target = pctForSet(reps, prescribed)
+  const actual = pctForSet(reps, felt)
+  if (target == null || actual == null) return null
+  return Math.round((oneRepMax * target) / actual / ROUND_TO) * ROUND_TO
+}
+
+/** The same 5 lb grid `impliedOneRepMax` lands on, for comparing against it. */
+export const toReference = (oneRepMax: number) =>
+  Math.round(oneRepMax / ROUND_TO) * ROUND_TO
 
 /**
  * Log keys for a main lift's test set. These reuse the existing
@@ -62,6 +102,12 @@ export const testRpeId = (exId: string) => `${exId}:rpe`
 export function prescribedReps(sr: string): number | null {
   const n = Number(sr.split('×')[1])
   return Number.isFinite(n) && n > 0 ? n : null
+}
+
+/** The RPE a week prescribes for a main lift, e.g. week 7's `8 hold` → 8. */
+export function prescribedRpe(rpe: string): number | null {
+  const n = parseFloat(rpe)
+  return Number.isFinite(n) && n > 0 && n <= 10 ? n : null
 }
 
 /**
