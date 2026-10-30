@@ -54,7 +54,7 @@ export const DAYS: Day[] = [
       { id: 'bb-fri-lateral', name: 'B2 · DB Lateral Raise', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Raise out, not up. The last rep should be a real struggle.' },
       { id: 'bb-fri-curl', name: 'C1 · Bayesian Cable Curl', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Face away from the cable with the arm behind you for the stretch.' },
       { id: 'bb-fri-pressdown', name: 'C2 · Triceps Pressdown', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Elbows pinned to your sides, full lockout.' },
-      { id: 'bb-fri-legcurl', name: 'Seated Leg Curl', sr: '2×10–12', rpe: '9–10', rest: '90s', note: 'Same machine as Monday. Lean forward for the stretch.' },
+      { id: 'bb-fri-calf', name: 'Standing Calf Raise', sr: '2×12–15', rpe: '10', rest: '90s', note: 'Pause a full second in the bottom stretch, then all the way up. No bouncing.' },
     ] },
 ]
 

@@ -68,7 +68,7 @@ sets: 2–3 before squat, deadlift, and the DB presses; 0–1 before isolation e
 | A1 Incline DB Press / A2 Bulgarian Split Squat | 3×8–10 / 2×8–10 per leg | 9 / 8 | 1 min between |
 | B1 Lat Pulldown / B2 DB Lateral Raise | 3×10–12 / 2×12–15 | 9–10 / 10 | 1 min between |
 | C1 Bayesian Cable Curl / C2 Triceps Pressdown | 2×12–15 / 2×12–15 | 10 | 1 min between |
-| Seated Leg Curl | 2×10–12 | 9–10 | 90 s |
+| Standing Calf Raise | 2×12–15 | 10 | 90 s |
 
 ### Progression
 
@@ -92,7 +92,7 @@ All agreed with Rishav on 2026-10-29.
 | Rep ranges with double progression replace %1RM loads | DB jumps are 5 lb a hand, so % loads round badly; the rep range absorbs the jump |
 | 12-week block with one easy week, at the start | Rishav is already training, so he needs no ramp-in; one week finds the new weights. Matches Nippard's Essentials program, which runs 12 weeks without a deload at similar volume |
 | No leg extension; leg curl as straight sets on Monday | A leg curl and leg extension superset holds two machines at once, which fails at a busy Crunch |
-| Seated leg curl replaces Friday's calf raise | Deadlifts load hamstrings far less than the RDL did |
+| ~~Seated leg curl replaces Friday's calf raise~~ Reversed the same day: Friday keeps the calf raise | Rishav's call: conventional deadlift was picked over sumo for its hamstring work, so Monday's leg curl plus the deadlift covers hamstrings (3 direct sets) and calves keep 5 |
 | Leg press and seated leg curl stay as written | Rishav confirmed Crunch University has both |
 | Log reps of the last set only (option C) | Reps fall across sets, so the last set reaching the top of the range means every set did. One number on the number keypad per row; the iOS number keypad has no space key, which ruled out one field holding every set |
 
@@ -242,3 +242,6 @@ None.
   Nav label `8-WEEK` → `PLAN`, header subtitle `3-Day Hypertrophy`. `CLAUDE.md` §1 and §2 wording
   updated (approved). Open: Rishav's read of the three days in the dev build. Noticed, not
   changed: the header chips don't scroll the active week into view, so W12 starts off-screen.
+- **2026-10-29:** From Rishav's read of the dev build: Friday's seated leg curl back to a standing
+  calf raise (`bb-fri-calf`, 2×12–15 @ RPE 10). Hamstrings 3 direct sets plus the deadlift,
+  calves 5.

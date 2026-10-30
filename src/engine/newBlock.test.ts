@@ -11,12 +11,12 @@ describe('planNewBlock', () => {
     const log = {
       [atLast('bb-mon-squat')]: '185',
       [atLast('bb-mon-legcurl')]: '90',
-      [atLast('bb-fri-legcurl')]: '80',
+      [atLast('bb-fri-calf')]: '80',
     }
     expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({
       [atOne('bb-mon-squat')]: '185',
       [atOne('bb-mon-legcurl')]: '90',
-      [atOne('bb-fri-legcurl')]: '80',
+      [atOne('bb-fri-calf')]: '80',
     })
   })
 

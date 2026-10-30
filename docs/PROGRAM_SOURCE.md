@@ -37,7 +37,7 @@ Two Jeff Nippard programs, combined rather than run as written:
 | Flat DB press, not barbell bench | Unracking and setting up under a loaded bar alone was awkward. Dumbbells also give the chest a deeper stretch. |
 | Conventional deadlift, not sumo | It works the hamstrings and back harder, which counts for more in how a physique looks. If sumo was originally chosen for a back or hip reason, swap it back with the same scheme. |
 | Deadlift back-off sets at 6–8 reps, not 8–10 | On high-rep deadlifts, grip and lower back give out before the target muscles do. |
-| Seated leg curl on Friday, in place of a calf raise | A deadlift loads the hamstrings far less than the RDL it replaced, so they needed direct work. |
+| Calf raise on Friday, not a second leg curl | Conventional was chosen over sumo partly because it works the hamstrings harder, so Monday's leg curl plus the deadlift covers them and Friday's slot goes to calves. The cost: no second weekly stretch for the hamstrings. |
 | No leg extension | A leg curl and leg extension pair holds two machines at once, which doesn't work at a busy commercial gym. After squat and leg press it was the third quad exercise and added the least. |
 | No hard conditioning | Nippard keeps cardio minimal on hypertrophy programs, and the RPE-9 stair climber cut into leg recovery. Dropping it freed about 12 minutes a session. Easy climber minutes are now the warm-up, and daily walking stays. |
 
@@ -49,7 +49,7 @@ without accounting for the time.
 ## Weekly volume
 
 About **54 hard sets a week**. Per muscle: chest 8, back 9 (plus the deadlift), side delts 5,
-quads 8, hamstrings 5 (plus the deadlift), biceps 4, triceps 5, calves 3, abs 2.
+quads 8, hamstrings 3 (plus the deadlift), biceps 4, triceps 5, calves 5, abs 2.
 
 That is the low end of what supports growth. It works because sets are taken close to failure —
 Essentials' bet, fewer sets each worth more — so the effort prescription is not optional.
