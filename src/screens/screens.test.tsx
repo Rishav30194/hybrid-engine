@@ -39,79 +39,52 @@ const textsOf = (root: HTMLElement, selector: string) =>
   [...root.querySelectorAll(selector)].map((n) => n.textContent)
 
 describe('This Week', () => {
-  it('keeps all four 1RMs editable even when a lift is not programmed', () => {
+  it('has no 1RM editor — every weight is logged, not computed', () => {
     const { container } = renderAtWeek(<ThisWeek />, 1)
-    expect(container.querySelectorAll('.rm-tile')).toHaveLength(4)
+    expect(container.querySelector('.rm-editor')).toBeNull()
   })
 
-  describe('the 1RM editor follows the active week', () => {
-    function renderWeek(blob: Record<string, unknown>) {
-      localStorage.setItem('hybridEngine.v1', JSON.stringify(blob))
-      return render(
-        <StoreProvider>
-          <ThisWeek />
-        </StoreProvider>,
-      )
-    }
+  // Old devices and the cloud row still carry the retired 1RM fields; they
+  // must load without error and simply be ignored.
+  it('loads a saved state that still holds rm and basisAt', () => {
+    localStorage.setItem(
+      'hybridEngine.v1',
+      JSON.stringify({
+        week: 2,
+        rounding: 2.5,
+        rm: { squat: 190, bench: 145, tbdl: 225, ohp: 95 },
+        basisAt: { 1: { rm: { squat: 145, bench: 135, tbdl: 205, ohp: 95 }, rounding: 5 } },
+        log: { 'w2:t:mon-e0': '160' },
+      }),
+    )
+    const { container } = render(
+      <StoreProvider>
+        <ThisWeek />
+        <Template />
+      </StoreProvider>,
+    )
+    expect(container.querySelector('.week-hero__title')!.textContent).toBe('WEEK 2')
+    expect(container.querySelector<HTMLInputElement>('.ex-row__input')!.value).toBe('160')
+  })
 
-    const frozenWeek1 = {
-      week: 1,
-      rounding: 5,
-      rm: { squat: 190, bench: 145, tbdl: 225, ohp: 95 },
-      basisAt: {
-        1: { rm: { squat: 145, bench: 135, tbdl: 205, ohp: 95 }, rounding: 2.5 },
-      },
-    }
+  it('starts a new block from the last week, carrying a main-lift weight', () => {
+    localStorage.setItem(
+      'hybridEngine.v1',
+      JSON.stringify({ week: 8, log: { 'w8:t:mon-e0': '200' }, done: { 'w8:t:mon-e0': true } }),
+    )
+    render(
+      <StoreProvider>
+        <ThisWeek />
+      </StoreProvider>,
+    )
+    fireEvent.click(screen.getByText('Start new block'))
+    expect(screen.getByText(/Carries 1 logged weight into week 1/)).toBeDefined()
+    fireEvent.click(screen.getByText('Start week 1'))
 
-    it('shows the live 1RM on a week that is not frozen', () => {
-      const { container } = renderWeek({ ...frozenWeek1, week: 2 })
-      const squat = container.querySelector<HTMLInputElement>('.rm-tile__input')!
-      expect(squat.value).toBe('190')
-      expect(screen.getByText('edit to recalc ↻')).toBeDefined()
-    })
-
-    it('shows the frozen 1RM and rounding when the active week is frozen', () => {
-      const { container } = renderWeek(frozenWeek1)
-      const squat = container.querySelector<HTMLInputElement>('.rm-tile__input')!
-      expect(squat.value).toBe('145') // not the live 190
-      expect(
-        container.querySelector<HTMLSelectElement>('.rm-editor__select')!.value,
-      ).toBe('2.5')
-      expect(screen.getByText('week 1 only ↻')).toBeDefined()
-    })
-
-    it('edits the frozen week rather than the live 1RM', () => {
-      const { container } = renderWeek(frozenWeek1)
-      fireEvent.change(container.querySelector('.rm-tile__input')!, {
-        target: { value: '150' },
-      })
-
-      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-      expect(saved.basisAt['1'].rm.squat).toBe(150)
-      expect(saved.rm.squat).toBe(190) // live 1RM untouched
-    })
-
-    it('edits the live 1RM on a week that is not frozen', () => {
-      const { container } = renderWeek({ ...frozenWeek1, week: 2 })
-      fireEvent.change(container.querySelector('.rm-tile__input')!, {
-        target: { value: '200' },
-      })
-
-      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-      expect(saved.rm.squat).toBe(200)
-      expect(saved.basisAt['1'].rm.squat).toBe(145) // frozen week untouched
-    })
-
-    it('edits the frozen week rounding rather than the live one', () => {
-      const { container } = renderWeek(frozenWeek1)
-      fireEvent.change(container.querySelector('.rm-editor__select')!, {
-        target: { value: '1' },
-      })
-
-      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-      expect(saved.basisAt['1'].rounding).toBe(1)
-      expect(saved.rounding).toBe(5)
-    })
+    const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+    expect(saved.week).toBe(1)
+    expect(saved.log).toEqual({ 'w1:t:mon-e0': '200' })
+    expect(saved.done).toEqual({})
   })
 
   it('shows the off-days note', () => {
@@ -215,14 +188,21 @@ describe('Template', () => {
     expect(screen.queryByText(/Extension/)).toBeNull()
   })
 
-  // This Week used to be the only place showing the week-specific prescription
-  // and the %1RM. It no longer lists lifts, so the main-lift row carries both.
-  it('shows the active week’s prescription and percent on a main lift', () => {
+  it('shows the active week’s prescription on a main lift, with no percent', () => {
     const { container } = renderAtWeek(<Template />, 1)
-    // wk1 squat is 4×5 @ RPE 7, 78.5% — not the block range 4×5→4×4.
-    expect(textsOf(container, '.ex-row__meta-text')[0]).toBe(
-      '4×5 · RPE 7 · 79% · rest 2 min',
-    )
+    // wk1 squat is 4×5 @ RPE 7 — not the block range 4×5→4×4.
+    expect(textsOf(container, '.ex-row__meta-text')[0]).toBe('4×5 · RPE 7 · rest 2 min')
+  })
+
+  it('logs a main-lift weight the same way as an accessory', () => {
+    const { container } = renderAtWeek(<Template />, 1)
+    expect(container.querySelector('.ex-row__load')).toBeNull()
+    const squat = container.querySelector<HTMLInputElement>('.ex-row__input')!
+    expect(squat.placeholder).toBe('weight')
+    fireEvent.change(squat, { target: { value: '155' } })
+
+    const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+    expect(saved.log['w1:t:mon-e0']).toBe('155')
   })
 
   it("names Wednesday's anchor after the lift that week programs", () => {
@@ -248,161 +228,37 @@ describe('Template', () => {
       expect(row.querySelector('.lsrpe-signal')).toBeNull()
     })
 
-    it('reads a harder-than-prescribed set down, and applies it on tap', () => {
-      const { container } = renderAtWeek(<Template />, 1)
-      // Squat: default 245 1RM, wk1 is 4×5 prescribed at RPE 7.
-      const squatRow = rowNamed(container, 'Back Squat')
-      const squatRpeInput = squatRow.querySelector<HTMLInputElement>('.lsrpe__input')!
-      fireEvent.change(squatRpeInput, { target: { value: '9' } })
-
-      // 5 reps: prescribed RPE 7 is 8 to failure (78.6%), felt RPE 9 is 6
-      // (83.7%). 245 × 0.786 / 0.837 → 230.
-      expect(squatRow.querySelector('.lsrpe-signal__text')?.textContent).toBe(
-        'implies 230 lb',
-      )
-      fireEvent.click(
-        squatRow.querySelector<HTMLButtonElement>('.lsrpe-signal__apply')!,
-      )
-
-      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-      expect(saved.rm.squat).toBe(230)
-    })
-
-    it('reads an easier-than-prescribed set up', () => {
+    it('logs a main-lift RPE with no implied-1RM signal', () => {
       const { container } = renderAtWeek(<Template />, 1)
       const squatRow = rowNamed(container, 'Back Squat')
       fireEvent.change(squatRow.querySelector<HTMLInputElement>('.lsrpe__input')!, {
-        target: { value: '5' },
+        target: { value: '9' },
       })
-      // felt RPE 5 is 10 to failure (73.9%): 245 × 0.786 / 0.739 → 260.
-      expect(squatRow.querySelector('.lsrpe-signal__text')?.textContent).toBe(
-        'implies 260 lb',
-      )
+
+      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+      expect(saved.log['w1:t:mon-e0:lsrpe']).toBe('9')
+      expect(squatRow.querySelector('.lsrpe-signal')).toBeNull()
     })
 
-    // The bug this replaced: an absolute e1RM read the week-4 deload as 15 lb
-    // under the real max even when it went exactly to plan, because 68% is
-    // deliberately lighter than the chart's RPE-5 load.
-    it('leaves the 1RM alone when the set hits the prescribed RPE', () => {
-      for (const [week, rpe] of [
-        [1, '7'],
-        [4, '5'],
-        [7, '8'],
-      ] as const) {
-        const { container } = renderAtWeek(<Template />, week)
-        const squatRow = rowNamed(container, 'Back Squat')
-        fireEvent.change(squatRow.querySelector<HTMLInputElement>('.lsrpe__input')!, {
-          target: { value: rpe },
-        })
-        expect(squatRow.querySelector('.lsrpe-signal__text')?.textContent).toBe(
-          'on plan — no change',
-        )
-        // Nothing to apply, so no button to tap by mistake.
-        expect(squatRow.querySelector('.lsrpe-signal__apply')).toBeNull()
-        cleanup()
-      }
-    })
-
-    it('offers no LSRPE row for a main lift in week 8 — TestSet covers it', () => {
+    it('keeps the felt RPE on main lifts in the last week, with no test inputs', () => {
       const { container } = renderAtWeek(<Template />, 8)
       const squatRow = rowNamed(container, 'Back Squat')
-      expect(squatRow.querySelector('.lsrpe')).toBeNull()
-      expect(squatRow.querySelector('.test-set')).not.toBeNull()
+      expect(squatRow.querySelector('.lsrpe')).not.toBeNull()
+      expect(squatRow.querySelector('.test-set')).toBeNull()
     })
   })
 })
 
-describe('8-Week — per-week 1RM', () => {
-  /** Hydrate with an explicit persisted blob so rmAt can be seeded. */
-  function renderPlan(blob: Record<string, unknown>) {
-    localStorage.setItem('hybridEngine.v1', JSON.stringify(blob))
-    return render(
+describe('8-Week', () => {
+  it('shows no computed loads and no past-week 1RM editor', () => {
+    localStorage.setItem('hybridEngine.v1', JSON.stringify({ week: 3 }))
+    const { container } = render(
       <StoreProvider>
         <WeekPlan />
       </StoreProvider>,
     )
-  }
-
-  const squatTileOf = (container: HTMLElement, wk: number) =>
-    container.querySelectorAll('.week-card')[wk - 1]!.querySelector('.load-tile__num')!
-
-  it('holds a frozen week at its own 1RM while later weeks follow the live one', () => {
-    const { container } = renderPlan({
-      week: 3,
-      rounding: 5,
-      rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
-      basisAt: {
-        1: { rm: { squat: 145, bench: 225, tbdl: 375, ohp: 135 }, rounding: 5 },
-      },
-    })
-    // Week 1 squat is 78.5% — 145 freezes to 115, while 200 would give 155.
-    expect(squatTileOf(container, 1).textContent).toBe('115')
-    expect(squatTileOf(container, 2).textContent).toBe('160') // 200 × 80%
-  })
-
-  it('offers the 1RM editor on past weeks only', () => {
-    const { container } = renderPlan({ week: 3 })
-    const cards = container.querySelectorAll('.week-card')
-
-    // Week 2 is past; week 3 is active and still follows the live 1RM.
-    fireEvent.click(cards[1]!.querySelector('.week-card__toggle')!)
-    expect(container.querySelectorAll('.week-rm')).toHaveLength(1)
-
-    fireEvent.click(cards[2]!.querySelector('.week-card__toggle')!)
-    expect(container.querySelectorAll('.week-rm')).toHaveLength(0)
-  })
-
-  it('holds a frozen week at its own rounding', () => {
-    const { container } = renderPlan({
-      week: 2,
-      rounding: 5,
-      rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
-      basisAt: {
-        1: { rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 }, rounding: 2.5 },
-      },
-    })
-    // Same 1RM either side — only the rounding differs. 200 × 78.5% = 157.
-    expect(squatTileOf(container, 1).textContent).toBe('157.5')
-    expect(squatTileOf(container, 2).textContent).toBe('160')
-  })
-
-  it('edits a past week rounding without moving the live one', () => {
-    const { container } = renderPlan({
-      week: 2,
-      rounding: 5,
-      rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
-    })
-    fireEvent.click(
-      container.querySelectorAll('.week-card')[0]!.querySelector('.week-card__toggle')!,
-    )
-    fireEvent.change(container.querySelector('.week-rm__select')!, {
-      target: { value: '2.5' },
-    })
-
-    const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-    expect(saved.basisAt['1'].rounding).toBe(2.5)
-    expect(saved.rounding).toBe(5)
-    expect(squatTileOf(container, 1).textContent).toBe('157.5')
-    expect(squatTileOf(container, 2).textContent).toBe('160')
-  })
-
-  it('edits a past week without moving the live 1RM', () => {
-    const { container } = renderPlan({
-      week: 2,
-      rounding: 5,
-      rm: { squat: 200, bench: 225, tbdl: 375, ohp: 135 },
-    })
-    fireEvent.click(
-      container.querySelectorAll('.week-card')[0]!.querySelector('.week-card__toggle')!,
-    )
-    fireEvent.change(container.querySelector('.week-rm__input')!, {
-      target: { value: '145' },
-    })
-
-    const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
-    expect(saved.basisAt['1'].rm.squat).toBe(145)
-    expect(saved.rm.squat).toBe(200)
-    expect(squatTileOf(container, 1).textContent).toBe('115')
-    expect(squatTileOf(container, 2).textContent).toBe('160')
+    expect(container.querySelector('.load-tile')).toBeNull()
+    fireEvent.click(container.querySelectorAll('.week-card')[1]!.querySelector('.week-card__toggle')!)
+    expect(container.querySelector('.week-rm')).toBeNull()
   })
 })

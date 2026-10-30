@@ -1,7 +1,5 @@
 /**
  * Hardcoded option defaults. There is deliberately no settings UI
- * (see docs/CONVENTIONS.md → "Where things go").
+ * (see docs/CONVENTIONS.md → "Where things go"). Empty until a flag needs it.
  */
-
-/** Show the "· nn%" tail on main-lift meta lines. */
-export const SHOW_PERCENTS = true
+export {}

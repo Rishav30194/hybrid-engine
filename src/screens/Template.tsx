@@ -1,40 +1,20 @@
 import './Template.css'
 import { CONDINFO, DAYS, weekAt } from '../data/program'
 import type { Day, Exercise } from '../data/types'
-import {
-  basisForWeek,
-  computeLoad,
-  exerciseMeta,
-  mainLiftMeta,
-  resolveExercise,
-  toNum,
-} from '../engine/loads'
-import { SHOW_PERCENTS } from '../config'
+import { exerciseMeta, mainLiftMeta, resolveExercise } from '../engine/loads'
 import { dayProgress } from '../engine/progress'
-import { tmplCondDoneKey, tmplDoneKey } from '../engine/keys'
-import {
-  impliedOneRepMax,
-  lsrpeId,
-  prescribedReps,
-  prescribedRpe,
-  testRepsId,
-  testRpeId,
-  toReference,
-} from '../engine/e1rm'
-import { TEST_WEEK } from '../data/program'
+import { lsrpeId, tmplCondDoneKey, tmplDoneKey } from '../engine/keys'
 import { useAppDispatch, useAppState } from '../state/context'
 import { CheckButton } from '../components/CheckButton'
 
-/** Screen 3 — the 3-day workout; main loads come live from the active week,
- *  accessory weights are logged per week. */
+/** Screen 3 — the 3-day workout; every exercise logs its weight per week. */
 export function Template() {
   const { week } = useAppState()
   return (
     <>
       <p className="tmpl-intro">
-        Main-lift loads auto-calculate for{' '}
-        <span className="tmpl-intro__wk">WEEK {week}</span>. Type into the box on
-        each accessory to log the weight you used — it saves per week.
+        Log the weight you used on each exercise for{' '}
+        <span className="tmpl-intro__wk">WEEK {week}</span> — it saves per week.
       </p>
       {DAYS.map((d) => (
         <DayAccordion key={d.n} day={d} />
@@ -89,32 +69,11 @@ function DayAccordion({ day }: { day: Day }) {
 }
 
 function ExerciseRow({ ex }: { ex: Exercise }) {
-  const { week, rm, basisAt, rounding, done, log } = useAppState()
-  const basis = basisForWeek({ rm, rounding }, basisAt, week)
+  const { week, done, log } = useAppState()
   const dispatch = useAppDispatch()
   const id = tmplDoneKey(week, ex.id)
-  const { main, name } = resolveExercise(ex, week)
-
-  const mainLoad = main
-    ? computeLoad(basis.rm[main], week, main, basis.rounding)
-    : null
-  // Week 8's main lifts log reps and RPE through TestSet instead.
-  const testing = main != null && week === TEST_WEEK
   const rpeLogId = tmplDoneKey(week, lsrpeId(ex.id))
-  // How far the set landed from the effort this week asked for, read back as a
-  // 1RM. Week 8's `work up, then AMRAP` has no fixed reps, so it yields nothing
-  // here — its own TestSet covers that week.
-  const prescription = main ? weekAt(week).main[main] : null
-  const reps = prescription ? prescribedReps(prescription.sr) : null
-  const target = prescription ? prescribedRpe(prescription.rpe) : null
-  const currentRm = main ? toNum(basis.rm[main]) : 0
-  const implied =
-    reps != null && target != null
-      ? impliedOneRepMax(currentRm, reps, target, toNum(log[rpeLogId]))
-      : null
-  // Equal means the set went to plan: say so, but offer no no-op Apply.
-  const onPlan = implied != null && implied === toReference(currentRm)
-  const frozen = basisAt[week]
+  const { main, name } = resolveExercise(ex, week)
 
   return (
     <div className="ex-row">
@@ -126,20 +85,16 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
       <div className="ex-row__body">
         <div className="ex-row__top">
           <span className="ex-row__name">{name}</span>
-          {main ? (
-            <span className="ex-row__load">{mainLoad} lb</span>
-          ) : (
-            <input
-              type="text"
-              inputMode="decimal"
-              className="ex-row__input"
-              value={log[id] ?? ''}
-              placeholder={ex.load}
-              onChange={(e) =>
-                dispatch({ type: 'setLog', id, value: e.target.value })
-              }
-            />
-          )}
+          <input
+            type="text"
+            inputMode="decimal"
+            className="ex-row__input"
+            value={log[id] ?? ''}
+            placeholder={ex.load ?? 'weight'}
+            onChange={(e) =>
+              dispatch({ type: 'setLog', id, value: e.target.value })
+            }
+          />
         </div>
         {/* Main lifts read the active week's prescription, which narrows across
             the block (4×5→4×4 becomes 4×5 in week 1); accessories are static.
@@ -149,105 +104,25 @@ function ExerciseRow({ ex }: { ex: Exercise }) {
         <div className="ex-row__meta">
           <span className="ex-row__meta-text">
             {main
-              ? `${mainLiftMeta(week, main, SHOW_PERCENTS)} · rest ${ex.rest}`
+              ? `${mainLiftMeta(week, main)} · rest ${ex.rest}`
               : exerciseMeta(ex)}
           </span>
-          {!testing && (
-            <label className="lsrpe">
-              <span className="lsrpe__label">felt</span>
-              <input
-                type="text"
-                inputMode="decimal"
-                className="ex-row__input lsrpe__input"
-                value={log[rpeLogId] ?? ''}
-                placeholder="RPE"
-                onChange={(e) =>
-                  dispatch({ type: 'setLog', id: rpeLogId, value: e.target.value })
-                }
-              />
-            </label>
-          )}
+          <label className="lsrpe">
+            <span className="lsrpe__label">felt</span>
+            <input
+              type="text"
+              inputMode="decimal"
+              className="ex-row__input lsrpe__input"
+              value={log[rpeLogId] ?? ''}
+              placeholder="RPE"
+              onChange={(e) =>
+                dispatch({ type: 'setLog', id: rpeLogId, value: e.target.value })
+              }
+            />
+          </label>
         </div>
         <div className="ex-row__note">{ex.note}</div>
-        {testing && <TestSet ex={ex} week={week} log={log} />}
-        {/* Accessories have no 1RM to estimate against, so they only log the
-            number — you read it back next week and set the weight yourself. */}
-        {main && implied != null && (
-          <div className="lsrpe-signal">
-            <span className="lsrpe-signal__text">
-              {onPlan ? 'on plan — no change' : `implies ${implied} lb`}
-            </span>
-            {!onPlan && (
-              <button
-                type="button"
-                className="lsrpe-signal__apply"
-                onClick={() =>
-                  dispatch(
-                    frozen
-                      ? { type: 'setRmAt', week, lift: main, value: implied }
-                      : { type: 'setRm', lift: main, value: implied },
-                  )
-                }
-              >
-                Apply
-              </button>
-            )}
-          </div>
-        )}
       </div>
-    </div>
-  )
-}
-
-/**
- * Week 8 only. What the AMRAP actually produced, so the next block's 1RM can be
- * estimated from it. Weight pre-fills with the calculated 90% — which is the
- * set you're doing — leaving reps and RPE as the two things only you know.
- */
-function TestSet({
-  ex,
-  week,
-  log,
-}: {
-  ex: Exercise
-  week: number
-  log: Record<string, string>
-}) {
-  const dispatch = useAppDispatch()
-  const { rm, basisAt, rounding } = useAppState()
-  const basis = basisForWeek({ rm, rounding }, basisAt, week)
-  const { main } = resolveExercise(ex, week)
-
-  const fields = [
-    {
-      id: tmplDoneKey(week, ex.id),
-      label: 'Weight',
-      hint: main
-        ? String(computeLoad(basis.rm[main], week, main, basis.rounding))
-        : '',
-    },
-    // Reps are the unknown in an AMRAP, so there's nothing sensible to suggest.
-    { id: tmplDoneKey(week, testRepsId(ex.id)), label: 'Reps', hint: 'reps' },
-    { id: tmplDoneKey(week, testRpeId(ex.id)), label: 'RPE', hint: '10' },
-  ]
-
-  return (
-    <div className="test-set">
-      {fields.map((f) => (
-        <label key={f.id} className="test-set__field">
-          <span className="test-set__label">{f.label}</span>
-          <input
-            type="text"
-            inputMode="decimal"
-            className="ex-row__input test-set__input"
-            value={log[f.id] ?? ''}
-            placeholder={f.hint}
-            onChange={(e) =>
-              dispatch({ type: 'setLog', id: f.id, value: e.target.value })
-            }
-          />
-        </label>
-      ))}
     </div>
   )
 }

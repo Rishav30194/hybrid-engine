@@ -13,17 +13,6 @@ describe('reducer', () => {
     expect(reducer(INITIAL_STATE, { type: 'hydrateRemote', data: { week: 42 } }).week).toBe(8)
   })
 
-  it('coerces rounding and defaults falsy to 1', () => {
-    expect(reducer(INITIAL_STATE, { type: 'setRounding', rounding: '2.5' }).rounding).toBe(2.5)
-    expect(reducer(INITIAL_STATE, { type: 'setRounding', rounding: 0 }).rounding).toBe(1)
-    expect(reducer(INITIAL_STATE, { type: 'setRounding', rounding: '' }).rounding).toBe(1)
-  })
-
-  it('parses 1RM edits but keeps an empty string blank', () => {
-    expect(reducer(INITIAL_STATE, { type: 'setRm', lift: 'squat', value: '250' }).rm.squat).toBe(250)
-    expect(reducer(INITIAL_STATE, { type: 'setRm', lift: 'squat', value: '' }).rm.squat).toBe('')
-  })
-
   it('toggles a done flag on and off', () => {
     const on = reducer(INITIAL_STATE, { type: 'toggleDone', id: 'w1:m:squat' })
     expect(on.done['w1:m:squat']).toBe(true)
@@ -43,88 +32,13 @@ describe('reducer', () => {
     expect(reducer(INITIAL_STATE, { type: 'toggleDay', day: 3 }).openDay).toBe(3)
   })
 
-  describe('per-week 1RM', () => {
-    const atWeek = (week: number): AppState => ({ ...INITIAL_STATE, week })
-
-    it('freezes every earlier week when a 1RM changes', () => {
-      // His case: week 1 trained at 145, week 2 goes up. Week 1 must not move.
-      const s = reducer(atWeek(2), { type: 'setRm', lift: 'squat', value: 190 })
-      expect(s.rm.squat).toBe(190)
-      expect(s.basisAt[1]?.rm.squat).toBe(INITIAL_STATE.rm.squat)
-      expect(s.basisAt[2]).toBeUndefined() // the active week still follows rm
-    })
-
-    it('leaves an already-frozen week at its original value', () => {
-      const first = reducer(atWeek(2), { type: 'setRm', lift: 'squat', value: 190 })
-      const later = reducer({ ...first, week: 3 }, {
-        type: 'setRm',
-        lift: 'squat',
-        value: 205,
-      })
-      expect(later.basisAt[1]?.rm.squat).toBe(INITIAL_STATE.rm.squat) // untouched
-      expect(later.basisAt[2]?.rm.squat).toBe(190) // frozen at what week 2 ran on
-      expect(later.rm.squat).toBe(205)
-    })
-
-    it('freezes nothing while week 1 is active', () => {
-      const s = reducer(INITIAL_STATE, { type: 'setRm', lift: 'squat', value: 190 })
-      expect(s.basisAt).toEqual({})
-    })
-
-    it('edits one past week without touching the live 1RM or its siblings', () => {
-      const frozen = reducer(atWeek(3), { type: 'setRm', lift: 'squat', value: 205 })
-      const s = reducer(frozen, { type: 'setRmAt', week: 1, lift: 'squat', value: 145 })
-      expect(s.basisAt[1]?.rm.squat).toBe(145)
-      expect(s.basisAt[1]?.rm.bench).toBe(INITIAL_STATE.rm.bench) // seeded, not blanked
-      expect(s.basisAt[2]?.rm.squat).toBe(INITIAL_STATE.rm.squat) // sibling untouched
-      expect(s.rm.squat).toBe(205) // live 1RM untouched
-    })
-
-    it('seeds an unfrozen week from the live 1RM before editing it', () => {
-      const s = reducer(atWeek(3), { type: 'setRmAt', week: 2, lift: 'squat', value: 160 })
-      expect(s.basisAt[2]?.rm.squat).toBe(160)
-      expect(s.basisAt[2]?.rm.tbdl).toBe(INITIAL_STATE.rm.tbdl)
-    })
-
-    it('keeps a blank edit blank so the field can be cleared', () => {
-      const s = reducer(atWeek(2), { type: 'setRmAt', week: 1, lift: 'squat', value: '' })
-      expect(s.basisAt[1]?.rm.squat).toBe('')
-    })
-
-    it('freezes past weeks when the rounding changes too', () => {
-      const s = reducer(atWeek(3), { type: 'setRounding', rounding: '2.5' })
-      expect(s.rounding).toBe(2.5)
-      expect(s.basisAt[1]?.rounding).toBe(5) // both earlier weeks keep 5 lb
-      expect(s.basisAt[2]?.rounding).toBe(5)
-      expect(s.basisAt[3]).toBeUndefined()
-    })
-
-    it('edits a past week rounding without moving the live one', () => {
-      const s = reducer(atWeek(2), { type: 'setRoundingAt', week: 1, rounding: '2.5' })
-      expect(s.basisAt[1]?.rounding).toBe(2.5)
-      expect(s.basisAt[1]?.rm.squat).toBe(INITIAL_STATE.rm.squat) // seeded
-      expect(s.rounding).toBe(INITIAL_STATE.rounding)
-    })
-
-    it('defaults a falsy past-week rounding to 1, like the live one', () => {
-      const s = reducer(atWeek(2), { type: 'setRoundingAt', week: 1, rounding: '' })
-      expect(s.basisAt[1]?.rounding).toBe(1)
-    })
-
-    it('clears the frozen weeks when a new block starts', () => {
-      const frozen = reducer(atWeek(8), { type: 'setRm', lift: 'squat', value: 205 })
-      const s = reducer(frozen, { type: 'startNewBlock', rm: INITIAL_STATE.rm, carry: {} })
-      expect(s.basisAt).toEqual({})
-    })
-  })
-
   it('stores logged accessory weights', () => {
     const s = reducer(INITIAL_STATE, { type: 'setLog', id: 'w1:t:mon-e1', value: '95' })
     expect(s.log['w1:t:mon-e1']).toBe('95')
   })
 
   it('hydrates the persisted slice from a remote blob', () => {
-    const local = reducer(INITIAL_STATE, { type: 'setRm', lift: 'squat', value: '999' })
+    const local: AppState = { ...INITIAL_STATE, rm: { ...INITIAL_STATE.rm, squat: 999 } }
     const s = reducer(local, {
       type: 'hydrateRemote',
       data: {
@@ -153,7 +67,7 @@ describe('reducer', () => {
 })
 
 describe('startNewBlock', () => {
-  it('resets to week 1, sets the new 1RMs, keeps only the carried weights', () => {
+  it('resets to week 1 and keeps only the carried weights', () => {
     const started: AppState = {
       ...INITIAL_STATE,
       week: 8,
@@ -164,12 +78,11 @@ describe('startNewBlock', () => {
     }
     const s = reducer(started, {
       type: 'startNewBlock',
-      rm: { squat: 209, bench: 230, tbdl: 380, ohp: 140 },
       carry: { 'w1:t:mon-e1': '120' },
     })
 
     expect(s.week).toBe(1)
-    expect(s.rm.squat).toBe(209)
+    expect(s.rm).toEqual(INITIAL_STATE.rm) // unread, so left as it was
     expect(s.done).toEqual({})
     expect(s.log).toEqual({ 'w1:t:mon-e1': '120' })
     expect(s.openDay).toBe(1)
@@ -178,7 +91,7 @@ describe('startNewBlock', () => {
   it('leaves the timer and tab alone', () => {
     const s = reducer(
       { ...INITIAL_STATE, tab: 'template' },
-      { type: 'startNewBlock', rm: INITIAL_STATE.rm, carry: {} },
+      { type: 'startNewBlock', carry: {} },
     )
     expect(s.tab).toBe('template')
     expect(s.timer).toEqual(INITIAL_STATE.timer)

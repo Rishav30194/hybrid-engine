@@ -1,15 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import {
-  computeLoad,
-  exerciseMeta,
-  mainLiftMeta,
-  resolveExercise,
-  roundLoad,
-  toNum,
-} from './loads'
+import { exerciseMeta, mainLiftMeta, resolveExercise, toNum } from './loads'
 import { anchorLifts, COND, DAYS, WEEKS } from '../data/program'
-
-const DEFAULT_RM = { squat: 245, bench: 225, tbdl: 375, ohp: 135 } as const
 
 describe('toNum', () => {
   it('parses numbers and numeric strings', () => {
@@ -25,52 +16,10 @@ describe('toNum', () => {
   })
 })
 
-describe('roundLoad', () => {
-  it('never returns a negative load', () => {
-    // type="number" accepts a typed minus sign; a negative 1RM must not
-    // propagate a negative working load to every screen.
-    expect(roundLoad(-5, 0.785, 5)).toBe(0)
-    expect(roundLoad('-200', 0.7, 10)).toBe(0)
-  })
-
-  it('rounds to the given increment', () => {
-    // 245 × 0.785 = 192.325
-    expect(roundLoad(245, 0.785, 1)).toBe(192)
-    expect(roundLoad(245, 0.785, 2.5)).toBe(192.5)
-    expect(roundLoad(245, 0.785, 5)).toBe(190)
-    expect(roundLoad(245, 0.785, 10)).toBe(190)
-  })
-  it('defaults a falsy increment to 1', () => {
-    expect(roundLoad(245, 0.785, 0)).toBe(192)
-    expect(roundLoad(245, 0.785, '')).toBe(192)
-  })
-  it('returns 0 for a blank 1RM', () => {
-    expect(roundLoad('', 0.785, 5)).toBe(0)
-  })
-})
-
-describe('computeLoad (week 1, rounding 5)', () => {
-  it('matches the hand-computed working loads', () => {
-    expect(computeLoad(DEFAULT_RM.squat, 1, 'squat', 5)).toBe(190)
-    expect(computeLoad(DEFAULT_RM.bench, 1, 'bench', 5)).toBe(170)
-    expect(computeLoad(DEFAULT_RM.tbdl, 1, 'tbdl', 5)).toBe(295)
-    expect(computeLoad(DEFAULT_RM.ohp, 1, 'ohp', 5)).toBe(95)
-  })
-  it('recalculates when the week changes', () => {
-    // week 4 deload squat pct 0.68 → 245 × 0.68 = 166.6 → 165
-    expect(computeLoad(DEFAULT_RM.squat, 4, 'squat', 5)).toBe(165)
-  })
-  it('recalculates when the 1RM changes', () => {
-    expect(computeLoad(300, 1, 'squat', 5)).toBe(235) // 300 × 0.785 = 235.5 → 235
-  })
-})
-
 describe('mainLiftMeta', () => {
-  it('includes the percent by default', () => {
-    expect(mainLiftMeta(1, 'squat')).toBe('4×5 · RPE 7 · 79%')
-  })
-  it('omits the percent when showPercents is false', () => {
-    expect(mainLiftMeta(1, 'squat', false)).toBe('4×5 · RPE 7')
+  it('reads the active week, with no percentage', () => {
+    expect(mainLiftMeta(1, 'squat')).toBe('4×5 · RPE 7')
+    expect(mainLiftMeta(5, 'squat')).toBe('4×4 · RPE 7.5')
   })
 })
 
@@ -102,11 +51,6 @@ describe('resolveExercise (Wednesday press swap)', () => {
   })
   it('leaves every other exercise alone', () => {
     expect(resolveExercise(squat, 3)).toEqual({ main: 'squat', name: squat.name })
-  })
-  it('drives the load off the lift actually programmed', () => {
-    // wk 3 ohp pct 0.745 → 135 × 0.745 = 100.6 → 100; bench would be 175.
-    const { main } = resolveExercise(press, 3)
-    expect(computeLoad(DEFAULT_RM.ohp, 3, main!, 5)).toBe(100)
   })
 })
 

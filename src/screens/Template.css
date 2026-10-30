@@ -110,14 +110,6 @@
   color: var(--text-primary-alt);
 }
 
-.ex-row__load {
-  flex: 0 0 auto;
-  font-family: var(--font-head);
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--accent);
-}
-
 .ex-row__input {
   flex: 0 0 auto;
   width: 98px;
@@ -224,36 +216,7 @@
   color: var(--text-muted-alt);
 }
 
-/* Week 8 only: what you actually tested, for the next block's 1RM. */
-.test-set {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.test-set__field {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.test-set__label {
-  font-size: 10px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: var(--text-muted-alt);
-}
-
-.test-set__input {
-  width: 100%;
-  text-align: center;
-}
-
-/* Last set RPE — rides the meta line on every exercise row, every week except
-   the main lift's week-8 TestSet slot. */
+/* Last set RPE — rides the meta line on every exercise row, every week. */
 .lsrpe {
   display: flex;
   align-items: center;
@@ -271,33 +234,3 @@
   text-align: center;
 }
 
-/* Main lifts only, and only once an RPE is entered — so an untouched row costs
-   nothing. */
-.lsrpe-signal {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 5px;
-}
-
-.lsrpe-signal__text {
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.lsrpe-signal__apply {
-  flex: 0 0 auto;
-  border: none;
-  border-radius: var(--r-input);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-family: var(--font-head);
-  font-weight: 600;
-  font-size: 12px;
-  padding: 6px 10px;
-}

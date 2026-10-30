@@ -15,7 +15,7 @@ offline. Desktop-looking-fine is not the bar.
 - **Every form control uses `font-size: var(--fs-control)`** (16px). Below 16px, iOS zooms the
   page on focus and does not zoom back. Use the token rather than a literal — and never set a
   smaller size on an `input`, `select` or `textarea`, however dense the row. A larger size is
-  fine (the 1RM field is 22px). `src/styles/controls.test.ts` enforces this across every control
+  fine. `src/styles/controls.test.ts` enforces this across every control
   in the app; it fails with the file and size named, so you'll hear about it before the phone does.
 - **A control can't be shrunk, so put it on a line that already exists.** The 16px floor makes
   any input ~29px tall; giving it a caps label and a line of its own costs ~53px, multiplied by
@@ -28,8 +28,8 @@ offline. Desktop-looking-fine is not the bar.
 - **`100dvh`, never `100vh`** — mobile Safari's toolbar makes `vh` lie.
 - **Touch, not hover.** No hover-only affordances, no tooltips, no right-click.
 - **No `alert` / `confirm` / `prompt`.** They're hostile in a standalone PWA.
-- **Numeric fields set `inputMode`** — `numeric` for 1RMs, `decimal` for logged weights — so the
-  right keypad opens. Keep that on any new numeric input.
+- **Numeric fields set `inputMode`** — `decimal` for logged weights and RPE — so the right keypad
+  opens. Keep that on any new numeric input.
 - **Keep the first paint offline.** The app must paint from localStorage with no network. See
   the dynamic-import rule in [`ARCHITECTURE.md`](ARCHITECTURE.md#cloud-sync).
 
@@ -77,7 +77,7 @@ are intentional.
 | UI-only state                 | `AppState` only. Keep it out of `PersistedState`                                                                                                            |
 | A colour or size              | `src/styles/tokens.css`                                                                                                                                       |
 | A screen                      | `src/screens/`, a `Tab` union member, a `BottomNav` entry, an `App.tsx` branch. Four places                                                             |
-| A feature flag                | `src/config.ts` (that's what `SHOW_PERCENTS` is). There is deliberately no settings UI                                                                      |
+| A feature flag                | `src/config.ts` (empty until one is needed). There is deliberately no settings UI                                                                      |
 
 ---
 
@@ -102,15 +102,14 @@ Extend the file that owns the behaviour:
 
 | Area                                      | Test                                |
 | ----------------------------------------- | ----------------------------------- |
-| Load maths, program integrity, press swap | `src/engine/loads.test.ts`        |
+| Meta lines, program integrity, press swap | `src/engine/loads.test.ts`        |
 | Per-week check-off keys, day progress     | `src/engine/progress.test.ts`     |
 | Actions and state transitions             | `src/state/reducer.test.ts`       |
 | Rest timer                                | `src/state/reducer.timer.test.ts` |
 | Persisted slice, merge, round-trip        | `src/state/persistence.test.ts`   |
 | Rendered screens                          | `src/screens/screens.test.tsx`    |
 | Form-control font-size floor (iOS zoom)   | `src/styles/controls.test.ts`     |
-| Estimated 1RM from a logged set           | `src/engine/e1rm.test.ts`         |
-| Closing a block: new 1RMs + carry-forward  | `src/engine/newBlock.test.ts`     |
+| Closing a block: carry-forward            | `src/engine/newBlock.test.ts`     |
 | Username ↔ account identifier              | `src/auth/username.test.ts`       |
 
 Vitest + Testing Library, jsdom. No real network in tests. CI runs `npm test` before it will

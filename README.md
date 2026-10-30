@@ -4,21 +4,19 @@ Mobile-first PWA for a single athlete running a fixed 8-week hybrid (strength + 
 training program — **three sessions a week (Mon / Wed / Fri), around 45 minutes each** (Monday
 runs longer; see `docs/PROGRAM_SOURCE.md`).
 
-Enter your four 1-rep maxes once, pick the current week (1–8), and every working load
-recalculates automatically. Everything persists locally; signing in adds optional cloud backup
+Pick the current week (1–8) and log the weight you use on each exercise — it saves per week. Everything persists locally; signing in adds optional cloud backup
 and cross-device sync.
 
 | Tab | What it's for |
 |---|---|
-| **This Week** | The 1RM editor — the input every load derives from — and block progress: how much of each of the 8 weeks you've completed |
-| **8-Week Plan** | The whole block at a glance, load tiles per week, and how to progress |
-| **Template** | The session itself — exercises in order, check-offs, and logged accessory weights |
+| **This Week** | Block progress: how much of each of the 8 weeks you've completed |
+| **8-Week Plan** | The whole block at a glance, and how to progress |
+| **Template** | The session itself — exercises in order, check-offs, and logged weights |
 
 Plus a floating rest timer, anchored to a timestamp so it survives the phone sleeping.
 
-**Closing a block:** week 8 replaces its working sets with one all-out AMRAP at 90%. Log the
-weight, reps and RPE, tap **Start new block**, and the app estimates your new 1RMs, carries your
-accessory weights into week 1, and resets everything else.
+**Closing a block:** in week 8, tap **Start new block**. It carries every logged weight into
+week 1 and resets everything else.
 
 **Live:** <https://rishav30194.github.io/hybrid-engine/> — auto-deploys on every push to `main`.
 

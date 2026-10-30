@@ -2,21 +2,20 @@ import type { LiftKey } from '../data/types'
 
 export type Tab = 'week' | 'plan' | 'template'
 
-/** A 1RM value may be transiently blank ("") while the user edits the input. */
 export type RmValue = number | string
 export type Rm = Record<LiftKey, RmValue>
 
-/** Everything a week's working loads are computed from. */
+/**
+ * What working loads were once computed from. Nothing reads `rm`, `rounding` or
+ * `basisAt` any more; they stay in the persisted slice because dropping them
+ * would change the stored shape for no gain.
+ */
 export interface LoadBasis {
   rm: Rm
   rounding: number
 }
 
-/**
- * The basis a past week was trained on, keyed by 1-based week. A week absent
- * here follows the live `rm` and `rounding`; a week present here is frozen and
- * no longer moves when either changes. See `freezePastWeeks` in the reducer.
- */
+/** The basis each past week was trained on, keyed by 1-based week. Unread. */
 export type BasisAt = Partial<Record<number, LoadBasis>>
 
 export interface TimerState {
@@ -30,13 +29,13 @@ export interface TimerState {
 export interface AppState {
   tab: Tab
   week: number
+  /** Unread; kept so the persisted shape doesn't change (see LoadBasis). */
   rounding: number
   rm: Rm
-  /** Frozen load basis for weeks already trained (see BasisAt). */
   basisAt: BasisAt
   /** Check-off flags, keyed per week (see engine/keys). */
   done: Record<string, boolean>
-  /** Logged accessory weights, keyed per week. */
+  /** Logged weights and felt RPEs, keyed per week. */
   log: Record<string, string>
   /** Expanded 8-Week card (0 = none); one open at a time. */
   openWeek: number
@@ -60,22 +59,17 @@ export interface PersistedState {
 export type Action =
   | { type: 'setTab'; tab: Tab }
   | { type: 'setWeek'; week: number }
-  | { type: 'setRounding'; rounding: RmValue }
-  | { type: 'setRm'; lift: LiftKey; value: RmValue }
-  /** Correct a past week's basis, without touching the live values. */
-  | { type: 'setRmAt'; week: number; lift: LiftKey; value: RmValue }
-  | { type: 'setRoundingAt'; week: number; rounding: RmValue }
   | { type: 'setLog'; id: string; value: string }
   | { type: 'toggleDone'; id: string }
   | { type: 'toggleWeek'; week: number }
   | { type: 'toggleDay'; day: number }
   | { type: 'setPillHidden'; hidden: boolean }
   /**
-   * Finish the block and start again at week 1. Sets the new 1RMs, carries the
-   * accessory and conditioning weights forward, and clears every check-off.
-   * Destructive and not undoable — the UI confirms first.
+   * Finish the block and start again at week 1. Carries every logged weight
+   * forward and clears every check-off. Destructive and not undoable — the UI
+   * confirms first.
    */
-  | { type: 'startNewBlock'; rm: Rm; carry: Record<string, string> }
+  | { type: 'startNewBlock'; carry: Record<string, string> }
   // Replace the persisted slice from a remote (cloud) blob.
   | { type: 'hydrateRemote'; data: Partial<PersistedState> }
   // Rest timer. Time-dependent actions carry `now` so the reducer stays pure.

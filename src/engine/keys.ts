@@ -16,3 +16,10 @@ export const tmplDoneKey = (week: number, exId: string) => `w${week}:t:${exId}`
 /** Template conditioning check-off: `w{week}:tc:{cond}` */
 export const tmplCondDoneKey = (week: number, cond: CondKey) =>
   `w${week}:tc:${cond}`
+
+/**
+ * Log id for a set's actual felt RPE ("last set RPE"), used inside
+ * `tmplDoneKey`. A suffixed id rather than a new key format, so nothing
+ * existing can orphan.
+ */
+export const lsrpeId = (exId: string) => `${exId}:lsrpe`
