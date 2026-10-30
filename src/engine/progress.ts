@@ -1,6 +1,6 @@
 /** Per-day completion counts for the Template screen. */
 import type { Day } from '../data/types'
-import { tmplCondDoneKey, tmplDoneKey } from './keys'
+import { tmplDoneKey } from './keys'
 
 export interface DayProgress {
   done: number
@@ -8,25 +8,21 @@ export interface DayProgress {
   complete: boolean
 }
 
-/**
- * A day is its exercises plus one conditioning block. Progress counts checked
- * exercises + the conditioning block against that total.
- */
+/** A day is its exercises; progress counts the checked ones against that total. */
 export function dayProgress(
   day: Day,
   week: number,
   done: Record<string, boolean>,
 ): DayProgress {
-  const total = day.ex.length + 1
+  const total = day.ex.length
   let count = 0
   for (const e of day.ex) {
     if (done[tmplDoneKey(week, e.id)]) count++
   }
-  if (done[tmplCondDoneKey(week, day.condKey)]) count++
   return { done: count, total, complete: count === total }
 }
 
-/** Completion across a whole week — every day's exercises plus its conditioning. */
+/** Completion across a whole week — every day's exercises. */
 export function weekProgress(
   days: Day[],
   week: number,

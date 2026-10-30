@@ -3,17 +3,17 @@
 Tracks the move from the 8-week strength and conditioning block to a 12-week hypertrophy block,
 across sessions. Update the status table and the session log at the end of every session.
 
-Until Phase 3 lands, the agreed program in this file is the source of truth for it. After Phase 3,
-`src/data/program.ts` holds the values and `docs/PROGRAM_SOURCE.md` holds the reasoning; this file
-then keeps only status and the log.
+Phase 3 has landed on the branch: `src/data/program.ts` now holds the values and
+`docs/PROGRAM_SOURCE.md` holds the reasoning. The program and decisions below are the record of
+what was agreed; if they ever disagree with those files, the files win.
 
 ## Status
 
 | Phase | Class | Status |
 |---|---|---|
 | 1 — Remove the 1RM load engine | B | Done 2026-10-29 (`dff176e`) |
-| 2 — Log reps and show last week | B | Done 2026-10-29 |
-| 3 — Load the new program | C | Not started |
+| 2 — Log reps and show last week | B | Done 2026-10-29 (`434a812`) |
+| 3 — Load the new program | C | Built 2026-10-29; waiting on Rishav's read of the three days |
 | 4 — Ship and cut over | Push and PR | Not started |
 
 ## Ground rules
@@ -181,21 +181,22 @@ needed that the new one doesn't.
 
 **Validation**
 
-- [ ] `npm test`, `npm run build`, and `npm run lint` pass.
-- [ ] The program integrity test asserts 12 weeks, 3 days, unique ids, and that no id from the old
-      program is reused.
-- [ ] `clampWeek` tests: 12 is allowed, 13 clamps to 12.
-- [ ] `progress` tests: a day's total equals its exercise count.
-- [ ] Dev server at 390px: all three days in week 1 and week 12; **Start new block** appears only
+- [x] `npm test`, `npm run build`, and `npm run lint` pass. (101 tests.)
+- [x] The program integrity test asserts 12 weeks, 3 days, unique ids, and that no id from the old
+      program is reused (every id must match `bb-(mon|wed|fri)-…`).
+- [x] `clampWeek` tests: 12 is allowed, 13 clamps to 12.
+- [x] `progress` tests: a day's total equals its exercise count.
+- [x] Dev server at 390px: all three days in week 1 and week 12; **Start new block** appears only
       in week 12. The back-off line on squat, flat DB press, and deadlift (carried from Phase 2).
-      Rest timer, bottom nav, and header sit correctly.
-- [ ] The `load` field on `Exercise` is unused since Phase 2 (placeholders show last week or
+      Rest timer, bottom nav, and header sit correctly. No horizontal scroll; the longest name
+      wraps to two lines.
+- [x] The `load` field on `Exercise` is unused since Phase 2 (placeholders show last week or
       `weight`). Drop it from the type and the data.
 - [ ] Rishav reads all three days in the dev build and confirms they match this file.
-- [ ] `docs/PROGRAM_SOURCE.md` is rewritten from the Decisions table. `docs/ARCHITECTURE.md`
+- [x] `docs/PROGRAM_SOURCE.md` is rewritten from the Decisions table. `docs/ARCHITECTURE.md`
       (program data, invariants) and `README.md` match.
-- [ ] A search of `docs/` and `README.md` for `1RM`, `8-week`, `sumo`, `TEST_WEEK`, `condKey`, and
-      `climber` turns up nothing stale.
+- [x] A search of `docs/` and `README.md` for `1RM`, `8-week`, `sumo`, `TEST_WEEK`, `condKey`, and
+      `climber` turns up nothing stale. (Remaining hits are deliberate history.)
 
 ## Phase 4 — Ship and cut over
 
@@ -235,4 +236,9 @@ None.
   the `--fs-load` and `--fs-1rm-input` tokens removed. Committed as `dff176e`.
 - **2026-10-29:** Phase 2 done and committed. Reps sit beside the weight (`weight × reps`), last
   week's numbers as placeholders, back-off pair behind `Exercise.backoff`. Weight box narrowed
-  98 → 72px. Next: the Phase 3 plan (class C).
+  98 → 72px. Committed as `434a812`.
+- **2026-10-29:** Phase 3 built and committed. New program in `program.ts` with `bb-` ids;
+  conditioning, lifts, the press swap, and the week-card toggle removed; week 1's RPE override.
+  Nav label `8-WEEK` → `PLAN`, header subtitle `3-Day Hypertrophy`. `CLAUDE.md` §1 and §2 wording
+  updated (approved). Open: Rishav's read of the three days in the dev build. Noticed, not
+  changed: the header chips don't scroll the active week into view, so W12 starts off-screen.

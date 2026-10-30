@@ -1,15 +1,9 @@
 import './Template.css'
-import { CONDINFO, DAYS, weekAt } from '../data/program'
+import { DAYS } from '../data/program'
 import type { Day, Exercise } from '../data/types'
-import { exerciseMeta, mainLiftMeta, resolveExercise } from '../engine/loads'
+import { exerciseMeta } from '../engine/loads'
 import { dayProgress } from '../engine/progress'
-import {
-  backoffId,
-  lsrpeId,
-  repsId,
-  tmplCondDoneKey,
-  tmplDoneKey,
-} from '../engine/keys'
+import { backoffId, lsrpeId, repsId, tmplDoneKey } from '../engine/keys'
 import { useAppDispatch, useAppState } from '../state/context'
 import { CheckButton } from '../components/CheckButton'
 
@@ -68,7 +62,6 @@ function DayAccordion({ day }: { day: Day }) {
           {day.ex.map((e) => (
             <ExerciseRow key={e.id} ex={e} />
           ))}
-          <ConditioningBlock day={day} />
         </div>
       )}
     </div>
@@ -80,7 +73,7 @@ export function ExerciseRow({ ex }: { ex: Exercise }) {
   const dispatch = useAppDispatch()
   const id = tmplDoneKey(week, ex.id)
   const rpeLogId = tmplDoneKey(week, lsrpeId(ex.id))
-  const { main, name } = resolveExercise(ex, week)
+  const { name } = ex
 
   return (
     <div className="ex-row">
@@ -104,16 +97,12 @@ export function ExerciseRow({ ex }: { ex: Exercise }) {
             />
           </div>
         )}
-        {/* Main lifts read the active week's prescription, which narrows across
-            the block (4×5→4×4 becomes 4×5 in week 1); accessories are static.
-            The felt RPE rides this line rather than taking one of its own: it
+        {/* The felt RPE rides this line rather than taking one of its own: it
             reads directly against the RPE prescribed a few words to its left,
             and the row keeps the height it had before the field existed. */}
         <div className="ex-row__meta">
           <span className="ex-row__meta-text">
-            {main
-              ? `${mainLiftMeta(week, main)} · rest ${ex.rest}`
-              : exerciseMeta(ex)}
+            {exerciseMeta(ex, week)}
           </span>
           <label className="lsrpe">
             <span className="lsrpe__label">felt</span>
@@ -181,61 +170,5 @@ function SetEntry({
         }
       />
     </span>
-  )
-}
-
-function ConditioningBlock({ day }: { day: Day }) {
-  const { week, done, log } = useAppState()
-  const dispatch = useAppDispatch()
-  const id = tmplCondDoneKey(week, day.condKey)
-
-  return (
-    <div className="ex-cond">
-      <CheckButton
-        size="exercise"
-        checked={!!done[id]}
-        onToggle={() => dispatch({ type: 'toggleDone', id })}
-      />
-      <div className="ex-cond__body">
-        <div className="ex-cond__label">CONDITIONING · {day.condLabel}</div>
-        <div className="ex-cond__desc">{weekAt(week).cond[day.condKey]}</div>
-        <div className="ex-cond__how">{CONDINFO[day.condKey]}</div>
-        {day.condLoads?.map((load) => (
-          <CondLoadRow key={load.id} week={week} load={load} log={log} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-/** Logged value for one loaded conditioning piece — same storage as accessory
- *  weights (`log` keyed per week), so it progresses week to week alongside them.
- *  Not always a weight: the climber logs a machine level, so unit and
- *  placeholder are per-piece. */
-function CondLoadRow({
-  week,
-  load,
-  log,
-}: {
-  week: number
-  load: NonNullable<Day['condLoads']>[number]
-  log: Record<string, string>
-}) {
-  const dispatch = useAppDispatch()
-  const id = tmplDoneKey(week, load.id)
-
-  return (
-    <label className="cond-load">
-      <span className="cond-load__label">{load.label}</span>
-      <input
-        type="text"
-        inputMode="decimal"
-        className="ex-row__input cond-load__input"
-        value={log[id] ?? ''}
-        placeholder={load.placeholder ?? 'weight'}
-        onChange={(e) => dispatch({ type: 'setLog', id, value: e.target.value })}
-      />
-      <span className="cond-load__unit">{load.unit ?? 'lb'}</span>
-    </label>
   )
 }

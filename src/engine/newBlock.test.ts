@@ -1,66 +1,64 @@
 import { describe, expect, it } from 'vitest'
 import { planNewBlock } from './newBlock'
 import { backoffId, lsrpeId, repsId, tmplDoneKey } from './keys'
-import { DAYS } from '../data/program'
+import { DAYS, LAST_WEEK } from '../data/program'
 
-const at8 = (id: string) => tmplDoneKey(8, id)
+const atLast = (id: string) => tmplDoneKey(LAST_WEEK, id)
+const atOne = (id: string) => tmplDoneKey(1, id)
 
 describe('planNewBlock', () => {
-  it('carries accessory and conditioning weights into week 1', () => {
+  it('carries every exercise’s weight into week 1', () => {
     const log = {
-      [at8('mon-row-cable')]: '120',
-      [at8('mon-carry-suitcase')]: '70',
-      [at8('mon-climber')]: '6',
+      [atLast('bb-mon-squat')]: '185',
+      [atLast('bb-mon-legcurl')]: '90',
+      [atLast('bb-fri-legcurl')]: '80',
     }
-    const carry = planNewBlock(DAYS, 8, log)
-    expect(carry[tmplDoneKey(1, 'mon-row-cable')]).toBe('120')
-    expect(carry[tmplDoneKey(1, 'mon-carry-suitcase')]).toBe('70')
-    expect(carry[tmplDoneKey(1, 'mon-climber')]).toBe('6')
-  })
-
-  it('carries a main lift’s weight like any other exercise', () => {
-    const carry = planNewBlock(DAYS, 8, { [at8('mon-e0')]: '180' })
-    expect(carry[tmplDoneKey(1, 'mon-e0')]).toBe('180')
-  })
-
-  // Felt RPE and the old week-8 test entries are about that one set, not a
-  // starting point for the next block.
-  it('never carries suffixed detail keys forward', () => {
-    const log = {
-      [at8('mon-e0')]: '180',
-      [at8(lsrpeId('mon-e0'))]: '8',
-      [at8('mon-e0:reps')]: '3',
-      [at8('mon-e0:rpe')]: '8',
-    }
-    expect(Object.keys(planNewBlock(DAYS, 8, log))).toEqual([
-      tmplDoneKey(1, 'mon-e0'),
-    ])
-  })
-
-  it('carries a back-off weight, but no reps', () => {
-    const day = { ...DAYS[0]!, ex: [{ ...DAYS[0]!.ex[0]!, backoff: true }], condLoads: [] }
-    const log = {
-      [at8('mon-e0')]: '185',
-      [at8(repsId('mon-e0'))]: '6',
-      [at8(backoffId('mon-e0'))]: '160',
-      [at8(repsId(backoffId('mon-e0')))]: '9',
-    }
-    expect(planNewBlock([day], 8, log)).toEqual({
-      [tmplDoneKey(1, 'mon-e0')]: '185',
-      [tmplDoneKey(1, backoffId('mon-e0'))]: '160',
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({
+      [atOne('bb-mon-squat')]: '185',
+      [atOne('bb-mon-legcurl')]: '90',
+      [atOne('bb-fri-legcurl')]: '80',
     })
   })
 
+  it('carries a back-off weight, but no reps', () => {
+    const log = {
+      [atLast('bb-mon-squat')]: '185',
+      [atLast(repsId('bb-mon-squat'))]: '6',
+      [atLast(backoffId('bb-mon-squat'))]: '160',
+      [atLast(repsId(backoffId('bb-mon-squat')))]: '9',
+    }
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({
+      [atOne('bb-mon-squat')]: '185',
+      [atOne(backoffId('bb-mon-squat'))]: '160',
+    })
+  })
+
+  // Felt RPE describes one set, not a starting point for the next block.
+  it('never carries felt RPE forward', () => {
+    const log = { [atLast(lsrpeId('bb-wed-curl'))]: '10' }
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({})
+  })
+
+  // A back-off id on an exercise without back-off sets is not something the
+  // row ever writes; nothing should invent it.
+  it('only carries a back-off weight for a top-set exercise', () => {
+    const log = { [atLast(backoffId('bb-mon-legpress'))]: '300' }
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({})
+  })
+
+  it('ignores weights logged under the old program’s ids', () => {
+    expect(planNewBlock(DAYS, LAST_WEEK, { [atLast('mon-e0')]: '180' })).toEqual({})
+  })
+
   it('produces an empty carry from an empty log without throwing', () => {
-    expect(planNewBlock(DAYS, 8, {})).toEqual({})
+    expect(planNewBlock(DAYS, LAST_WEEK, {})).toEqual({})
   })
 
   it('only reads the week it is given', () => {
     const log = {
-      [tmplDoneKey(7, 'mon-row-cable')]: '999', // last week's row — not week 8
-      [at8('mon-row-cable')]: '120',
+      [tmplDoneKey(LAST_WEEK - 1, 'bb-wed-row')]: '999', // the week before — not this one
+      [atLast('bb-wed-row')]: '60',
     }
-    const carry = planNewBlock(DAYS, 8, log)
-    expect(carry[tmplDoneKey(1, 'mon-row-cable')]).toBe('120')
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({ [atOne('bb-wed-row')]: '60' })
   })
 })

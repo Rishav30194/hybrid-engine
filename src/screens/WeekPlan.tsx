@@ -1,5 +1,5 @@
 import './WeekPlan.css'
-import { COND, NOTES, WEEKS } from '../data/program'
+import { NOTES, WEEKS } from '../data/program'
 import type { Week } from '../data/types'
 import { useAppDispatch, useAppState } from '../state/context'
 import { PhasePill } from '../components/PhasePill'
@@ -8,9 +8,7 @@ import { PhasePill } from '../components/PhasePill'
 export function WeekPlan() {
   return (
     <>
-      <p className="plan-intro">
-        Tap a week to make it active.
-      </p>
+      <p className="plan-intro">Tap a week to make it active.</p>
       {WEEKS.map((w) => (
         <WeekCard key={w.wk} w={w} />
       ))}
@@ -20,10 +18,9 @@ export function WeekPlan() {
 }
 
 function WeekCard({ w }: { w: Week }) {
-  const { week, openWeek } = useAppState()
+  const { week } = useAppState()
   const dispatch = useAppDispatch()
   const active = w.wk === week
-  const open = openWeek === w.wk
 
   return (
     <div className={`week-card${active ? ' week-card--active' : ''}`}>
@@ -45,25 +42,6 @@ function WeekCard({ w }: { w: Week }) {
           {active ? '● ACTIVE' : 'SET ACTIVE'}
         </div>
       </button>
-
-      <button
-        type="button"
-        className="week-card__toggle"
-        onClick={() => dispatch({ type: 'toggleWeek', week: w.wk })}
-      >
-        {open ? 'Hide conditioning ▲' : 'Show conditioning ▾'}
-      </button>
-
-      {open && (
-        <div className="week-card__cond">
-          {COND.map((c) => (
-            <div key={c.key} className="week-card__cond-row">
-              <span className="week-card__cond-label">{c.short}</span>
-              <span className="week-card__cond-desc">{w.cond[c.key]}</span>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }

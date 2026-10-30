@@ -15,10 +15,9 @@ export function planNewBlock(
   log: Record<string, string>,
 ): Record<string, string> {
   const carry: Record<string, string> = {}
-  const ids = days.flatMap((d) => [
-    ...d.ex.flatMap((e) => (e.backoff ? [e.id, backoffId(e.id)] : [e.id])),
-    ...(d.condLoads ?? []).map((l) => l.id),
-  ])
+  const ids = days.flatMap((d) =>
+    d.ex.flatMap((e) => (e.backoff ? [e.id, backoffId(e.id)] : [e.id])),
+  )
 
   for (const id of ids) {
     const weight = log[tmplDoneKey(fromWeek, id)]

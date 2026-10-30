@@ -18,19 +18,19 @@ Read only what the task needs. Do not scan the whole repo.
 
 ## 1. What you are touching
 
-A **live, single-user app**. Rishav runs the 8-week program off it on his iPhone, from the Home
+A **live, single-user app**. Rishav runs the 12-week program off it on his iPhone, from the Home
 Screen PWA at <https://rishav30194.github.io/hybrid-engine/>. Every push to `main` auto-deploys
 to that phone within minutes.
 
 Three consequences that shape every change:
 
-1. **There is real training data in the field.** Check-offs, logged weights and 1RMs live in
+1. **There is real training data in the field.** Check-offs, logged weights and reps live in
    `localStorage` and optionally Supabase. A careless key or shape change silently orphans weeks
    of logged work. There is no undo, no export, and no migration layer.
 2. **It is used one-handed, in a gym, mid-set.** Small screen, portrait, sweaty thumbs, possibly
    offline.
-3. **The numbers are not decoration.** Percentages in `src/data/program.ts` decide what actually
-   goes on the bar. Changing one is a training decision, not a code change.
+3. **The numbers are not decoration.** Sets, reps and RPE in `src/data/program.ts` are training
+   decisions. Changing one changes his training, not just the code.
 
 ---
 
@@ -42,7 +42,7 @@ State the class in your plan. It determines what the change costs.
 |---|---|---|
 | **A — Cosmetic** | spacing, colour, copy, a token value | Tests + build pass; check at 390px wide |
 | **B — Behaviour** | new interaction, screen layout, timer tweak | Plan approved first; add or extend a test |
-| **C — Program data** | a `pct`, `sr`, `rpe`, exercise, week, note | **Explicit approval every time** — this changes his training. Update `loads.test.ts` expectations |
+| **C — Program data** | an `sr`, `rpe`, exercise, week, note | **Explicit approval every time** — this changes his training. Update `loads.test.ts` expectations |
 | **D — Persisted shape** | new field in `PersistedState`, key format, `STORAGE_KEY` | Plan + migration + approval |
 | **E — Infra** | `package.json`, `vite.config.ts`, workflow, Supabase schema | Explicit approval |
 

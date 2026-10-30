@@ -2,7 +2,7 @@ import { WEEKS } from '../data/program'
 import { toNum } from '../engine/loads'
 import type { Action, AppState } from './types'
 
-/** Keep week within 1..8 so WEEKS[week-1] is always valid (guards corrupt data). */
+/** Keep week within 1..WEEKS.length so WEEKS[week-1] is always valid (guards corrupt data). */
 export const clampWeek = (n: unknown): number =>
   Math.min(Math.max(1, Math.round(toNum(n as number)) || 1), WEEKS.length)
 
@@ -14,7 +14,6 @@ export const INITIAL_STATE: AppState = {
   basisAt: {},
   done: {},
   log: {},
-  openWeek: 0,
   openDay: 1,
   timer: { open: false, running: false, duration: 90, remaining: 90, endAt: null },
   pillHidden: false,
@@ -33,8 +32,6 @@ export function reducer(state: AppState, action: Action): AppState {
         ...state,
         done: { ...state.done, [action.id]: !state.done[action.id] },
       }
-    case 'toggleWeek':
-      return { ...state, openWeek: state.openWeek === action.week ? 0 : action.week }
     case 'toggleDay':
       return { ...state, openDay: state.openDay === action.day ? 0 : action.day }
     case 'setPillHidden':
@@ -59,7 +56,6 @@ export function reducer(state: AppState, action: Action): AppState {
         week: 1,
         done: {},
         log: action.carry,
-        openWeek: 0,
         openDay: 1,
       }
 

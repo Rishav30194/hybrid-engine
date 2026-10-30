@@ -67,47 +67,6 @@
   color: var(--accent);
 }
 
-/* --- Conditioning toggle + list --- */
-.week-card__toggle {
-  margin-top: 11px;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: none;
-  border-top: 1px dashed var(--border-dashed);
-  padding: 10px 0 0;
-  color: var(--text-secondary-alt);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.week-card__cond {
-  margin-top: 9px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.week-card__cond-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 12.5px;
-}
-
-.week-card__cond-label {
-  color: var(--text-muted-alt);
-  flex: 0 0 auto;
-}
-
-.week-card__cond-desc {
-  color: var(--text-secondary);
-  text-align: right;
-  font-weight: 500;
-}
-
 /* --- How to progress --- */
 .progress-card {
   border: 1px solid var(--border-soft);

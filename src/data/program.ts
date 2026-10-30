@@ -1,145 +1,82 @@
 /**
  * The program's real prescription data — this file is the source of truth.
- * Do not edit values casually; this is the athlete's actual 8-week plan, three
- * sessions a week (Mon / Wed / Fri, ~45 min each; Monday overruns on purpose).
- * The reasoning behind the shape (time budgets, volume trade-offs) is in
+ * Do not edit values casually; this is the athlete's actual 12-week hypertrophy
+ * block, three sessions a week (Mon / Wed / Fri, ~55 min each). The reasoning
+ * behind the shape (time budgets, exercise choices, volume) is in
  * docs/PROGRAM_SOURCE.md.
  */
-import type {
-  CondKey,
-  ConditioningDay,
-  Day,
-  Lift,
-  LiftKey,
-  Phase,
-  PhaseKey,
-  Week,
-} from './types'
-
-export const LIFTS: Lift[] = [
-  { key: 'squat', name: 'Back Squat', abbr: 'SQ', note: 'Fresh — strength anchor.' },
-  { key: 'bench', name: 'Bench Press', abbr: 'BN', note: 'Wednesday anchor, except weeks 3 and 6.' },
-  { key: 'tbdl', name: 'Sumo Deadlift', abbr: 'DL', note: 'Posterior-chain anchor.' },
-  { key: 'ohp', name: 'Overhead Press', abbr: 'OHP', note: 'Takes the Wednesday press slot in weeks 3 and 6.' },
-]
-
-const LIFT_BY_KEY = Object.fromEntries(LIFTS.map((l) => [l.key, l])) as Record<
-  LiftKey,
-  Lift
->
-
-/** The press rotates overhead in weeks 3 and 6; bench every other week. */
-export const pressForWeek = (week: number): LiftKey =>
-  week === 3 || week === 6 ? 'ohp' : 'bench'
-
-/** The three lifts actually programmed in a week, in session order (Mon/Wed/Fri). */
-export const anchorLifts = (week: number): Lift[] => [
-  LIFT_BY_KEY.squat,
-  LIFT_BY_KEY[pressForWeek(week)],
-  LIFT_BY_KEY.tbdl,
-]
+import type { Day, Phase, PhaseKey, Week } from './types'
 
 export const PHASES: Record<PhaseKey, Phase> = {
-  base: { color: '#2DD4BF', bg: 'rgba(45,212,191,0.13)', border: 'rgba(45,212,191,0.40)' },
-  peak: { color: '#FB923C', bg: 'rgba(251,146,60,0.13)', border: 'rgba(251,146,60,0.40)' },
+  easy: { color: '#A78BFA', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.40)' },
   build: { color: '#38BDF8', bg: 'rgba(56,189,248,0.13)', border: 'rgba(56,189,248,0.40)' },
-  deload: { color: '#A78BFA', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.40)' },
-  test: { color: '#FB7185', bg: 'rgba(251,113,133,0.13)', border: 'rgba(251,113,133,0.40)' },
 }
 
-export const COND: ConditioningDay[] = [
-  { key: 'mon', label: 'MON — Carry + Stair Climber', short: 'Climber' },
-  { key: 'wed', label: 'WED — Bike / Row Intervals', short: 'Intervals' },
-  { key: 'fri', label: 'FRI — Zone 2 Tail', short: 'Zone 2' },
-]
+/** Off-day copy for This Week. */
+export const OFF_DAYS = 'Walk briskly, 20 min or more, most days.'
 
-export const CONDINFO: Record<CondKey, string> = {
-  mon: 'Suitcase carry first: one heavy dumbbell, ribs stacked over hips, no leaning away from it. Walk the distance, swap hands — that is one round. Then the climber, steady at the logged level from the first minute. It has no easy gear, so this is one continuous effort, not intervals — pick a level you can still hold on the last minute. Week 8 is the exception: that one is all-out for max floors.',
-  wed: 'Hard = RPE 8–9: breathing heavily, not an all-out sprint. Keep pedalling / pulling easy through the rest — don\'t fully stop. Pick an output you can repeat on the last round.',
-  fri: 'Conversational, nose-breathing — it should feel too easy. This is the whole aerobic base now, so it does not get cut when the session runs long.',
-}
-
-/** Off-day copy for This Week — the walking that backstops the thin Zone 2 base. */
-export const OFF_DAYS =
-  "Walk briskly, 20 min or more, most days. Friday's Zone 2 tail is a thin base on its own — the walking holds it up."
+const fullEffort = (wk: number): Week => ({ wk, phase: 'build', tag: 'FULL EFFORT', rpe: '8–10' })
 
 /** Typed non-empty so `WEEKS[0]` is a `Week`, which makes `weekAt` total. */
 export const WEEKS: [Week, ...Week[]] = [
-  { wk: 1, phase: 'base', tag: 'BLOCK 1 · BASE', rpe: '7',
-    main: { squat: { sr: '4×5', rpe: '7', pct: 0.785 }, bench: { sr: '4×6', rpe: '7', pct: 0.76 }, tbdl: { sr: '4×5', rpe: '7', pct: 0.785 }, ohp: { sr: '4×6', rpe: '7', pct: 0.72 } },
-    cond: { mon: 'Suitcase carry 3 × 20 m/side · Climber 10 min', wed: '6 × 1:30 hard / 1:00 easy', fri: 'Zone 2 · 15 min easy' } },
-  { wk: 2, phase: 'base', tag: 'BLOCK 1 · BASE', rpe: '7–8',
-    main: { squat: { sr: '4×5', rpe: '7.5', pct: 0.80 }, bench: { sr: '4×6', rpe: '7.5', pct: 0.775 }, tbdl: { sr: '4×5', rpe: '7.5', pct: 0.80 }, ohp: { sr: '4×6', rpe: '7.5', pct: 0.735 } },
-    cond: { mon: 'Suitcase carry 3 × 25 m/side · Climber 11 min', wed: '5 × 2:00 / 1:00', fri: 'Zone 2 · 15 min easy' } },
-  { wk: 3, phase: 'peak', tag: 'BLOCK 1 · PEAK · OHP', rpe: '8',
-    main: { squat: { sr: '4×5', rpe: '8', pct: 0.81 }, bench: { sr: '4×6', rpe: '8', pct: 0.785 }, tbdl: { sr: '4×5', rpe: '8', pct: 0.81 }, ohp: { sr: '4×6', rpe: '8', pct: 0.745 } },
-    cond: { mon: 'Suitcase carry 4 × 25 m/side · Climber 12 min', wed: '4 × 2:30 / 1:00', fri: 'Zone 2 · 15 min easy' } },
-  { wk: 4, phase: 'deload', tag: 'DELOAD WEEK', rpe: '5–6',
-    main: { squat: { sr: '3×5', rpe: '5', pct: 0.68 }, bench: { sr: '3×6', rpe: '5', pct: 0.66 }, tbdl: { sr: '3×5', rpe: '5', pct: 0.68 }, ohp: { sr: '3×6', rpe: '5', pct: 0.62 } },
-    cond: { mon: 'Light walk only', wed: '12 min easy spin', fri: 'Zone 2 · 20 min easy' } },
-  { wk: 5, phase: 'build', tag: 'BLOCK 2 · BUILD', rpe: '7–8',
-    main: { squat: { sr: '4×4', rpe: '7.5', pct: 0.825 }, bench: { sr: '4×5', rpe: '7.5', pct: 0.795 }, tbdl: { sr: '4×4', rpe: '7.5', pct: 0.825 }, ohp: { sr: '4×5', rpe: '7.5', pct: 0.755 } },
-    cond: { mon: 'Suitcase carry 4 × 25 m/side heavier · Climber 10 min, level up', wed: '4 × 3:00 / 1:00', fri: 'Zone 2 · 15 min easy' } },
-  { wk: 6, phase: 'build', tag: 'BLOCK 2 · BUILD · OHP', rpe: '8',
-    main: { squat: { sr: '4×4', rpe: '8', pct: 0.835 }, bench: { sr: '4×5', rpe: '8', pct: 0.81 }, tbdl: { sr: '4×4', rpe: '8', pct: 0.835 }, ohp: { sr: '4×5', rpe: '8', pct: 0.77 } },
-    cond: { mon: 'Suitcase carry 4 × 30 m/side · Climber 11 min', wed: '3 × 4:00 / 1:30', fri: 'Zone 2 · 15 min easy' } },
-  { wk: 7, phase: 'peak', tag: 'BLOCK 2 · PEAK', rpe: '8–9',
-    main: { squat: { sr: '4×4', rpe: '8 hold', pct: 0.835 }, bench: { sr: '4×5', rpe: '8 hold', pct: 0.81 }, tbdl: { sr: '4×4', rpe: '8 hold', pct: 0.835 }, ohp: { sr: '4×5', rpe: '8 hold', pct: 0.77 } },
-    cond: { mon: 'Suitcase carry 4 × 30 m/side heaviest · Climber 12 min', wed: '3 × 4:00 / 1:00', fri: 'Zone 2 · 15 min easy' } },
-  { wk: 8, phase: 'test', tag: 'TEST WEEK', rpe: 'test',
-    main: { squat: { sr: 'work up, then AMRAP', rpe: '9–10', pct: 0.90 }, bench: { sr: 'work up, then AMRAP', rpe: '9–10', pct: 0.90 }, tbdl: { sr: 'work up, then AMRAP', rpe: '9–10', pct: 0.90 }, ohp: { sr: 'work up, then AMRAP', rpe: '9–10', pct: 0.90 } },
-    cond: { mon: 'Max-distance carry/side · Climber 10 min for max floors', wed: '2 km row for time', fri: 'Zone 2 · 15 min easy' } },
+  { wk: 1, phase: 'easy', tag: 'EASY WEEK', rpe: '~8', rpeOverride: '~8' },
+  ...[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(fullEffort),
 ]
 
+const WARM_UP = 'Warm up: 5 min easy climber, arm and leg swings'
+
 export const DAYS: Day[] = [
-  { n: 1, title: 'MONDAY — SQUAT + PULL', sub: 'Strength + Carry & Stair Climber', condLabel: 'Suitcase Carry + Stair Climber', condKey: 'mon',
-    condLoads: [
-      { id: 'mon-carry-suitcase', label: 'Carry' },
-      { id: 'mon-climber', label: 'Level', unit: '', placeholder: 'level' },
-    ],
+  { n: 1, title: 'MONDAY — LOWER', sub: WARM_UP,
     ex: [
-      { id: 'mon-e0', name: 'Back Squat', main: 'squat', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Strength anchor — do it fresh. Brace, knees out.' },
-      { id: 'mon-row-cable', name: 'A1 · Cable Row', sr: '3×10', rpe: '8', rest: '—', load: 'RPE-based', note: 'Chest up, drive the elbows back, control the stretch.' },
-      { id: 'mon-ohp-seated', name: 'A2 · Seated DB Overhead Press', sr: '3×8', rpe: '8', rest: '60s', load: 'RPE-based', note: 'Back flat to the pad, press straight up to lockout.' },
-      { id: 'mon-abwheel', name: 'A3 · Ab Wheel Rollout', sr: '3×10', rpe: '7', rest: '—', load: 'bodyweight', note: 'Fills the A rest. Ribs down, no lumbar sag — stop where form goes.' },
+      { id: 'bb-mon-squat', name: 'Back Squat', sr: '1×5–6 top, 2×8–10 back-off', rpe: '8', rest: '2–3 min', backoff: true, note: 'Brace, knees out. Back-off sets run 10–15% lighter than the top set.' },
+      { id: 'bb-mon-legpress', name: 'Leg Press', sr: '3×10–12', rpe: '9', rest: '2 min', note: 'Feet mid-platform. Lower until your hips start to tuck, no bouncing.' },
+      { id: 'bb-mon-legcurl', name: 'Seated Leg Curl', sr: '3×10–12', rpe: '9–10', rest: '90s', note: 'Lean forward for a deeper hamstring stretch, control the way back.' },
+      { id: 'bb-mon-fly', name: 'B1 · Cable Fly', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Soft elbows, big stretch when open, squeeze the chest together.' },
+      { id: 'bb-mon-crunch', name: 'B2 · Cable Crunch', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Round your back as you crunch, hips stay still.' },
+      { id: 'bb-mon-calf', name: 'Standing Calf Raise', sr: '3×10–12', rpe: '10', rest: '90s', note: 'Pause a full second in the bottom stretch, then all the way up. No bouncing.' },
     ] },
-  { n: 2, title: 'WEDNESDAY — PRESS + INTERVALS', sub: 'Push / Pull + Hard Intervals', condLabel: 'Bike / Row Intervals', condKey: 'wed',
+  { n: 2, title: 'WEDNESDAY — UPPER', sub: WARM_UP,
     ex: [
-      { id: 'wed-e0', name: 'Bench Press', main: 'bench', sr: '4×6→4×5', rpe: '7→8', rest: '2 min', note: 'Strength anchor. OHP takes this slot in weeks 3 and 6.' },
-      { id: 'wed-e1', name: 'A1 · Weighted Pull-up / Pulldown', sr: '3×8', rpe: '10', rest: '—', load: 'RPE-based', note: 'Full hang to chest, elbows down and in. Every set to failure — reps will fall across the three, that is expected.' },
-      { id: 'wed-e2', name: 'A2 · Romanian Deadlift', sr: '3×8', rpe: '7', rest: '75s', load: 'RPE-based', note: 'Hinge, soft knees, hamstring stretch.' },
-      { id: 'wed-e3', name: 'B1 · DB Lateral Raise', sr: '3×15', rpe: '9–10', rest: '—', load: 'RPE-based', note: 'Side delts. Raise out, not up. Last rep should be a real struggle.' },
-      { id: 'wed-e4', name: 'B2 · EZ-Bar Curl', sr: '2×12', rpe: '9–10', rest: '45s', load: 'RPE-based', note: 'Direct biceps work. Squeeze the top, take it to the edge.' },
-      { id: 'wed-e5', name: 'Cable Overhead Triceps Extension', sr: '2×12', rpe: '9–10', rest: '45s', load: 'RPE-based', note: 'Straight set, not part of the B pair — take it at the cable on your way to conditioning. Elbows in, full stretch overhead, near failure.' },
+      { id: 'bb-wed-dbpress', name: 'Flat DB Press', sr: '1×6–8 top, 2×8–10 back-off', rpe: '8–9', rest: '2–3 min', backoff: true, note: 'Sit with the dumbbells on your knees, kick them up as you lie back. Sink them low for the stretch.' },
+      { id: 'bb-wed-ohp', name: 'A1 · Seated DB Shoulder Press', sr: '2×8–10', rpe: '9', rest: '60s', note: 'Bring the dumbbells all the way down, torso upright.' },
+      { id: 'bb-wed-row', name: 'A2 · Chest-Supported DB Row', sr: '3×10–12', rpe: '9–10', rest: '60s', note: 'Chest on the incline bench. Drive the elbows back, let the shoulders reach forward at the bottom.' },
+      { id: 'bb-wed-pullup', name: 'Weighted Pull-up', sr: '3×6–10', rpe: '9–10', rest: '2 min', note: 'Full hang to chest up. Add weight once you clear 10 reps.' },
+      { id: 'bb-wed-lateral', name: 'B1 · Cable Lateral Raise', sr: '3×12–15', rpe: '10', rest: '60s', note: 'Raise out, not up. Control the lowering.' },
+      { id: 'bb-wed-triceps', name: 'B2 · Overhead Cable Triceps Extension', sr: '3×10–12', rpe: '10', rest: '60s', note: 'Elbows in, full stretch behind the head.' },
+      { id: 'bb-wed-curl', name: 'EZ-Bar Curl', sr: '2×10–12', rpe: '10', rest: '90s', note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze the top.' },
     ] },
-  { n: 3, title: 'FRIDAY — HINGE + ZONE 2', sub: 'Strength + easy aerobic tail', condLabel: 'Zone 2 Tail', condKey: 'fri',
+  { n: 3, title: 'FRIDAY — FULL BODY', sub: WARM_UP,
     ex: [
-      { id: 'fri-e0', name: 'Sumo Deadlift', main: 'tbdl', sr: '4×5→4×4', rpe: '7→8', rest: '2 min', note: 'Posterior-chain anchor. Wide stance, hands inside knees, hips down, push the floor apart.' },
-      { id: 'fri-e1', name: 'A1 · Bulgarian Split Squat', sr: '3×8/leg', rpe: '7', rest: '—', load: 'RPE-based', note: 'Drop straight down, drive the front heel.' },
-      { id: 'fri-e2', name: 'A2 · Incline DB Press', sr: '3×10', rpe: '8', rest: '75s', load: 'RPE-based', note: 'Stretch at the bottom, squeeze the upper chest.' },
-      { id: 'fri-e3', name: 'Standing Calf Raise', sr: '2×15', rpe: '9–10', rest: '—', load: 'RPE-based', note: 'During cooldown. Full stretch, one-second squeeze, near failure.' },
+      { id: 'bb-fri-deadlift', name: 'Conventional Deadlift', sr: '1×4–6 top, 2×6–8 back-off', rpe: '8', rest: '2–3 min', backoff: true, note: 'Bar over mid-foot, push the floor away. Back-off reps stay at 6–8 because grip and lower back give out first.' },
+      { id: 'bb-fri-incline', name: 'A1 · Incline DB Press', sr: '3×8–10', rpe: '9', rest: '60s', note: 'Low incline. Sink the dumbbells as low as you comfortably can.' },
+      { id: 'bb-fri-bss', name: 'A2 · Bulgarian Split Squat', sr: '2×8–10/leg', rpe: '8', rest: '60s', note: 'Drop straight down, drive through the front heel.' },
+      { id: 'bb-fri-pulldown', name: 'B1 · Lat Pulldown', sr: '3×10–12', rpe: '9–10', rest: '60s', note: 'Full stretch at the top, elbows down and in.' },
+      { id: 'bb-fri-lateral', name: 'B2 · DB Lateral Raise', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Raise out, not up. The last rep should be a real struggle.' },
+      { id: 'bb-fri-curl', name: 'C1 · Bayesian Cable Curl', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Face away from the cable with the arm behind you for the stretch.' },
+      { id: 'bb-fri-pressdown', name: 'C2 · Triceps Pressdown', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Elbows pinned to your sides, full lockout.' },
+      { id: 'bb-fri-legcurl', name: 'Seated Leg Curl', sr: '2×10–12', rpe: '9–10', rest: '90s', note: 'Same machine as Monday. Lean forward for the stretch.' },
     ] },
 ]
 
 /**
  * The prescription for a 1-based week. `clampWeek` should already keep `week`
- * in 1..8, so the fallback is a second line of defence, not the normal path —
- * a corrupt value shows week 1 instead of white-screening the app mid-session.
+ * in 1..WEEKS.length, so the fallback is a second line of defence, not the
+ * normal path — a corrupt value shows week 1 instead of white-screening the app
+ * mid-session.
  */
 export const weekAt = (week: number): Week => WEEKS[week - 1] ?? WEEKS[0]
 
-/** The block's test week — where new 1RMs are measured and the next block starts. */
-export const TEST_WEEK = WEEKS.length
+/** The block's last week — the one that offers Start new block. */
+export const LAST_WEEK = WEEKS.length
 
 export const NOTES: string[] = [
-  "Loads auto-update from your 1RM and the week's %1RM. Update a 1RM and the whole plan recalculates.",
-  "Strength: when the top set feels easier than the listed RPE, bump that lift's 1RM by 5 lb (lower) / 2.5 lb (upper).",
-  'Cut volume, never intensity. Lightening the bar to make a session easier is what causes detraining.',
-  'Accessories are RPE-based: log the weight you used, then beat it at the same RPE next week.',
-  'Isolation work (lateral raise, curl, triceps, calves) runs at RPE 9–10, and pull-ups at 10. Two or three sets a week only earns anything if the last rep is a fight — expect reps or weight to drop across sets.',
-  'Conditioning: progress ONE dial at a time — more rounds OR longer work OR a heavier carry / higher climber level.',
-  "Miss a day? Skip it, don't stack two sessions. Carry the missed anchor into next week.",
-  'Weeks 4 and 8 are mandatory. Week 4 is the deload — take it, it is what makes weeks 5–7 work.',
-  'Week 8 tests: work up to 90% and take one all-out set. Log weight, reps and RPE on each main lift.',
-  'Then tap Start new block on This Week. Your AMRAP sets the new 1RMs, accessory weights carry over, and everything resets to week 1.',
+  'When the last set reaches the top of the range at the target RPE, add the smallest jump (5 lb per dumbbell, 5–10 lb on a barbell) and drop back to the bottom of the range.',
+  'On top-set exercises, add weight to the top set first. Back-off sets run 10–15% lighter.',
+  'RPE 10 is the last rep you can complete with good form.',
+  "Drop set: reach the target reps, cut the weight by about half, and keep going until you can't do another rep.",
+  'On paired exercises (A1/A2), alternate between the two, resting about 1 minute after each set.',
+  'Week 1 is easy: RPE ~8 on everything, no sets to failure, no drop sets. Use it to find your weights.',
+  'If weights or reps drop on two or more lifts for two sessions in a row, start the next block early.',
+  'Missed a day? Skip it rather than doubling up.',
+  'In week 12, tap Start new block on This Week. Your weights carry into week 1.',
 ]

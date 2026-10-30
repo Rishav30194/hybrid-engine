@@ -1,6 +1,6 @@
 import './ThisWeek.css'
 import { useState } from 'react'
-import { DAYS, OFF_DAYS, TEST_WEEK, WEEKS, weekAt } from '../data/program'
+import { DAYS, LAST_WEEK, OFF_DAYS, WEEKS, weekAt } from '../data/program'
 import { weekProgress } from '../engine/progress'
 import { planNewBlock } from '../engine/newBlock'
 import { useAppDispatch, useAppState } from '../state/context'
@@ -8,9 +8,9 @@ import { PhasePill } from '../components/PhasePill'
 import { SectionLabel } from '../components/SectionLabel'
 
 /**
- * Screen 1 — the dashboard. Deliberately does *not* restate the week's lifts or
- * conditioning: those live on 8-Week and Template, and duplicating them here
- * meant two independent sets of check-offs for the same session. This screen
+ * Screen 1 — the dashboard. Deliberately does *not* restate the week's
+ * exercises: those live on Template, and duplicating them here meant two
+ * independent sets of check-offs for the same session. This screen
  * shows how far through the block you actually are.
  */
 export function ThisWeek() {
@@ -23,7 +23,7 @@ export function ThisWeek() {
       <SectionLabel>BLOCK PROGRESS</SectionLabel>
       <BlockProgress />
 
-      {week === TEST_WEEK && <NewBlock />}
+      {week === LAST_WEEK && <NewBlock />}
 
       <div className="off-days">
         <div className="off-days__label">OFF DAYS</div>
@@ -40,7 +40,9 @@ function WeekHero({ week }: { week: number }) {
       <PhasePill phase={w.phase} tag={w.tag} />
       <div className="week-hero__row">
         <div className="week-hero__title">WEEK {week}</div>
-        <div className="week-hero__sub">of 8 · target RPE {w.rpe}</div>
+        <div className="week-hero__sub">
+          of {LAST_WEEK} · target RPE {w.rpe}
+        </div>
       </div>
     </div>
   )

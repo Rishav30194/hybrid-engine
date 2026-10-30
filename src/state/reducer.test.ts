@@ -8,9 +8,11 @@ describe('reducer', () => {
   })
 
   it('clamps out-of-range weeks so WEEKS[week-1] is always valid', () => {
-    expect(reducer(INITIAL_STATE, { type: 'setWeek', week: 99 }).week).toBe(8)
+    expect(reducer(INITIAL_STATE, { type: 'setWeek', week: 12 }).week).toBe(12)
+    expect(reducer(INITIAL_STATE, { type: 'setWeek', week: 13 }).week).toBe(12)
+    expect(reducer(INITIAL_STATE, { type: 'setWeek', week: 99 }).week).toBe(12)
     expect(reducer(INITIAL_STATE, { type: 'setWeek', week: 0 }).week).toBe(1)
-    expect(reducer(INITIAL_STATE, { type: 'hydrateRemote', data: { week: 42 } }).week).toBe(8)
+    expect(reducer(INITIAL_STATE, { type: 'hydrateRemote', data: { week: 42 } }).week).toBe(12)
   })
 
   it('toggles a done flag on and off', () => {
@@ -18,13 +20,6 @@ describe('reducer', () => {
     expect(on.done['w1:m:squat']).toBe(true)
     const off = reducer(on, { type: 'toggleDone', id: 'w1:m:squat' })
     expect(off.done['w1:m:squat']).toBe(false)
-  })
-
-  it('opens one 8-Week card at a time', () => {
-    const open3 = reducer(INITIAL_STATE, { type: 'toggleWeek', week: 3 })
-    expect(open3.openWeek).toBe(3)
-    expect(reducer(open3, { type: 'toggleWeek', week: 5 }).openWeek).toBe(5) // switch
-    expect(reducer(open3, { type: 'toggleWeek', week: 3 }).openWeek).toBe(0) // close
   })
 
   it('toggles template days independently', () => {
@@ -72,7 +67,6 @@ describe('startNewBlock', () => {
     const started: AppState = {
       ...INITIAL_STATE,
       week: 8,
-      openWeek: 8,
       openDay: 3,
       done: { 'w8:t:mon-e0': true, 'w1:tc:mon': true },
       log: { 'w8:t:mon-e1': '120', 'w3:t:mon-e1': '110' },

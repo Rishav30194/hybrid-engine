@@ -1,9 +1,7 @@
-import type { LiftKey } from '../data/types'
-
 export type Tab = 'week' | 'plan' | 'template'
 
 export type RmValue = number | string
-export type Rm = Record<LiftKey, RmValue>
+export type Rm = Record<string, RmValue>
 
 /**
  * What working loads were once computed from. Nothing reads `rm`, `rounding` or
@@ -37,8 +35,6 @@ export interface AppState {
   done: Record<string, boolean>
   /** Logged weights and felt RPEs, keyed per week. */
   log: Record<string, string>
-  /** Expanded 8-Week card (0 = none); one open at a time. */
-  openWeek: number
   /** Expanded Template day (0 = none); toggled independently. */
   openDay: number
   timer: TimerState
@@ -61,7 +57,6 @@ export type Action =
   | { type: 'setWeek'; week: number }
   | { type: 'setLog'; id: string; value: string }
   | { type: 'toggleDone'; id: string }
-  | { type: 'toggleWeek'; week: number }
   | { type: 'toggleDay'; day: number }
   | { type: 'setPillHidden'; hidden: boolean }
   /**

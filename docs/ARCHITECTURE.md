@@ -23,17 +23,17 @@ main.tsx → AuthProvider → StoreProvider → App
 
 | Layer | Location | Role |
 |---|---|---|
-| Program data | `src/data/` | The prescription: weeks, days, lifts, conditioning |
+| Program data | `src/data/` | The prescription: weeks, days, exercises, notes |
 | Engine | `src/engine/` | Pure functions: prescription meta lines, storage keys, day progress, block carry-forward |
 | State | `src/state/` | Reducer, contexts, localStorage persistence |
 | Sync | `src/sync/` | Supabase reconcile, push/pull, status |
 | Auth | `src/auth/` | Session provider + the header account control |
-| Screens | `src/screens/` | This Week (block progress), 8-Week Plan, Template (the session) |
+| Screens | `src/screens/` | This Week (block progress), Plan (the weeks), Template (the session) |
 | Components | `src/components/` | Header, BottomNav, RestTimer, CheckButton, PhasePill, SectionLabel |
 
-Everything below the data layer is data-driven. `dayProgress` computes `day.ex.length + 1`, and
-the screens map over `DAYS` / `COND` / `WEEKS`, so the program's shape can change without
-touching the engine or the UI.
+Everything below the data layer is data-driven. `dayProgress` counts `day.ex.length`, and the
+screens map over `DAYS` / `WEEKS`, so the program's shape can change without touching the engine
+or the UI.
 
 ---
 
@@ -54,13 +54,10 @@ back-off sets, stored under the suffixed id `{exId}:bo` (weight) and `{exId}:bo:
 the reps of the last set are logged in either pair: reps fall across sets, so the last set
 reaching the top of the range means every set did.
 
-Main-lift rows still read their sets, reps and RPE from the active week (`mainLiftMeta()` reads
-`WEEKS`), so a row shows `4×5 · RPE 7` in week 1 rather than the block range `4×5→4×4` stored on
-the exercise. Accessories use their static `sr`/`rpe` via `exerciseMeta()`.
-
-**The week 3 / 6 press swap is real, not copy.** Wednesday's slot is authored as the bench but
-runs overhead in weeks 3 and 6; `resolveExercise()` gives the row the name and meta line of the
-lift that week programs. Covered by `loads.test.ts` and `screens.test.tsx`.
+**The easy week overrides every RPE.** A row's meta line comes from `exerciseMeta(ex, week)`:
+the exercise's own `sr`, `rpe` and `rest`, except that a week with `rpeOverride` (week 1's `~8`)
+replaces the RPE on every row. That keeps week 1 from reading as a call to go to failure. Drop
+sets live in the exercise note, not in `sr`, for the same reason.
 
 ---
 
@@ -70,14 +67,14 @@ lift that week programs. Covered by `loads.test.ts` and `screens.test.tsx`.
 
 | Persisted | Volatile (never persisted) |
 |---|---|
-| `week`, `rounding`, `rm`, `basisAt`, `done`, `log` | `tab`, `openWeek`, `openDay`, `timer`, `pillHidden` |
+| `week`, `rounding`, `rm`, `basisAt`, `done`, `log` | `tab`, `openDay`, `timer`, `pillHidden` |
 
 ### Invariants
 
 - **The reducer is pure.** Time enters via `now` on the action (`timerStart`, `timerTick`,
   `timerAdd`, `timerStartPause`). Never call `Date.now()` inside it — the timer suite depends
   on this.
-- **`week` is clamped 1..8** by `clampWeek`, and every read of the week's prescription goes
+- **`week` is clamped 1..12** (`1..WEEKS.length`) by `clampWeek`, and every read of the week's prescription goes
   through **`weekAt(week)`** (`data/program.ts`), which falls back to week 1 rather than
   white-screening. `WEEKS` is typed as a non-empty tuple so that fallback is total, and
   `noUncheckedIndexedAccess` makes the compiler enforce it — index `WEEKS` directly and it
@@ -99,11 +96,11 @@ lift that week programs. Covered by `loads.test.ts` and `screens.test.tsx`.
 - **`STORAGE_KEY = 'hybridEngine.v1'`** (`state/persistence.ts`). Changing or bumping it abandons
   every device's data.
 - **Key formats in `engine/keys.ts` are a storage contract**, not an implementation detail:
-  `w{week}:t:{exId}` (exercise check-off *and* logged weight) · `w{week}:tc:{cond}`
-  (conditioning check-off). Change a format and existing check-offs and logged weights orphan.
-  Template is the only screen that checks work off. Two further formats — `w{week}:m:{lift}` and
-  `w{week}:c:{cond}` — were written by the old This Week lift and conditioning rows; those rows
-  are gone and any such keys still in storage are inert.
+  `w{week}:t:{exId}` (exercise check-off *and* logged weight), plus the suffixed ids under
+  **Last set RPE**. Change a format and existing check-offs and logged weights orphan. Template
+  is the only screen that checks work off. Three retired formats — `w{week}:m:{lift}`,
+  `w{week}:c:{cond}` and `w{week}:tc:{cond}` — were written by the old lift and conditioning
+  rows; those rows are gone and any such keys still in storage are inert.
 - **Exercise `id`s in `program.ts` are storage keys.** Renaming an exercise is free; reusing an
   existing `id` for a *different* movement is the dangerous case — a logged weight resurfaces on
   the wrong lift. Always issue a fresh id.
@@ -151,23 +148,22 @@ behaves exactly as a localStorage-only app. Setup: [`CLOUD_SYNC.md`](CLOUD_SYNC.
 
 ## Program data
 
-`src/data/program.ts` is the source of truth for `WEEKS`, `DAYS`, `COND`, `CONDINFO`, `NOTES`,
-`PHASES` and `LIFTS`. The reasoning behind those values — time budgets, volume trade-offs — is
-in [`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
+`src/data/program.ts` is the source of truth for `WEEKS`, `DAYS`, `NOTES`, `OFF_DAYS` and
+`PHASES`. The reasoning behind those values — time budgets, volume trade-offs — is in
+[`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
 
-- **8 weeks, 4 lifts, 3 days.** `loads.test.ts` → `describe('program data integrity')` asserts
-  the shape. If a change makes those fail, the change is wrong until proven otherwise.
-- Sets, reps and RPE are training decisions — see `CLAUDE.md` §3. The `pct` values in `WEEKS`
-  are no longer read by any screen.
-- **`TEST_WEEK` is the last week**, and only that week shows the new-block button.
+- **12 weeks, 3 days of 6, 7 and 8 exercises, every id prefixed `bb-`.** `loads.test.ts` →
+  `describe('program data integrity')` asserts the shape. If a change makes those fail, the
+  change is wrong until proven otherwise.
+- Sets, reps, RPE and exercise selection are training decisions — see `CLAUDE.md` §3.
+- **`LAST_WEEK` is the last week**, and only that week shows the new-block button.
 
 ---
 
 ## Closing a block
 
 **`engine/newBlock.ts`** turns the last week's log into the next block's starting point: every
-logged weight — main lifts, accessories and loaded conditioning — is copied from the last week to
-week 1, because each exercise repeats next block and last block's number is where the new one
+logged weight is copied from the last week to week 1, because each exercise repeats next block and last block's number is where the new one
 starts. A back-off weight (`{exId}:bo`) carries the same way. Reps, felt RPE and the old week-8
 test entries are not carried: week 1 is for finding weights, and the rest describe one set, not a
 starting point.

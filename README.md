@@ -1,21 +1,22 @@
 # Hybrid Engine
 
-Mobile-first PWA for a single athlete running a fixed 8-week hybrid (strength + endurance)
-training program — **three sessions a week (Mon / Wed / Fri), around 45 minutes each** (Monday
-runs longer; see `docs/PROGRAM_SOURCE.md`).
+Mobile-first PWA for a single athlete running a fixed 12-week hypertrophy program — **three
+sessions a week (Mon / Wed / Fri), around 55 minutes each**. Why it's shaped this way is in
+`docs/PROGRAM_SOURCE.md`.
 
-Pick the current week (1–8) and log the weight you use on each exercise — it saves per week. Everything persists locally; signing in adds optional cloud backup
-and cross-device sync.
+Pick the current week (1–12) and log weight × reps of your last set on each exercise; last week's
+numbers show in the empty boxes as the ones to beat. Everything persists locally; signing in adds
+optional cloud backup and cross-device sync.
 
 | Tab | What it's for |
 |---|---|
-| **This Week** | Block progress: how much of each of the 8 weeks you've completed |
-| **8-Week Plan** | The whole block at a glance, and how to progress |
+| **This Week** | Block progress: how much of each of the 12 weeks you've completed |
+| **Plan** | The whole block at a glance, and how to progress |
 | **Template** | The session itself — exercises in order, check-offs, and weight × reps logged per week |
 
 Plus a floating rest timer, anchored to a timestamp so it survives the phone sleeping.
 
-**Closing a block:** in week 8, tap **Start new block**. It carries every logged weight into
+**Closing a block:** in week 12, tap **Start new block**. It carries every logged weight into
 week 1 and resets everything else.
 
 **Live:** <https://rishav30194.github.io/hybrid-engine/> — auto-deploys on every push to `main`.
