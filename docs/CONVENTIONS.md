@@ -89,7 +89,7 @@ it can't lapse silently.
   for `!` in production code. For the week's prescription use `weekAt(week)`; for a lookup table,
   type the key as a finite union (`Record<SyncState, string>`) so the keys are known.
 - **`!` is acceptable in tests** for literal indices into program-data fixtures (`DAYS[0]!.ex[0]!`),
-  because `loads.test.ts` → `program data integrity` asserts that shape and fails first with a
+  because `program.test.ts` → `program data integrity` asserts that shape and fails first with a
   clear message. It is not acceptable in `src/`.
 
 Linting runs oxlint's `correctness`, `suspicious` and `perf` categories as errors.
@@ -100,12 +100,14 @@ Extend the file that owns the behaviour:
 
 | Area                                      | Test                                |
 | ----------------------------------------- | ----------------------------------- |
-| Meta lines, program integrity, press swap | `src/engine/loads.test.ts`        |
+| Program integrity                         | `src/data/program.test.ts`        |
+| Meta lines, numbers to beat               | `src/engine/rows.test.ts`         |
 | Per-week check-off keys, day progress     | `src/engine/progress.test.ts`     |
 | Actions and state transitions             | `src/state/reducer.test.ts`       |
 | Rest timer                                | `src/state/reducer.timer.test.ts` |
 | Persisted slice, merge, round-trip        | `src/state/persistence.test.ts`   |
 | Rendered screens                          | `src/screens/screens.test.tsx`    |
+| Whether to apply a cloud blob             | `src/sync/applyDecision.test.ts`  |
 | Form-control font-size floor (iOS zoom)   | `src/styles/controls.test.ts`     |
 | Closing a block: carry-forward            | `src/engine/newBlock.test.ts`     |
 | Username ↔ account identifier              | `src/auth/username.test.ts`       |

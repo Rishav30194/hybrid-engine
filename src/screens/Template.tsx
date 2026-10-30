@@ -1,7 +1,7 @@
 import './Template.css'
 import { DAYS } from '../data/program'
 import type { Day, Exercise } from '../data/types'
-import { exerciseMeta } from '../engine/loads'
+import { exerciseMeta, lastLogged } from '../engine/rows'
 import { dayProgress } from '../engine/progress'
 import { backoffId, lsrpeId, repsId, tmplDoneKey } from '../engine/keys'
 import { useAppDispatch, useAppState } from '../state/context'
@@ -14,7 +14,7 @@ export function Template() {
     <>
       <p className="tmpl-intro">
         Log weight × reps of your last set for{' '}
-        <span className="tmpl-intro__wk">WEEK {week}</span>. Last week's numbers show
+        <span className="tmpl-intro__wk">WEEK {week}</span>. Your latest numbers show
         faintly until you type.
       </p>
       {DAYS.map((d) => (
@@ -78,7 +78,6 @@ export function ExerciseRow({ ex }: { ex: Exercise }) {
   return (
     <div className="ex-row">
       <CheckButton
-        size="exercise"
         checked={!!done[id]}
         onToggle={() => dispatch({ type: 'toggleDone', id })}
       />
@@ -125,9 +124,9 @@ export function ExerciseRow({ ex }: { ex: Exercise }) {
 }
 
 /**
- * One weight × reps pair; the reps are the last set's. Empty boxes show last
- * week's numbers as placeholders, so the number to match or beat sits where you
- * type it rather than on a line of its own.
+ * One weight × reps pair; the reps are the last set's. Empty boxes show the
+ * latest logged week's numbers as placeholders, so the number to match or beat
+ * sits where you type it rather than on a line of its own.
  */
 function SetEntry({
   week,
@@ -142,7 +141,7 @@ function SetEntry({
   const dispatch = useAppDispatch()
   const weightKey = tmplDoneKey(week, logId)
   const repsKey = tmplDoneKey(week, repsId(logId))
-  const last = (id: string) => (week > 1 ? log[tmplDoneKey(week - 1, id)] : undefined)
+  const last = lastLogged(log, logId, week)
 
   return (
     <span className="set-entry">
@@ -152,7 +151,7 @@ function SetEntry({
         className="ex-row__input set-entry__weight"
         aria-label={`${label} weight`}
         value={log[weightKey] ?? ''}
-        placeholder={last(logId) || 'weight'}
+        placeholder={last?.weight ?? 'weight'}
         onChange={(e) =>
           dispatch({ type: 'setLog', id: weightKey, value: e.target.value })
         }
@@ -164,7 +163,7 @@ function SetEntry({
         className="ex-row__input set-entry__reps"
         aria-label={`${label} reps`}
         value={log[repsKey] ?? ''}
-        placeholder={last(repsId(logId)) || 'reps'}
+        placeholder={last?.reps ?? 'reps'}
         onChange={(e) =>
           dispatch({ type: 'setLog', id: repsKey, value: e.target.value })
         }

@@ -4,7 +4,7 @@ Mobile-first PWA for a single athlete running a fixed 12-week hypertrophy progra
 sessions a week (Mon / Wed / Fri), around 55 minutes each**. Why it's shaped this way is in
 `docs/PROGRAM_SOURCE.md`.
 
-Pick the current week (1–12) and log weight × reps of your last set on each exercise; last week's
+Pick the current week (1–12) and log weight × reps of your last set on each exercise; your latest
 numbers show in the empty boxes as the ones to beat. Everything persists locally; signing in adds
 optional cloud backup and cross-device sync.
 

@@ -7,31 +7,13 @@
   background: transparent;
   color: var(--on-accent);
   font-weight: 700;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-size: 14px;
 }
 
 .check-btn--on {
   background: var(--accent);
   border-color: var(--accent);
-}
-
-.check-btn--lift {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  font-size: 16px;
-}
-
-.check-btn--cond {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  font-size: 15px;
-  margin-top: 1px;
-}
-
-.check-btn--exercise {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  font-size: 14px;
 }

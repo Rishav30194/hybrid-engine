@@ -35,12 +35,18 @@ stays offline-first either way.
    owner: Authentication → Users → pick the user → set a new password. Passwords
    are bcrypt-hashed, so they can't be read back from the database — only replaced.
 
-4. **Grab your keys** — Project Settings → API:
+4. **Close sign-ups once your account exists.** Sign up in the app first, then
+   turn off **Allow new users to sign up** (Authentication → Sign In /
+   Providers). Row-Level Security already keeps other accounts out of your data,
+   but open sign-up lets anyone with the app URL create accounts against your
+   project's free-tier quota.
+
+5. **Grab your keys** — Project Settings → API:
    - `Project URL` → `VITE_SUPABASE_URL`
    - `Publishable key` (`sb_publishable_…`) → `VITE_SUPABASE_PUBLISHABLE_KEY`
    (Both are safe in a client bundle; Row-Level Security protects the data.)
 
-5. **(Optional) Realtime** — for live multi-device updates, enable Realtime for
+6. **(Optional) Realtime** — for live multi-device updates, enable Realtime for
    the `user_state` table under Database → Replication.
 
 ## Local development
@@ -71,7 +77,8 @@ these are set, the deployed app simply runs on localStorage as before.
 - On sign-in the app reconciles by `updatedAt` — pulls the cloud row if it's
   newer, otherwise pushes local up (**last-write-wins**).
 - Local changes debounce-push to the cloud; other devices' changes stream back
-  in via realtime. Offline changes stay local and sync on reconnect.
+  in via realtime. Offline changes stay local and push when the connection
+  returns, when the app is closed, or with the next change.
 
 Implementation details and the invariants involved:
 [`ARCHITECTURE.md`](ARCHITECTURE.md#cloud-sync).

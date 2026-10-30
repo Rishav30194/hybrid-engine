@@ -1,5 +1,5 @@
 import { WEEKS } from '../data/program'
-import { toNum } from '../engine/loads'
+import { toNum } from '../engine/rows'
 import type { Action, AppState } from './types'
 
 /** Keep week within 1..WEEKS.length so WEEKS[week-1] is always valid (guards corrupt data). */

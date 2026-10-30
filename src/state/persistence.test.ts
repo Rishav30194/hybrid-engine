@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+  currentBlob,
   loadState,
   mergePersisted,
   persistedSnapshot,
@@ -135,5 +136,31 @@ describe('round-trip', () => {
     expect(reloaded.log['w4:t:mon-e0:bo:reps']).toBe('9')
     // transient fields are NOT restored
     expect(reloaded.tab).toBe('week')
+  })
+})
+
+describe('currentBlob', () => {
+  // Sync pushes from here. If it read localStorage instead, a failed write
+  // would send the cloud the last version that saved, not the current one.
+  it('holds the newest snapshot even when the write fails', () => {
+    writeSnapshot(JSON.stringify({ week: 2, log: { a: '1' } }), 10)
+    vi.stubGlobal('localStorage', {
+      ...makeStorage(),
+      setItem: () => {
+        throw new Error('QuotaExceededError')
+      },
+    })
+    writeSnapshot(JSON.stringify({ week: 2, log: { a: '2' } }), 20)
+
+    expect(getStorageState()).toBe('failed')
+    expect(currentBlob()?.updatedAt).toBe(20)
+    expect(currentBlob()?.persisted.log).toEqual({ a: '2' })
+  })
+
+  it('is seeded on load with the stored stamp', () => {
+    localStorage.setItem('hybridEngine.v1', JSON.stringify({ week: 5, updatedAt: 42 }))
+    const state = loadState()
+    expect(currentBlob()?.updatedAt).toBe(42)
+    expect(currentBlob()?.snapshot).toBe(persistedSnapshot(state))
   })
 })
