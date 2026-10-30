@@ -28,8 +28,8 @@ offline. Desktop-looking-fine is not the bar.
 - **`100dvh`, never `100vh`** — mobile Safari's toolbar makes `vh` lie.
 - **Touch, not hover.** No hover-only affordances, no tooltips, no right-click.
 - **No `alert` / `confirm` / `prompt`.** They're hostile in a standalone PWA.
-- **Numeric fields set `inputMode`** — `decimal` for logged weights and RPE — so the right keypad
-  opens. Keep that on any new numeric input.
+- **Numeric fields set `inputMode`** — `decimal` for logged weights and RPE, `numeric` for reps —
+  so the right keypad opens. Keep that on any new numeric input.
 - **Keep the first paint offline.** The app must paint from localStorage with no network. See
   the dynamic-import rule in [`ARCHITECTURE.md`](ARCHITECTURE.md#cloud-sync).
 

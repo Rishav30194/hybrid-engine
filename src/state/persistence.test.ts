@@ -118,7 +118,7 @@ describe('round-trip', () => {
       rm: { ...INITIAL_STATE.rm, squat: 275 },
       basisAt: { 1: { rm: { ...INITIAL_STATE.rm, squat: 145 }, rounding: 2.5 } },
       done: { 'w4:m:squat': true },
-      log: { 'w4:t:mon-e1': '95' },
+      log: { 'w4:t:mon-e1': '95', 'w4:t:mon-e1:reps': '11', 'w4:t:mon-e0:bo:reps': '9' },
     }
     // Mirrors what StoreProvider does on every persisted change.
     writeSnapshot(persistedSnapshot(state), Date.now())
@@ -131,6 +131,8 @@ describe('round-trip', () => {
     expect(reloaded.basisAt[1]?.rounding).toBe(2.5)
     expect(reloaded.done['w4:m:squat']).toBe(true)
     expect(reloaded.log['w4:t:mon-e1']).toBe('95')
+    expect(reloaded.log['w4:t:mon-e1:reps']).toBe('11')
+    expect(reloaded.log['w4:t:mon-e0:bo:reps']).toBe('9')
     // transient fields are NOT restored
     expect(reloaded.tab).toBe('week')
   })

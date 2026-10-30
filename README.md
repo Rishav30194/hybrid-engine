@@ -11,7 +11,7 @@ and cross-device sync.
 |---|---|
 | **This Week** | Block progress: how much of each of the 8 weeks you've completed |
 | **8-Week Plan** | The whole block at a glance, and how to progress |
-| **Template** | The session itself — exercises in order, check-offs, and logged weights |
+| **Template** | The session itself — exercises in order, check-offs, and weight × reps logged per week |
 
 Plus a floating rest timer, anchored to a timestamp so it survives the phone sleeping.
 

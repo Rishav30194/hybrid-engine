@@ -126,6 +126,44 @@
   outline: none;
 }
 
+/* Weight × reps share the name's line. Narrower than a lone weight box so a
+   name keeps room to wrap onto two lines rather than three. */
+.set-entry {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.set-entry__weight {
+  width: 72px;
+}
+
+.set-entry__reps {
+  width: 48px;
+  text-align: center;
+}
+
+.set-entry__x {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.ex-row__backoff {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.ex-row__backoff-label {
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
 /* The felt-RPE field sits on this line, so it aligns as a row rather than
    wrapping under the prescription it is read against. */
 .ex-row__meta {

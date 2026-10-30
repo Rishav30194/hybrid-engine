@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import type { ReactElement } from 'react'
 import { ThisWeek } from './ThisWeek'
-import { Template } from './Template'
+import { ExerciseRow, Template } from './Template'
 import { WeekPlan } from './WeekPlan'
 import { StoreProvider } from '../state/store'
 import { DAYS } from '../data/program'
@@ -203,6 +203,83 @@ describe('Template', () => {
 
     const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
     expect(saved.log['w1:t:mon-e0']).toBe('155')
+  })
+
+  describe('weight × reps', () => {
+    const squatInputs = (container: HTMLElement) => ({
+      weight: container.querySelector<HTMLInputElement>('[aria-label="Back Squat weight"]')!,
+      reps: container.querySelector<HTMLInputElement>('[aria-label="Back Squat reps"]')!,
+    })
+
+    it('saves the last set’s reps beside the weight', () => {
+      const { container } = renderAtWeek(<Template />, 1)
+      const { reps } = squatInputs(container)
+      expect(reps.inputMode).toBe('numeric')
+      fireEvent.change(reps, { target: { value: '6' } })
+
+      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+      expect(saved.log['w1:t:mon-e0:reps']).toBe('6')
+    })
+
+    it('shows last week’s numbers as placeholders', () => {
+      localStorage.setItem(
+        'hybridEngine.v1',
+        JSON.stringify({ week: 3, log: { 'w2:t:mon-e0': '185', 'w2:t:mon-e0:reps': '5' } }),
+      )
+      const { container } = render(
+        <StoreProvider>
+          <Template />
+        </StoreProvider>,
+      )
+      const { weight, reps } = squatInputs(container)
+      expect(weight.value).toBe('')
+      expect(weight.placeholder).toBe('185')
+      expect(reps.placeholder).toBe('5')
+    })
+
+    it('shows plain hints when there is no last week', () => {
+      localStorage.setItem(
+        'hybridEngine.v1',
+        JSON.stringify({ week: 1, log: { 'w8:t:mon-e0': '185', 'w8:t:mon-e0:reps': '5' } }),
+      )
+      const { container } = render(
+        <StoreProvider>
+          <Template />
+        </StoreProvider>,
+      )
+      const { weight, reps } = squatInputs(container)
+      expect(weight.placeholder).toBe('weight')
+      expect(reps.placeholder).toBe('reps')
+    })
+
+    it('gives a top-set exercise a second pair for the back-off sets', () => {
+      localStorage.setItem('hybridEngine.v1', JSON.stringify({ week: 2 }))
+      const { container } = render(
+        <StoreProvider>
+          <ExerciseRow ex={{ ...DAYS[0]!.ex[0]!, backoff: true }} />
+        </StoreProvider>,
+      )
+      expect(container.querySelectorAll('.set-entry')).toHaveLength(2)
+      fireEvent.change(
+        container.querySelector('[aria-label="Back Squat back-off weight"]')!,
+        { target: { value: '160' } },
+      )
+      fireEvent.change(
+        container.querySelector('[aria-label="Back Squat back-off reps"]')!,
+        { target: { value: '9' } },
+      )
+
+      const saved = JSON.parse(localStorage.getItem('hybridEngine.v1') ?? '{}')
+      expect(saved.log['w2:t:mon-e0:bo']).toBe('160')
+      expect(saved.log['w2:t:mon-e0:bo:reps']).toBe('9')
+    })
+
+    it('gives an ordinary exercise one pair', () => {
+      const { container } = renderAtWeek(<Template />, 1)
+      const row = container.querySelector('.ex-row')!
+      expect(row.querySelectorAll('.set-entry')).toHaveLength(1)
+      expect(row.querySelector('.ex-row__backoff')).toBeNull()
+    })
   })
 
   it("names Wednesday's anchor after the lift that week programs", () => {

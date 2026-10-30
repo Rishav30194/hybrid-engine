@@ -49,6 +49,8 @@ export interface Exercise {
   rest: string
   /** Guidance/placeholder for accessory weight logging (absent on main lifts). */
   load?: string
+  /** A top set followed by lighter back-off sets, logged as two weight × reps pairs. */
+  backoff?: boolean
   note: string
 }
 

@@ -11,8 +11,8 @@ then keeps only status and the log.
 
 | Phase | Class | Status |
 |---|---|---|
-| 1 — Remove the 1RM load engine | B | Done 2026-10-29, not committed |
-| 2 — Log reps and show last week | B | Not started |
+| 1 — Remove the 1RM load engine | B | Done 2026-10-29 (`dff176e`) |
+| 2 — Log reps and show last week | B | Done 2026-10-29 |
 | 3 — Load the new program | C | Not started |
 | 4 — Ship and cut over | Push and PR | Not started |
 
@@ -137,26 +137,28 @@ rep or add weight) is visible mid-session.
 
 - Reps go in `log` under the suffixed id `{exId}:reps`, so the key is `w{week}:t:{exId}:reps`.
   This is the pattern the week-8 test entries already use: no new key format and no migration.
-- Each row shows the previous week's weight and reps. Week 1 shows nothing; it is the week for
-  finding weights.
+- Each row shows the previous week's weight and reps as faint placeholders in the empty boxes,
+  so no row grows a line. Week 1 shows plain `weight` and `reps`.
 - One reps field per row: the reps on the **last set only**, on the number keypad, beside the felt
   RPE (which already describes the last set). Example: `Seated Leg Curl [90] lb · reps [9] · felt [9]`,
   with `last week: 90 × 8` under it.
 - Top-set rows (squat, flat DB press, deadlift) get two weight-and-reps pairs: the top set, and the
   last back-off set. Example: `top [185] lb × [6] · back-off [160] lb × [9]`, with
-  `last week: 185 × 5 · 160 × 10`. The back-off pair needs its own suffixed ids, chosen in the
-  Phase 2 plan.
+  `last week: 185 × 5 · 160 × 10`. Back-off ids: `{exId}:bo` (weight) and `{exId}:bo:reps`.
 
 **Validation**
 
-- [ ] `npm test`, `npm run build`, and `npm run lint` pass.
-- [ ] A test pins the reps key to `w{n}:t:{id}:reps` and confirms the existing key formats are
+- [x] `npm test`, `npm run build`, and `npm run lint` pass. (105 tests.)
+- [x] A test pins the reps key to `w{n}:t:{id}:reps` and confirms the existing key formats are
       unchanged.
-- [ ] A test confirms reps survive `pickPersisted`, `mergePersisted`, and `hydrateRemote`.
-- [ ] A screens test shows week 2's weight and reps on a week-3 row, and nothing on a week-1 row.
-- [ ] Dev server at 390px: the reps entry is usable one-handed and follows the control-placement
-      rule in `docs/CONVENTIONS.md`. Rest timer, bottom nav, and header sit correctly.
-- [ ] `docs/ARCHITECTURE.md` documents the reps key next to the other suffixed ids.
+- [x] A test confirms reps survive `pickPersisted`, `mergePersisted`, and `hydrateRemote`.
+- [x] A screens test shows week 2's weight and reps on a week-3 row, and nothing on a week-1 row.
+- [x] Dev server at 390px: the reps entry is usable one-handed and follows the control-placement
+      rule in `docs/CONVENTIONS.md`. Rest timer, bottom nav, and header sit correctly. Row heights
+      unchanged from Phase 1 (111, 111, 112, 127 px).
+- [x] `docs/ARCHITECTURE.md` documents the reps key next to the other suffixed ids.
+- [ ] **Carried to Phase 3:** the back-off line at 390px. No exercise sets `backoff` until Phase
+      3, so it is covered only by a test that renders a sample exercise.
 
 ## Phase 3 — Load the new program
 
@@ -185,7 +187,10 @@ needed that the new one doesn't.
 - [ ] `clampWeek` tests: 12 is allowed, 13 clamps to 12.
 - [ ] `progress` tests: a day's total equals its exercise count.
 - [ ] Dev server at 390px: all three days in week 1 and week 12; **Start new block** appears only
-      in week 12. Rest timer, bottom nav, and header sit correctly.
+      in week 12. The back-off line on squat, flat DB press, and deadlift (carried from Phase 2).
+      Rest timer, bottom nav, and header sit correctly.
+- [ ] The `load` field on `Exercise` is unused since Phase 2 (placeholders show last week or
+      `weight`). Drop it from the type and the data.
 - [ ] Rishav reads all three days in the dev build and confirms they match this file.
 - [ ] `docs/PROGRAM_SOURCE.md` is rewritten from the Decisions table. `docs/ARCHITECTURE.md`
       (program data, invariants) and `README.md` match.
@@ -227,5 +232,7 @@ None.
 - **2026-10-29:** Phase 1 done on the branch, not committed. Deleted `e1rm.ts` and its test
   (approved). `lsrpeId` moved to `keys.ts`. **Start new block** now carries main-lift weights
   too. `config.ts` kept with no exports, as the documented home for future flags. Unused CSS and
-  the `--fs-load` and `--fs-1rm-input` tokens removed. Next: commit Phase 1, then the Phase 2
-  plan.
+  the `--fs-load` and `--fs-1rm-input` tokens removed. Committed as `dff176e`.
+- **2026-10-29:** Phase 2 done and committed. Reps sit beside the weight (`weight × reps`), last
+  week's numbers as placeholders, back-off pair behind `Exercise.backoff`. Weight box narrowed
+  98 → 72px. Next: the Phase 3 plan (class C).

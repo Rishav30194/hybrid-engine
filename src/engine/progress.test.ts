@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { dayProgress, weekProgress } from './progress'
-import { tmplCondDoneKey, tmplDoneKey } from './keys'
+import { backoffId, lsrpeId, repsId, tmplCondDoneKey, tmplDoneKey } from './keys'
 import { DAYS } from '../data/program'
 
 describe('dayProgress', () => {
@@ -36,6 +36,13 @@ describe('key format', () => {
   it('matches the persisted key scheme', () => {
     expect(tmplDoneKey(3, 'mon-e0')).toBe('w3:t:mon-e0')
     expect(tmplCondDoneKey(3, 'mon')).toBe('w3:tc:mon')
+  })
+  // Suffixed ids ride inside tmplDoneKey; their spelling is the storage contract.
+  it('spells the suffixed log ids exactly', () => {
+    expect(tmplDoneKey(3, lsrpeId('mon-e0'))).toBe('w3:t:mon-e0:lsrpe')
+    expect(tmplDoneKey(3, repsId('mon-e0'))).toBe('w3:t:mon-e0:reps')
+    expect(tmplDoneKey(3, backoffId('mon-e0'))).toBe('w3:t:mon-e0:bo')
+    expect(tmplDoneKey(3, repsId(backoffId('mon-e0')))).toBe('w3:t:mon-e0:bo:reps')
   })
 })
 

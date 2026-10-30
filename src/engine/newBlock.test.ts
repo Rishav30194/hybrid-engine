@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { planNewBlock } from './newBlock'
-import { lsrpeId, tmplDoneKey } from './keys'
+import { backoffId, lsrpeId, repsId, tmplDoneKey } from './keys'
 import { DAYS } from '../data/program'
 
 const at8 = (id: string) => tmplDoneKey(8, id)
@@ -35,6 +35,20 @@ describe('planNewBlock', () => {
     expect(Object.keys(planNewBlock(DAYS, 8, log))).toEqual([
       tmplDoneKey(1, 'mon-e0'),
     ])
+  })
+
+  it('carries a back-off weight, but no reps', () => {
+    const day = { ...DAYS[0]!, ex: [{ ...DAYS[0]!.ex[0]!, backoff: true }], condLoads: [] }
+    const log = {
+      [at8('mon-e0')]: '185',
+      [at8(repsId('mon-e0'))]: '6',
+      [at8(backoffId('mon-e0'))]: '160',
+      [at8(repsId(backoffId('mon-e0')))]: '9',
+    }
+    expect(planNewBlock([day], 8, log)).toEqual({
+      [tmplDoneKey(1, 'mon-e0')]: '185',
+      [tmplDoneKey(1, backoffId('mon-e0'))]: '160',
+    })
   })
 
   it('produces an empty carry from an empty log without throwing', () => {

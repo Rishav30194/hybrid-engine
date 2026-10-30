@@ -47,7 +47,7 @@ describe('reducer', () => {
         rm: { squat: 300, bench: 240, tbdl: 400, ohp: 150 },
         basisAt: { 1: { rm: { squat: 145, bench: 135, tbdl: 205, ohp: 95 }, rounding: 5 } },
         done: { 'w6:m:squat': true },
-        log: { 'w6:t:mon-e1': '135' },
+        log: { 'w6:t:mon-e1': '135', 'w6:t:mon-e1:reps': '10' },
       },
     })
     expect(s.basisAt[1]?.rm.squat).toBe(145)
@@ -56,6 +56,7 @@ describe('reducer', () => {
     expect(s.rm.squat).toBe(300) // remote overwrites local edit
     expect(s.done['w6:m:squat']).toBe(true)
     expect(s.log['w6:t:mon-e1']).toBe('135')
+    expect(s.log['w6:t:mon-e1:reps']).toBe('10')
   })
 
   it('hydrateRemote leaves non-persisted UI state alone', () => {

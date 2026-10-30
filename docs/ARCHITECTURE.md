@@ -39,10 +39,20 @@ touching the engine or the UI.
 
 ## Logged weights
 
-Every weight is **logged, not computed** — main lifts included. A Template row has one weight
-field, stored in `log` under `w{week}:t:{exId}` (the same key as the row's check-off, in a
-different map), and you read last week's number back and choose this week's yourself. There is
-no 1RM, no percentage and no rounding anywhere in the UI.
+Every weight is **logged, not computed** — main lifts included. A Template row logs **weight ×
+reps of its last set** on the name's line. The weight is stored in `log` under `w{week}:t:{exId}`
+(the same key as the row's check-off, in a different map); the reps under the suffixed id
+`{exId}:reps`. There is no 1RM, no percentage and no rounding anywhere in the UI.
+
+**Last week shows as placeholders.** An empty box shows the previous week's weight or reps
+faintly, so the number to beat sits where you type it instead of on a line of its own (see the
+control-placement rule in [`CONVENTIONS.md`](CONVENTIONS.md)). Week 1 has no previous week and
+shows plain `weight` / `reps`; its weights arrive as real values carried by **Start new block**.
+
+**Top-set exercises log two pairs.** An `Exercise` with `backoff: true` gets a second line for its
+back-off sets, stored under the suffixed id `{exId}:bo` (weight) and `{exId}:bo:reps` (reps). Only
+the reps of the last set are logged in either pair: reps fall across sets, so the last set
+reaching the top of the range means every set did.
 
 Main-lift rows still read their sets, reps and RPE from the active week (`mainLiftMeta()` reads
 `WEEKS`), so a row shows `4×5 · RPE 7` in week 1 rather than the block range `4×5→4×4` stored on
@@ -158,8 +168,9 @@ in [`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
 **`engine/newBlock.ts`** turns the last week's log into the next block's starting point: every
 logged weight — main lifts, accessories and loaded conditioning — is copied from the last week to
 week 1, because each exercise repeats next block and last block's number is where the new one
-starts. Suffixed detail keys (felt RPE, and the old week-8 test entries) are not carried; they
-describe one set, not a starting point.
+starts. A back-off weight (`{exId}:bo`) carries the same way. Reps, felt RPE and the old week-8
+test entries are not carried: week 1 is for finding weights, and the rest describe one set, not a
+starting point.
 
 The reducer's `startNewBlock` applies it: `week` back to 1, `done` emptied, `log` replaced by the
 carry.
@@ -175,8 +186,9 @@ its own, so it reads directly against the RPE prescribed a few words to its left
 keeps the height it had before the field existed — see the control-placement rule in
 [`CONVENTIONS.md`](CONVENTIONS.md). It is a record only; nothing is computed from it.
 
-**Retired suffixes.** Week 8 once logged a test set as `{exId}:reps` and `{exId}:rpe` beside the
-weight. Nothing writes them now; any still in storage are inert.
+**Suffixed ids in use:** `:lsrpe`, `:reps`, `:bo` and `:bo:reps`, all built by helpers in
+`engine/keys.ts` and pinned in `progress.test.ts`. Week 8 once logged its AMRAP as `{exId}:reps`
+and `{exId}:rpe`; the `:reps` entries now read as that set's reps, and `:rpe` is inert.
 
 ---
 

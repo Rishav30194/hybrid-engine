@@ -23,3 +23,12 @@ export const tmplCondDoneKey = (week: number, cond: CondKey) =>
  * existing can orphan.
  */
 export const lsrpeId = (exId: string) => `${exId}:lsrpe`
+
+/** Log id for the reps of an exercise's last set. Same suffixed-id pattern. */
+export const repsId = (exId: string) => `${exId}:reps`
+
+/**
+ * Log id for a top-set exercise's back-off sets: their weight under
+ * `backoffId(exId)`, their last set's reps under `repsId(backoffId(exId))`.
+ */
+export const backoffId = (exId: string) => `${exId}:bo`
