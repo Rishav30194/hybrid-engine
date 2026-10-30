@@ -7,6 +7,22 @@ The rework is merged to `main` (PR #31, `b698769`) and live on the phone. `src/d
 holds the values and `docs/PROGRAM_SOURCE.md` holds the reasoning. The program and decisions below
 are the record of what was agreed; if they ever disagree with those files, the files win.
 
+## Next up: the first training week
+
+Started 2026-10-29. After the first full week (Monday, Wednesday, Friday), Rishav shares the
+results and a session reviews them against the plan. For each session, share:
+
+- **Session length**, start to finish. The plan assumes about 55 minutes, 60 at most.
+- **Weight × reps** of the last set on every exercise, and both pairs on squat, flat DB press, and
+  deadlift.
+- **Felt RPE** where you logged it.
+- **Anything that didn't work in the gym:** a station that was taken, a pair that didn't fit, an
+  exercise that felt wrong.
+
+Also confirm, if you use the app signed in: an entry still shows after a reload from the cloud.
+
+When both are in, close Phase 4 below and trim this file to its status and log.
+
 ## Status
 
 | Phase | Class | Status |
