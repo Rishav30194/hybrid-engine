@@ -3,9 +3,25 @@
 Tracks the move from the 8-week strength and conditioning block to a 12-week hypertrophy block,
 across sessions. Update the status table and the session log at the end of every session.
 
-Phase 3 has landed on the branch: `src/data/program.ts` now holds the values and
-`docs/PROGRAM_SOURCE.md` holds the reasoning. The program and decisions below are the record of
-what was agreed; if they ever disagree with those files, the files win.
+The rework is merged to `main` (PR #31, `b698769`) and live on the phone. `src/data/program.ts`
+holds the values and `docs/PROGRAM_SOURCE.md` holds the reasoning. The program and decisions below
+are the record of what was agreed; if they ever disagree with those files, the files win.
+
+## Next up: the first training week
+
+Started 2026-10-29. After the first full week (Monday, Wednesday, Friday), Rishav shares the
+results and a session reviews them against the plan. For each session, share:
+
+- **Session length**, start to finish. The plan assumes about 55 minutes, 60 at most.
+- **Weight × reps** of the last set on every exercise, and both pairs on squat, flat DB press, and
+  deadlift.
+- **Felt RPE** where you logged it.
+- **Anything that didn't work in the gym:** a station that was taken, a pair that didn't fit, an
+  exercise that felt wrong.
+
+Also confirm, if you use the app signed in: an entry still shows after a reload from the cloud.
+
+When both are in, close Phase 4 below and trim this file to its status and log.
 
 ## Status
 
@@ -14,7 +30,7 @@ what was agreed; if they ever disagree with those files, the files win.
 | 1 — Remove the 1RM load engine | B | Done 2026-10-29 (`dff176e`) |
 | 2 — Log reps and show last week | B | Done 2026-10-29 (`434a812`) |
 | 3 — Load the new program | C | Done 2026-10-29 (`3453cb7`, `05f6816`) |
-| 4 — Ship and cut over | Push and PR | PR #31 open, waiting on merge approval |
+| 4 — Ship and cut over | Push and PR | Deployed and checked on the phone 2026-10-29; cloud reload and first training week open |
 
 ## Ground rules
 
@@ -157,8 +173,8 @@ rep or add weight) is visible mid-session.
       rule in `docs/CONVENTIONS.md`. Rest timer, bottom nav, and header sit correctly. Row heights
       unchanged from Phase 1 (111, 111, 112, 127 px).
 - [x] `docs/ARCHITECTURE.md` documents the reps key next to the other suffixed ids.
-- [ ] **Carried to Phase 3:** the back-off line at 390px. No exercise sets `backoff` until Phase
-      3, so it is covered only by a test that renders a sample exercise.
+- [x] **Carried to Phase 3:** the back-off line at 390px. No exercise set `backoff` until Phase
+      3; checked there, in Phase 3's dev-server item.
 
 ## Phase 3 — Load the new program
 
@@ -206,18 +222,23 @@ needed that the new one doesn't.
 
 1. Open the PR from `feature/bodybuilding-program` to `main`, with approval. No attribution
    footer.
-2. Merge after CI passes, with approval.
+2. Merge with approval. `deploy.yml` runs only on pushes to `main`, so the PR gets no CI run:
+   `npm test`, `npm run build`, and `npm run lint` run locally before the PR, and CI runs the
+   tests and build again after the merge, before it deploys.
 3. On the phone, open the Home Screen app and let the update load.
 4. Set the week to 1 with the week chips. Old check-offs and weights stay in storage under the old
    ids and show nowhere; nothing is migrated.
 
 **Validation**
 
-- [ ] The deploy workflow succeeds after merge. (It runs only on pushes to `main`, so a PR gets no
-      CI run; the same `npm test` and build passed locally before the PR.)
-- [ ] On the iPhone: week 1 shows the new Monday. A weight and reps logged on one exercise survive
-      closing and reopening the app.
-- [ ] If signed in: the same entry appears after a reload from the cloud.
+- [x] The deploy workflow succeeds after merge. Run 40998477359 on `b698769` ran `npm ci`,
+      `npm test`, and `npm run build`, then deployed. It does not run lint: `npm run lint` was run
+      separately on the merged code (2026-10-29, clean).
+- [x] On the iPhone: week 1 shows the new Monday. A weight and reps logged on one exercise survive
+      closing and reopening the app. (Rishav, 2026-10-29: "all good".)
+- [ ] If signed in: the same entry appears after a reload from the cloud. **Not confirmed.**
+      Rishav's "all good" doesn't say whether he was signed in or reloaded from the cloud. Reps and
+      back-off keys round-trip through `hydrateRemote` in tests, but not yet against Supabase.
 - [ ] Rishav trains one full week (Monday, Wednesday, Friday) on the new program with no app
       problems. The rework is then done; trim this file to its status and log, or delete it with
       approval.
@@ -249,3 +270,9 @@ None.
 - **2026-10-29:** Rishav confirmed the three days. Phase 3 done. Phase 4 started: branch pushed
   and PR #31 opened (approved). No CI ran on the PR: `deploy.yml` triggers only on pushes to
   `main`. Next: merge, with approval.
+- **2026-10-29:** PR #31 merged as `b698769` (approved). Deploy run 40998477359 passed; the live
+  bundle contains the new program. Open: the phone checks (update arrives, week set to 1, an
+  entry survives a reopen, cloud reload if signed in) and one full week of training.
+- **2026-10-29:** Rishav checked the phone: all good. The cloud-reload item stays open, since the
+  report doesn't say whether he was signed in. Lint run on the merged code: clean. Remaining: the
+  cloud-reload check and the first full training week.
