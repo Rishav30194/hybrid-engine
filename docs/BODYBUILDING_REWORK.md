@@ -13,8 +13,8 @@ what was agreed; if they ever disagree with those files, the files win.
 |---|---|---|
 | 1 — Remove the 1RM load engine | B | Done 2026-10-29 (`dff176e`) |
 | 2 — Log reps and show last week | B | Done 2026-10-29 (`434a812`) |
-| 3 — Load the new program | C | Built 2026-10-29; waiting on Rishav's read of the three days |
-| 4 — Ship and cut over | Push and PR | Not started |
+| 3 — Load the new program | C | Done 2026-10-29 (`3453cb7`, `05f6816`) |
+| 4 — Ship and cut over | Push and PR | PR open, waiting on CI and merge approval |
 
 ## Ground rules
 
@@ -192,7 +192,7 @@ needed that the new one doesn't.
       wraps to two lines.
 - [x] The `load` field on `Exercise` is unused since Phase 2 (placeholders show last week or
       `weight`). Drop it from the type and the data.
-- [ ] Rishav reads all three days in the dev build and confirms they match this file.
+- [x] Rishav reads all three days in the dev build and confirms they match this file.
 - [x] `docs/PROGRAM_SOURCE.md` is rewritten from the Decisions table. `docs/ARCHITECTURE.md`
       (program data, invariants) and `README.md` match.
 - [x] A search of `docs/` and `README.md` for `1RM`, `8-week`, `sumo`, `TEST_WEEK`, `condKey`, and
@@ -245,3 +245,5 @@ None.
 - **2026-10-29:** From Rishav's read of the dev build: Friday's seated leg curl back to a standing
   calf raise (`bb-fri-calf`, 2×12–15 @ RPE 10). Hamstrings 3 direct sets plus the deadlift,
   calves 5.
+- **2026-10-29:** Rishav confirmed the three days. Phase 3 done. Phase 4 started: branch pushed
+  and PR opened (approved).
