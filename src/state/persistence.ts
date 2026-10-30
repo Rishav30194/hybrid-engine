@@ -47,8 +47,32 @@ export function consumeUpdatedAt(): number {
   return ts
 }
 
+/**
+ * The newest snapshot and its stamp, kept in memory whether or not the
+ * localStorage write landed. Sync reads this rather than localStorage: when the
+ * store is full or blocked, localStorage still holds the last write that
+ * succeeded, and pushing or comparing against that would send stale data to the
+ * cloud — the one backup left.
+ */
+let latest: { snapshot: string; updatedAt: number } | null = null
+
+/** The in-memory truth for sync: the persisted slice, its stamp, and its snapshot. */
+export function currentBlob(): {
+  persisted: Partial<PersistedState>
+  updatedAt: number
+  snapshot: string
+} | null {
+  if (!latest) return null
+  return {
+    persisted: JSON.parse(latest.snapshot) as PersistedState,
+    updatedAt: latest.updatedAt,
+    snapshot: latest.snapshot,
+  }
+}
+
 /** Write persisted content (a persistedSnapshot string) + its updatedAt stamp. */
 export function writeSnapshot(contentJson: string, updatedAt: number): void {
+  latest = { snapshot: contentJson, updatedAt }
   try {
     const content = JSON.parse(contentJson) as PersistedState
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...content, updatedAt }))
@@ -77,5 +101,10 @@ export function readBlob(): { persisted: Partial<PersistedState>; updatedAt: num
 
 /** Read + hydrate persisted state; falls back to defaults on any error. */
 export function loadState(): AppState {
-  return mergePersisted(readBlob()?.persisted ?? null)
+  const blob = readBlob()
+  const state = mergePersisted(blob?.persisted ?? null)
+  // Seed the in-memory truth with what was actually loaded, so sync compares
+  // against this device's real stamp before the first write.
+  latest = blob ? { snapshot: persistedSnapshot(state), updatedAt: blob.updatedAt } : null
+  return state
 }

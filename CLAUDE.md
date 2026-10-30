@@ -42,7 +42,7 @@ State the class in your plan. It determines what the change costs.
 |---|---|---|
 | **A — Cosmetic** | spacing, colour, copy, a token value | Tests + build pass; check at 390px wide |
 | **B — Behaviour** | new interaction, screen layout, timer tweak | Plan approved first; add or extend a test |
-| **C — Program data** | an `sr`, `rpe`, exercise, week, note | **Explicit approval every time** — this changes his training. Update `loads.test.ts` expectations |
+| **C — Program data** | an `sr`, `rpe`, exercise, week, note | **Explicit approval every time** — this changes his training. Update `program.test.ts` expectations |
 | **D — Persisted shape** | new field in `PersistedState`, key format, `STORAGE_KEY` | Plan + migration + approval |
 | **E — Infra** | `package.json`, `vite.config.ts`, workflow, Supabase schema | Explicit approval |
 

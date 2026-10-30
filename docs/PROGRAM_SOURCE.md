@@ -85,7 +85,7 @@ logbook depends on.
 
 Sets, reps, RPE and exercise selection are training decisions, not code changes. See `CLAUDE.md`
 §2 (class C) — they need explicit approval, and the program integrity tests in
-`src/engine/loads.test.ts` must move with them.
+`src/data/program.test.ts` must move with them.
 
 Exercise `id`s in `program.ts` are storage keys. Renaming an exercise is free; **reusing an
 existing `id` for a different movement is not** — a previously logged weight would resurface on

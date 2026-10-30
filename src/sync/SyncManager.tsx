@@ -2,7 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAuth } from '../auth/context'
 import { getSupabase, isSupabaseConfigured } from '../lib/supabase'
 import { useAppDispatch, useAppState } from '../state/context'
-import { persistedSnapshot, readBlob, setNextUpdatedAt } from '../state/persistence'
+import {
+  currentBlob,
+  persistedSnapshot,
+  setNextUpdatedAt,
+  writeSnapshot,
+} from '../state/persistence'
+import { applyDecision } from './applyDecision'
 import { fetchRemote, pushRemote, type RemoteBlob } from './syncClient'
 import { setSyncStatus } from './syncStatus'
 
@@ -22,18 +28,23 @@ export function SyncManager() {
   const reconciledAt = useRef<string | null>(null)
   const latestSnapshot = useRef(snapshot)
   latestSnapshot.current = snapshot
+  const latestState = useRef(state)
+  latestState.current = state
   const userId = user?.id
 
   // Apply a remote blob if it's newer than what we have locally.
   const applyRemote = useCallback(
     (blob: RemoteBlob | undefined): boolean => {
-      const localUpdatedAt = readBlob()?.updatedAt ?? 0
-      if (blob && typeof blob.updatedAt === 'number' && blob.updatedAt > localUpdatedAt) {
-        setNextUpdatedAt(blob.updatedAt)
-        dispatch({ type: 'hydrateRemote', data: blob })
+      const localUpdatedAt = currentBlob()?.updatedAt ?? 0
+      const decision = applyDecision(latestState.current, localUpdatedAt, blob)
+      if (decision === 'ignore' || !blob) return false
+      if (decision === 'stamp') {
+        writeSnapshot(latestSnapshot.current, blob.updatedAt)
         return true
       }
-      return false
+      setNextUpdatedAt(blob.updatedAt)
+      dispatch({ type: 'hydrateRemote', data: blob })
+      return true
     },
     [dispatch],
   )
@@ -47,7 +58,7 @@ export function SyncManager() {
   )
 
   const flushPush = useCallback((uid: string) => {
-    const blob = readBlob()
+    const blob = currentBlob()
     if (!blob) return
     setSyncStatus('syncing')
     void pushRemote(uid, blob.persisted, blob.updatedAt).then(({ error }) =>
@@ -68,19 +79,24 @@ export function SyncManager() {
 
     void (async () => {
       setSyncStatus('syncing')
-      const local = readBlob()
       const remote = await fetchRemote(userId)
       if (cancelled) return
+      // Read local only now: an edit made while the fetch was in flight is part
+      // of what gets compared and pushed, not left behind until the next change.
+      const local = currentBlob()
+      let settled = latestSnapshot.current
       if (applyRemote(remote?.data)) {
         setSyncStatus('synced')
       } else if (local) {
         const { error } = await pushRemote(userId, local.persisted, local.updatedAt)
         if (!cancelled) setSyncStatus(error ? 'error' : 'synced')
+        // Settle on what was pushed, so an edit during the push still goes up.
+        settled = local.snapshot
       } else {
         setSyncStatus('synced')
       }
       if (!cancelled) {
-        reconciledAt.current = latestSnapshot.current
+        reconciledAt.current = settled
         setReady(true)
       }
     })()
@@ -105,8 +121,10 @@ export function SyncManager() {
   }, [status, userId, applyRemote])
 
   // Re-check the cloud when the tab regains focus/visibility (covers switching
-  // back to an already-open device without realtime), and flush a push when the
-  // tab is hidden so a change isn't lost if the app is closed before the debounce.
+  // back to an already-open device without realtime), flush a push when the tab
+  // is hidden so a change isn't lost if the app is closed before the debounce,
+  // and retry when the connection comes back so a push that failed offline
+  // doesn't wait for the next edit.
   useEffect(() => {
     if (status !== 'signedIn' || !userId || !isSupabaseConfigured) return
     const onVisibility = () => {
@@ -114,11 +132,14 @@ export function SyncManager() {
       else flushPush(userId)
     }
     const onFocus = () => void pullRemote(userId)
+    const onOnline = () => flushPush(userId)
     document.addEventListener('visibilitychange', onVisibility)
     window.addEventListener('focus', onFocus)
+    window.addEventListener('online', onOnline)
     return () => {
       document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('focus', onFocus)
+      window.removeEventListener('online', onOnline)
     }
   }, [status, userId, pullRemote, flushPush])
 

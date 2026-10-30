@@ -216,6 +216,17 @@ describe('Template', () => {
       expect(reps.placeholder).toBe('5')
     })
 
+    // Skipping a missed session is the rule, so the target must survive it.
+    it('looks past a skipped week to the latest numbers', () => {
+      const { container } = renderWith(<Template />, {
+        week: 4,
+        log: { 'w2:t:bb-mon-squat': '185', 'w2:t:bb-mon-squat:reps': '5' },
+      })
+      const { weight, reps } = squatInputs(container)
+      expect(weight.placeholder).toBe('185')
+      expect(reps.placeholder).toBe('5')
+    })
+
     it('shows plain hints when there is no last week', () => {
       const { container } = renderWith(<Template />, {
         week: 1,
