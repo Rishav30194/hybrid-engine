@@ -14,7 +14,7 @@ what was agreed; if they ever disagree with those files, the files win.
 | 1 — Remove the 1RM load engine | B | Done 2026-10-29 (`dff176e`) |
 | 2 — Log reps and show last week | B | Done 2026-10-29 (`434a812`) |
 | 3 — Load the new program | C | Done 2026-10-29 (`3453cb7`, `05f6816`) |
-| 4 — Ship and cut over | Push and PR | PR open, waiting on CI and merge approval |
+| 4 — Ship and cut over | Push and PR | PR #31 open, waiting on merge approval |
 
 ## Ground rules
 
@@ -213,7 +213,8 @@ needed that the new one doesn't.
 
 **Validation**
 
-- [ ] CI passes on the PR, and the deploy workflow succeeds after merge.
+- [ ] The deploy workflow succeeds after merge. (It runs only on pushes to `main`, so a PR gets no
+      CI run; the same `npm test` and build passed locally before the PR.)
 - [ ] On the iPhone: week 1 shows the new Monday. A weight and reps logged on one exercise survive
       closing and reopening the app.
 - [ ] If signed in: the same entry appears after a reload from the cloud.
@@ -246,4 +247,5 @@ None.
   calf raise (`bb-fri-calf`, 2×12–15 @ RPE 10). Hamstrings 3 direct sets plus the deadlift,
   calves 5.
 - **2026-10-29:** Rishav confirmed the three days. Phase 3 done. Phase 4 started: branch pushed
-  and PR opened (approved).
+  and PR #31 opened (approved). No CI ran on the PR: `deploy.yml` triggers only on pushes to
+  `main`. Next: merge, with approval.
