@@ -1,10 +1,9 @@
 /**
- * The recalculation engine — the heart of the app.
- * Working load = round(1RM × pct / increment) × increment.
+ * Helpers for reading the prescription. Every weight is logged, not computed —
+ * see docs/ARCHITECTURE.md → "Logged weights".
  */
-import { LIFTS, pressForWeek, weekAt } from '../data/program'
-import type { Exercise, LiftKey } from '../data/types'
-import type { BasisAt, LoadBasis } from '../state/types'
+import { weekAt } from '../data/program'
+import type { Exercise } from '../data/types'
 
 /** Parse a possibly-empty/edited numeric value; non-numbers become 0. */
 export function toNum(v: number | string | null | undefined): number {
@@ -13,71 +12,12 @@ export function toNum(v: number | string | null | undefined): number {
 }
 
 /**
- * round(1RM × pct / increment) × increment, with increment defaulting to 1.
- * Floored at 0 — `type="number"` accepts a typed minus sign, and a negative
- * working load would otherwise propagate to every screen.
+ * Meta line for a template exercise: `sets×reps · RPE x[ · rest …]`. The easy
+ * week's RPE replaces the exercise's own, so week 1 never reads as a call to
+ * go to failure.
  */
-export function roundLoad(
-  oneRepMax: number | string,
-  pct: number,
-  increment: number | string,
-): number {
-  const r = toNum(increment) || 1
-  return Math.max(0, Math.round((toNum(oneRepMax) * pct) / r) * r)
-}
-
-/**
- * What a week's loads are computed from. A week already trained keeps the basis
- * it was trained on; every other week follows the live one, so changing a 1RM
- * or the rounding moves the current and future weeks only.
- */
-export function basisForWeek(
-  live: LoadBasis,
-  basisAt: BasisAt,
-  week: number,
-): LoadBasis {
-  return basisAt[week] ?? live
-}
-
-/** Working load for a lift in a given week (1-based), rounded to `increment`. */
-export function computeLoad(
-  oneRepMax: number | string,
-  week: number,
-  lift: LiftKey,
-  increment: number | string,
-): number {
-  return roundLoad(oneRepMax, weekAt(week).main[lift].pct, increment)
-}
-
-/** Meta line for a main lift: `sets×reps · RPE x[ · nn%]`. */
-export function mainLiftMeta(
-  week: number,
-  lift: LiftKey,
-  showPercents = true,
-): string {
-  const m = weekAt(week).main[lift]
-  let meta = `${m.sr} · RPE ${m.rpe}`
-  if (showPercents) meta += ` · ${Math.round(m.pct * 100)}%`
-  return meta
-}
-
-/** Meta line for a template exercise: `sets×reps · RPE x[ · rest …]`. */
-export function exerciseMeta(e: Exercise): string {
-  let meta = `${e.sr} · RPE ${e.rpe}`
+export function exerciseMeta(e: Exercise, week: number): string {
+  let meta = `${e.sr} · RPE ${weekAt(week).rpeOverride ?? e.rpe}`
   if (e.rest && e.rest !== '—') meta += ` · rest ${e.rest}`
   return meta
-}
-
-/**
- * Wednesday's press slot is authored as the bench but runs overhead in weeks 3
- * and 6, so the row's name and computed load follow the week. Every other
- * exercise resolves to itself.
- */
-export function resolveExercise(
-  e: Exercise,
-  week: number,
-): { main: LiftKey | undefined; name: string } {
-  if (e.main !== 'bench') return { main: e.main, name: e.name }
-  const lift = pressForWeek(week)
-  return { main: lift, name: LIFTS.find((l) => l.key === lift)?.name ?? e.name }
 }

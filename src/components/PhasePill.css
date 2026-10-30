@@ -20,7 +20,7 @@
   letter-spacing: 0.13em;
 }
 
-/* Compact variant for the 8-Week cards: smaller, no border. */
+/* Compact variant for the Plan cards: smaller, no border. */
 .phase-pill--card {
   gap: 6px;
   padding: 3px 9px;

@@ -56,9 +56,7 @@
 
   /* Type scale (px) */
   --fs-hero: 46px;
-  --fs-load: 40px;
   --fs-timer: 54px;
-  --fs-1rm-input: 22px;
   /* Floor for anything focusable: below 16px iOS zooms the page on focus and
      never zooms back. Every input/select/textarea must be at least this. */
   --fs-control: 16px;

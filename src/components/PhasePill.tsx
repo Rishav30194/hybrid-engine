@@ -3,7 +3,7 @@ import { PHASES } from '../data/program'
 import type { PhaseKey } from '../data/types'
 
 /** Block-phase pill: colored dot + tag on a translucent phase-color fill.
- *  `hero` carries a border (This Week card); `card` is the compact 8-Week variant. */
+ *  `hero` carries a border (This Week card); `card` is the compact Plan variant. */
 export function PhasePill({
   phase,
   tag,

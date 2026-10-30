@@ -23,91 +23,65 @@ main.tsx → AuthProvider → StoreProvider → App
 
 | Layer | Location | Role |
 |---|---|---|
-| Program data | `src/data/` | The prescription: weeks, days, lifts, conditioning |
-| Engine | `src/engine/` | Pure functions: load maths, storage keys, day progress |
+| Program data | `src/data/` | The prescription: weeks, days, exercises, notes |
+| Engine | `src/engine/` | Pure functions: prescription meta lines, storage keys, day progress, block carry-forward |
 | State | `src/state/` | Reducer, contexts, localStorage persistence |
 | Sync | `src/sync/` | Supabase reconcile, push/pull, status |
 | Auth | `src/auth/` | Session provider + the header account control |
-| Screens | `src/screens/` | This Week (1RM + block progress), 8-Week Plan, Template (the session) |
+| Screens | `src/screens/` | This Week (block progress), Plan (the weeks), Template (the session) |
 | Components | `src/components/` | Header, BottomNav, RestTimer, CheckButton, PhasePill, SectionLabel |
 
-Everything below the data layer is data-driven. `dayProgress` computes `day.ex.length + 1`, and
-the screens map over `DAYS` / `COND` / `WEEKS`, so the program's shape can change without
-touching the engine or the UI.
+Everything below the data layer is data-driven. `dayProgress` counts `day.ex.length`, and the
+screens map over `DAYS` / `WEEKS`, so the program's shape can change without touching the engine
+or the UI.
 
 ---
 
-## The load engine
+## Logged weights
 
-The heart of the app. Every working load is derived, never stored:
+Every weight is **logged, not computed** — main lifts included. A Template row logs **weight ×
+reps of its last set** on the name's line. The weight is stored in `log` under `w{week}:t:{exId}`
+(the same key as the row's check-off, in a different map); the reps under the suffixed id
+`{exId}:reps`. There is no 1RM, no percentage and no rounding anywhere in the UI.
 
-```
-load = round(1RM × pct / increment) × increment
-```
+**Last week shows as placeholders.** An empty box shows the previous week's weight or reps
+faintly, so the number to beat sits where you type it instead of on a line of its own (see the
+control-placement rule in [`CONVENTIONS.md`](CONVENTIONS.md)). Week 1 has no previous week and
+shows plain `weight` / `reps`; its weights arrive as real values carried by **Start new block**.
 
-`roundLoad()` in `engine/loads.ts`, with `increment` defaulting to 1. `computeLoad()` looks the
-percentage up as `WEEKS[week - 1].main[lift].pct`. There is nothing to invalidate.
+**Top-set exercises log two pairs.** An `Exercise` with `backoff: true` gets a second line for its
+back-off sets, stored under the suffixed id `{exId}:bo` (weight) and `{exId}:bo:reps` (reps). Only
+the reps of the last set are logged in either pair: reps fall across sets, so the last set
+reaching the top of the range means every set did.
 
-**Both inputs are per-week, not global.** A `LoadBasis` is `{ rm, rounding }` — everything a
-load is derived from besides the week's own percentage. `basisForWeek(live, basisAt, week)`
-resolves it: a week present in `basisAt` is **frozen** on the basis it was trained on, and every
-other week follows the live one. Changing a 1RM *or* the rounding therefore moves the current and
-future weeks only — weeks already done keep the numbers they were done at.
-
-The freeze is lazy. `setRm` and `setRounding` both stamp every week before the active one that
-isn't stamped yet, using the *pre-edit* basis; an already-stamped week is never re-stamped. That
-is why no stamp is needed on week advance.
-
-Past weeks expose their frozen basis for editing on the 8-Week card (`PastWeekRm` in
-`WeekPlan.tsx`) via `setRmAt` and `setRoundingAt` — the way to correct a week after the fact,
-and the escape hatch that keeps a bad freeze from being permanent.
-
-**This Week's 1RM editor targets the active week's basis, not always the live one.** When the
-active week is frozen it displays that week's values and its edits dispatch `setRmAt` /
-`setRoundingAt`; otherwise it edits `rm` / `rounding` as before. Without that, editing while a
-past week is active would move every week *except* the one on screen — `freezePastWeeks` stamps
-weeks strictly before the active one, so there is nothing left to protect the active week itself.
-The header hint reads `week N only ↻` in that state so the target is visible.
-
-**The week 3 / 6 press swap is real, not copy.** Wednesday's slot is authored as the bench but
-runs overhead in weeks 3 and 6. `pressForWeek()` → `anchorLifts()` → `resolveExercise()` carry
-that through: the row's *name* and its *computed load* both follow the week. The 8-Week cards
-show the three lifts a week actually programs; the 1RM editor still edits all four. Covered by
-`loads.test.ts` and `screens.test.tsx`.
-
-**Template rows show the active week's prescription for main lifts.** `mainLiftMeta()` reads
-`WEEKS`, so a row reads `4×5 · RPE 7 · 79%` in week 1 rather than the block range `4×5→4×4`
-stored on the exercise. Accessories use their static `sr`/`rpe` via `exerciseMeta()`.
+**The easy week overrides every RPE.** A row's meta line comes from `exerciseMeta(ex, week)`:
+the exercise's own `sr`, `rpe` and `rest`, except that a week with `rpeOverride` (week 1's `~8`)
+replaces the RPE on every row. That keeps week 1 from reading as a call to go to failure. Drop
+sets live in the exercise note, not in `sr`, for the same reason.
 
 ---
 
 ## State
 
-`AppState` (`state/types.ts`) is one flat object. Only five fields are persisted:
+`AppState` (`state/types.ts`) is one flat object. Only six fields are persisted:
 
 | Persisted | Volatile (never persisted) |
 |---|---|
-| `week`, `rounding`, `rm`, `done`, `log` | `tab`, `openWeek`, `openDay`, `timer`, `pillHidden` |
+| `week`, `rounding`, `rm`, `basisAt`, `done`, `log` | `tab`, `openDay`, `timer`, `pillHidden` |
 
 ### Invariants
 
 - **The reducer is pure.** Time enters via `now` on the action (`timerStart`, `timerTick`,
   `timerAdd`, `timerStartPause`). Never call `Date.now()` inside it — the timer suite depends
   on this.
-- **`week` is clamped 1..8** by `clampWeek`, and every read of the week's prescription goes
+- **`week` is clamped 1..12** (`1..WEEKS.length`) by `clampWeek`, and every read of the week's prescription goes
   through **`weekAt(week)`** (`data/program.ts`), which falls back to week 1 rather than
   white-screening. `WEEKS` is typed as a non-empty tuple so that fallback is total, and
   `noUncheckedIndexedAccess` makes the compiler enforce it — index `WEEKS` directly and it
   won't type-check.
-- **A 1RM may legitimately be `''`** while the field is being cleared. Parse with `toNum`, never
-  bare `Number()`/`parseFloat`, and never coerce the blank back to a number in the reducer or
-  the field can't be emptied. This holds for the per-week values in `basisAt` too.
-- **Never read `state.rm` or `state.rounding` directly to compute a load *or to render an
-  editor for one*.** Go through `basisForWeek`, or a past week silently starts tracking the live
-  values again — the bug the freeze exists to prevent. Two screens showing different 1RMs for the
-  same week is the symptom.
-- **`startNewBlock` clears `basisAt`.** A new block re-runs weeks 1–8 against the new 1RMs, so
-  last block's frozen values would misprice them.
+- **`rm`, `rounding` and `basisAt` are unread.** They are what working loads were once computed
+  from. They stay in `AppState` and the persisted slice only because dropping them would change
+  the stored shape for no gain; nothing reads or writes them, and nothing new should.
 - **The rest timer is `endAt`-anchored, not tick-counted** — it stays correct when iOS suspends
   the tab. Don't rewrite it as a decrementing counter.
 
@@ -122,11 +96,11 @@ stored on the exercise. Accessories use their static `sr`/`rpe` via `exerciseMet
 - **`STORAGE_KEY = 'hybridEngine.v1'`** (`state/persistence.ts`). Changing or bumping it abandons
   every device's data.
 - **Key formats in `engine/keys.ts` are a storage contract**, not an implementation detail:
-  `w{week}:t:{exId}` (exercise check-off *and* logged weight) · `w{week}:tc:{cond}`
-  (conditioning check-off). Change a format and existing check-offs and logged weights orphan.
-  Template is the only screen that checks work off. Two further formats — `w{week}:m:{lift}` and
-  `w{week}:c:{cond}` — were written by the old This Week lift and conditioning rows; those rows
-  are gone and any such keys still in storage are inert.
+  `w{week}:t:{exId}` (exercise check-off *and* logged weight), plus the suffixed ids under
+  **Last set RPE**. Change a format and existing check-offs and logged weights orphan. Template
+  is the only screen that checks work off. Three retired formats — `w{week}:m:{lift}`,
+  `w{week}:c:{cond}` and `w{week}:tc:{cond}` — were written by the old lift and conditioning
+  rows; those rows are gone and any such keys still in storage are inert.
 - **Exercise `id`s in `program.ts` are storage keys.** Renaming an exercise is free; reusing an
   existing `id` for a *different* movement is the dangerous case — a logged weight resurfaces on
   the wrong lift. Always issue a fresh id.
@@ -160,8 +134,8 @@ behaves exactly as a localStorage-only app. Setup: [`CLOUD_SYNC.md`](CLOUD_SYNC.
 - **`PersistedState` is also the cloud wire format.** `RemoteBlob` extends it (`syncClient.ts`).
   A new field must be optional-safe: old blobs and old devices won't have it, so `mergePersisted`
   must default it and `hydrateRemote` must tolerate its absence. The cost of that tolerance is
-  real: a push from a device running an older build carries no `basisAt`, and last-write-wins
-  then clears the frozen weeks — the same way it already clears `done` and `log`.
+  real: a push from a device running an older build carries none of the field, and
+  last-write-wins then clears it — the same way it already clears `done` and `log`.
 - **There are two paths into state**: localStorage hydrate (`mergePersisted`) and cloud pull
   (reducer `hydrateRemote`). Anything that cleans or migrates data must run on both.
 - **`updatedAt` lives outside `AppState` on purpose.** Last-write-wins needs a remote pull to
@@ -174,78 +148,43 @@ behaves exactly as a localStorage-only app. Setup: [`CLOUD_SYNC.md`](CLOUD_SYNC.
 
 ## Program data
 
-`src/data/program.ts` is the source of truth for `WEEKS`, `DAYS`, `COND`, `CONDINFO`, `NOTES`,
-`PHASES` and `LIFTS`. The reasoning behind those values — time budgets, volume trade-offs — is
-in [`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
+`src/data/program.ts` is the source of truth for `WEEKS`, `DAYS`, `NOTES`, `OFF_DAYS` and
+`PHASES`. The reasoning behind those values — time budgets, volume trade-offs — is in
+[`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
 
-- **8 weeks, 4 lifts, 3 days.** `loads.test.ts` → `describe('program data integrity')` asserts
-  the shape. If a change makes those fail, the change is wrong until proven otherwise.
-- **All four 1RMs stay editable**, even in a week that only programs three lifts.
-- The percentages decide what goes on the bar. Changing one is a training decision — see
-  `CLAUDE.md` §3.
-- **`TEST_WEEK` is the last week** and behaves differently: main lifts prescribe an AMRAP at 90%
-  rather than working sets, and only that week renders the test inputs and the new-block button.
+- **12 weeks, 3 days of 6, 7 and 8 exercises, every id prefixed `bb-`.** `loads.test.ts` →
+  `describe('program data integrity')` asserts the shape. If a change makes those fail, the
+  change is wrong until proven otherwise.
+- Sets, reps, RPE and exercise selection are training decisions — see `CLAUDE.md` §3.
+- **`LAST_WEEK` is the last week**, and only that week shows the new-block button.
 
 ---
 
 ## Closing a block
 
-Two engine modules, both pure. `newBlock.ts` is driven only from what week 8 logged; `e1rm.ts`
-also serves every other week through `impliedOneRepMax` — see **Last set RPE** below.
+**`engine/newBlock.ts`** turns the last week's log into the next block's starting point: every
+logged weight is copied from the last week to week 1, because each exercise repeats next block and last block's number is where the new one
+starts. A back-off weight (`{exId}:bo`) carries the same way. Reps, felt RPE and the old week-8
+test entries are not carried: week 1 is for finding weights, and the rest describe one set, not a
+starting point.
 
-**`engine/e1rm.ts`** estimates a max from a set. RPE gives reps-in-reserve, reps plus reserve
-gives reps-to-failure, and a lookup turns that into a percentage — `180 × 3 @ RPE 8` is 5 to
-failure, 86.3%, so 210. That lookup (`pctForSet`) backs both exported estimators. The result is
-**rounded to the nearest 5 lb**, deliberately *not* to the "Round loads to" setting: that governs
-working loads, this is the reference they derive from. Bad input (missing fields, text, negatives,
-`NaN`, RPE outside 1–10, more than 12 reps to failure) returns `null` rather than a garbage number.
-
-`estimateOneRepMax` is the absolute form and belongs to week 8, where the AMRAP's rep count is the
-unknown and no prescribed RPE exists to measure against.
-
-**`engine/newBlock.ts`** turns those entries into the next block: an estimated 1RM per main lift
-where week 8 has a usable set, and a `carry` map seeding week 1 with week 8's accessory and
-conditioning weights — their prescriptions are identical every week, so last block's number is
-where the new one starts. A main lift's test weight is *not* carried; it became the 1RM. A lift
-with no usable set keeps its current 1RM rather than guessing, which is the normal case for OHP
-since week 8 programs bench in the Wednesday slot.
-
-The reducer's `startNewBlock` applies it: new `rm`, `week` back to 1, `done` emptied, `log`
-replaced by `carry`.
-
-**Test entries reuse the existing keyspace.** `w{week}:t:{exId}` with suffixed ids
-(`mon-e0:reps`, `mon-e0:rpe`), exactly like `mon-climber` — no new key format, no migration.
+The reducer's `startNewBlock` applies it: `week` back to 1, `done` emptied, `log` replaced by the
+carry.
 
 ---
 
 ## Last set RPE
 
-Every Template row logs the actual felt RPE of its last set (`{exId}:lsrpe`, same suffixed-key
-reuse as the test entries above). The field rides the `.ex-row__meta` line rather than taking one
-of its own, so it reads directly against the RPE prescribed a few words to its left and the row
+Every Template row logs the actual felt RPE of its last set under the suffixed id
+`{exId}:lsrpe` (`lsrpeId` in `engine/keys.ts`), inside the usual `w{week}:t:{exId}` format — no
+new key format, no migration. The field rides the `.ex-row__meta` line rather than taking one of
+its own, so it reads directly against the RPE prescribed a few words to its left and the row
 keeps the height it had before the field existed — see the control-placement rule in
-[`CONVENTIONS.md`](CONVENTIONS.md).
+[`CONVENTIONS.md`](CONVENTIONS.md). It is a record only; nothing is computed from it.
 
-On a main lift the value feeds **`impliedOneRepMax`**, which reads the set *against the effort the
-week asked for* rather than in absolute terms: it scales the current 1RM by
-`pct(prescribed) / pct(felt)`, taking reps and target RPE from that week's own prescription
-(`prescribedReps` / `prescribedRpe`, parsed off `WEEKS[week - 1].main[lift]`).
-
-**Anchoring on the prescribed RPE is the correctness requirement, not a refinement.** A plain
-`estimateOneRepMax` here disagrees with the program's own percentages. Weeks 1, 3, 6 and 7 happen
-to sit on the chart, but week 4 loads the deload at 68% and calls it RPE 5 while the chart puts
-5 reps at RPE 5 at 73.9% — so a deload taken exactly to plan "implied" a 1RM 15 lb light, and
-applying that would walk the max down every block. Scaling by the ratio cancels the weight out and
-makes an on-plan set return the current 1RM exactly, on every week; `e1rm.test.ts` asserts that
-property across all of `WEEKS`. The cost is that it trusts the bar to have carried the prescribed
-load, which is what the row displays and has no field to contradict.
-
-The signal line renders only once an RPE is entered, so an untouched row costs nothing; when the
-implied value matches the current 1RM it reads `on plan — no change` and offers no Apply, since
-applying would be a no-op write that still stamps `basisAt` through `freezePastWeeks`. **Apply** writes it into the basis via `setRmAt`/`setRm`, using
-the identical frozen/live rule as This Week's editor (`ThisWeek.tsx`'s `OneRepMaxEditor`) — see
-**The load engine** above. Week 8 keeps its own `TestSet` reps+RPE flow instead; accessories have
-no `rm` to estimate against, so they only log the number.
+**Suffixed ids in use:** `:lsrpe`, `:reps`, `:bo` and `:bo:reps`, all built by helpers in
+`engine/keys.ts` and pinned in `progress.test.ts`. Week 8 once logged its AMRAP as `{exId}:reps`
+and `{exId}:rpe`; the `:reps` entries now read as that set's reps, and `:rpe` is inert.
 
 ---
 

@@ -1,117 +1,64 @@
 import { describe, expect, it } from 'vitest'
 import { planNewBlock } from './newBlock'
-import { testRepsId, testRpeId } from './e1rm'
-import { tmplDoneKey } from './keys'
-import { DAYS } from '../data/program'
-import { INITIAL_STATE } from '../state/reducer'
+import { backoffId, lsrpeId, repsId, tmplDoneKey } from './keys'
+import { DAYS, LAST_WEEK } from '../data/program'
 
-const rm = INITIAL_STATE.rm
-const at8 = (id: string) => tmplDoneKey(8, id)
+const atLast = (id: string) => tmplDoneKey(LAST_WEEK, id)
+const atOne = (id: string) => tmplDoneKey(1, id)
 
 describe('planNewBlock', () => {
-  it('turns a week-8 test set into the next block’s 1RM', () => {
+  it('carries every exercise’s weight into week 1', () => {
     const log = {
-      [at8('mon-e0')]: '180', // Back Squat
-      [at8(testRepsId('mon-e0'))]: '3',
-      [at8(testRpeId('mon-e0'))]: '8',
+      [atLast('bb-mon-squat')]: '185',
+      [atLast('bb-mon-legcurl')]: '90',
+      [atLast('bb-fri-calf')]: '80',
     }
-    const plan = planNewBlock(DAYS, 8, rm, log)
-    expect(plan.rm.squat).toBe(210) // 3 @ RPE 8 → 5 to failure → 86.3% → 208.6 → 210
-    expect(plan.estimated.squat).toBe(210)
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({
+      [atOne('bb-mon-squat')]: '185',
+      [atOne('bb-mon-legcurl')]: '90',
+      [atOne('bb-fri-calf')]: '80',
+    })
   })
 
-  it('leaves a lift alone when week 8 has no set for it', () => {
-    const plan = planNewBlock(DAYS, 8, rm, {})
-    expect(plan.rm).toEqual(rm)
-    expect(plan.estimated).toEqual({})
-  })
-
-  it('carries accessory and conditioning weights into week 1', () => {
+  it('carries a back-off weight, but no reps', () => {
     const log = {
-      [at8('mon-row-cable')]: '120',
-      [at8('mon-carry-suitcase')]: '70',
-      [at8('mon-climber')]: '6',
+      [atLast('bb-mon-squat')]: '185',
+      [atLast(repsId('bb-mon-squat'))]: '6',
+      [atLast(backoffId('bb-mon-squat'))]: '160',
+      [atLast(repsId(backoffId('bb-mon-squat')))]: '9',
     }
-    const { carry } = planNewBlock(DAYS, 8, rm, log)
-    expect(carry[tmplDoneKey(1, 'mon-row-cable')]).toBe('120')
-    expect(carry[tmplDoneKey(1, 'mon-carry-suitcase')]).toBe('70')
-    expect(carry[tmplDoneKey(1, 'mon-climber')]).toBe('6')
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({
+      [atOne('bb-mon-squat')]: '185',
+      [atOne(backoffId('bb-mon-squat'))]: '160',
+    })
   })
 
-  it('does not carry a main lift’s test weight — it became the 1RM', () => {
-    const log = {
-      [at8('mon-e0')]: '180',
-      [at8(testRepsId('mon-e0'))]: '3',
-      [at8(testRpeId('mon-e0'))]: '8',
-    }
-    const { carry } = planNewBlock(DAYS, 8, rm, log)
-    expect(carry[tmplDoneKey(1, 'mon-e0')]).toBeUndefined()
+  // Felt RPE describes one set, not a starting point for the next block.
+  it('never carries felt RPE forward', () => {
+    const log = { [atLast(lsrpeId('bb-wed-curl'))]: '10' }
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({})
   })
 
-  it('resolves Wednesday to the lift week 8 actually programs', () => {
-    // wed-e0 is authored as bench and runs as bench in week 8 (OHP only in 3/6).
-    const log = {
-      [at8('wed-e0')]: '200',
-      [at8(testRepsId('wed-e0'))]: '4',
-      [at8(testRpeId('wed-e0'))]: '9',
-    }
-    const plan = planNewBlock(DAYS, 8, rm, log)
-    expect(plan.estimated.bench).toBeDefined()
-    expect(plan.estimated.ohp).toBeUndefined()
-  })
-})
-
-describe('planNewBlock edge cases', () => {
-  it('ignores a partial test set — weight but no reps or RPE', () => {
-    const plan = planNewBlock(DAYS, 8, rm, { [at8('mon-e0')]: '180' })
-    expect(plan.rm.squat).toBe(rm.squat)
-    expect(plan.estimated.squat).toBeUndefined()
-    // and the orphan weight is not carried: it was a test, not an accessory
-    expect(plan.carry[tmplDoneKey(1, 'mon-e0')]).toBeUndefined()
+  // A back-off id on an exercise without back-off sets is not something the
+  // row ever writes; nothing should invent it.
+  it('only carries a back-off weight for a top-set exercise', () => {
+    const log = { [atLast(backoffId('bb-mon-legpress'))]: '300' }
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({})
   })
 
-  it('ignores unparsable entries rather than producing a garbage 1RM', () => {
-    const log = {
-      [at8('mon-e0')]: 'heavy',
-      [at8(testRepsId('mon-e0'))]: 'three',
-      [at8(testRpeId('mon-e0'))]: 'hard',
-    }
-    const plan = planNewBlock(DAYS, 8, rm, log)
-    expect(plan.rm.squat).toBe(rm.squat)
+  it('ignores weights logged under the old program’s ids', () => {
+    expect(planNewBlock(DAYS, LAST_WEEK, { [atLast('mon-e0')]: '180' })).toEqual({})
   })
 
-  it('ignores an out-of-range RPE', () => {
-    const log = {
-      [at8('mon-e0')]: '180',
-      [at8(testRepsId('mon-e0'))]: '3',
-      [at8(testRpeId('mon-e0'))]: '80', // fat-fingered
-    }
-    expect(planNewBlock(DAYS, 8, rm, log).rm.squat).toBe(rm.squat)
-  })
-
-  it('never carries the :reps and :rpe detail keys forward', () => {
-    const log = {
-      [at8('mon-e0')]: '180',
-      [at8(testRepsId('mon-e0'))]: '3',
-      [at8(testRpeId('mon-e0'))]: '8',
-    }
-    const { carry } = planNewBlock(DAYS, 8, rm, log)
-    expect(Object.keys(carry).some((k) => k.includes(':reps'))).toBe(false)
-    expect(Object.keys(carry).some((k) => k.includes(':rpe'))).toBe(false)
-  })
-
-  it('produces an empty plan from an empty log without throwing', () => {
-    const plan = planNewBlock(DAYS, 8, rm, {})
-    expect(plan.carry).toEqual({})
-    expect(plan.rm).toEqual(rm)
+  it('produces an empty carry from an empty log without throwing', () => {
+    expect(planNewBlock(DAYS, LAST_WEEK, {})).toEqual({})
   })
 
   it('only reads the week it is given', () => {
     const log = {
-      [tmplDoneKey(7, 'mon-row-cable')]: '999', // last week's row — not week 8
-      [at8('mon-row-cable')]: '120',
+      [tmplDoneKey(LAST_WEEK - 1, 'bb-wed-row')]: '999', // the week before — not this one
+      [atLast('bb-wed-row')]: '60',
     }
-    const { carry } = planNewBlock(DAYS, 8, rm, log)
-    expect(carry[tmplDoneKey(1, 'mon-row-cable')]).toBe('120')
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({ [atOne('bb-wed-row')]: '60' })
   })
 })

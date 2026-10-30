@@ -4,7 +4,7 @@ import type { Tab } from '../state/types'
 
 const TABS: { key: Tab; label: string; icon: string }[] = [
   { key: 'week', label: 'THIS WEEK', icon: '◉' },
-  { key: 'plan', label: '8-WEEK', icon: '▦' },
+  { key: 'plan', label: 'PLAN', icon: '▦' },
   { key: 'template', label: 'TEMPLATE', icon: '≣' },
 ]
 
