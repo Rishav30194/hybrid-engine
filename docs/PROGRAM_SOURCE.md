@@ -39,7 +39,7 @@ Two Jeff Nippard programs, combined rather than run as written:
 | Deadlift back-off sets at 6–8 reps, not 8–10 | On high-rep deadlifts, grip and lower back give out before the target muscles do. |
 | Calf raise on Friday, not a second leg curl | Conventional was chosen over sumo partly because it works the hamstrings harder, so Monday's leg curl plus the deadlift covers them and Friday's slot goes to calves. The cost: no second weekly stretch for the hamstrings. |
 | Standing calf raise Monday, seated Friday | The straight knee of a standing raise trains mostly the gastrocnemius, the visible upper calf, so it keeps the larger Monday slot. The bent knee of a seated raise shifts Friday's sets onto the soleus underneath. |
-| No leg extension | A leg curl and leg extension pair holds two machines at once, which doesn't work at a busy commercial gym. After squat and leg press it was the third quad exercise and added the least. |
+| Leg extension after the squat, not a leg press | A squat and a leg press are both heavy knee-and-hip pushes, so the second runs on tired legs for a similar stimulus, and neither source program pairs them in a session in week 1. The extension adds a different stimulus at low fatigue, and its last set is a drop set. It runs as straight sets because pairing it with the leg curl would hold two machines at once. |
 | No hard conditioning | Nippard keeps cardio minimal on hypertrophy programs, and the RPE-9 stair climber cut into leg recovery. Dropping it freed about 12 minutes a session. Easy climber minutes are now the warm-up, and daily walking stays. |
 
 **Paired exercises share a station.** Each A/B/C pair runs on one bench with one set of

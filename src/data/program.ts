@@ -29,7 +29,7 @@ export const DAYS: Day[] = [
   { n: 1, title: 'MONDAY — LOWER', sub: WARM_UP,
     ex: [
       { id: 'bb-mon-squat', name: 'Back Squat', sr: '1×5–6 top, 2×8–10 back-off', rpe: '8', rest: '2–3 min', backoff: true, note: 'Brace, knees out. Back-off sets run 10–15% lighter than the top set.' },
-      { id: 'bb-mon-legpress', name: 'Leg Press', sr: '3×10–12', rpe: '9', rest: '2 min', note: 'Feet mid-platform. Lower until your hips start to tuck, no bouncing.' },
+      { id: 'bb-mon-legext', name: 'Leg Extension', sr: '3×10–12', rpe: '9–10', rest: '90s', note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze at the top, control the way down.' },
       { id: 'bb-mon-legcurl', name: 'Seated Leg Curl', sr: '3×10–12', rpe: '9–10', rest: '90s', note: 'Lean forward for a deeper hamstring stretch, control the way back.' },
       { id: 'bb-mon-fly', name: 'B1 · Cable Fly', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Soft elbows, big stretch when open, squeeze the chest together.' },
       { id: 'bb-mon-crunch', name: 'B2 · Cable Crunch', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Round your back as you crunch, hips stay still.' },

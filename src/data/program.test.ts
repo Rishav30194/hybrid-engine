@@ -25,9 +25,11 @@ describe('program data integrity', () => {
     expect(new Set(ids).size).toBe(ids.length)
     for (const id of ids) expect(id).toMatch(/^bb-(mon|wed|fri)-[a-z]+$/)
   })
-  // Live before Friday moved to a seated raise, so weights may be logged under it.
-  it('does not reuse the retired standing-calf id', () => {
-    expect(DAYS.flatMap((d) => d.ex.map((e) => e.id))).not.toContain('bb-fri-calf')
+  // Both went live before being replaced, so weights may be logged under them.
+  it('does not reuse a retired id', () => {
+    const ids = DAYS.flatMap((d) => d.ex.map((e) => e.id))
+    expect(ids).not.toContain('bb-fri-calf')
+    expect(ids).not.toContain('bb-mon-legpress')
   })
   it('logs back-off sets on exactly squat, flat DB press and deadlift', () => {
     const backoff = DAYS.flatMap((d) => d.ex.filter((e) => e.backoff).map((e) => e.name))

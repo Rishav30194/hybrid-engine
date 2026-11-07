@@ -254,7 +254,7 @@ describe('Template', () => {
 
     it('gives an ordinary exercise one pair', () => {
       const { container } = renderAtWeek(<Template />, 1)
-      const row = rowNamed(container, 'Leg Press')
+      const row = rowNamed(container, 'Leg Extension')
       expect(row.querySelectorAll('.set-entry')).toHaveLength(1)
       expect(row.querySelector('.ex-row__backoff')).toBeNull()
     })
