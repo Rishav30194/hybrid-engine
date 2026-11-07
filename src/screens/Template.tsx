@@ -3,7 +3,7 @@ import { DAYS } from '../data/program'
 import type { Day, Exercise } from '../data/types'
 import { exerciseMeta, lastLogged } from '../engine/rows'
 import { dayProgress } from '../engine/progress'
-import { backoffId, lsrpeId, repsId, tmplDoneKey } from '../engine/keys'
+import { backoffId, dropId, lsrpeId, repsId, tmplDoneKey } from '../engine/keys'
 import { useAppDispatch, useAppState } from '../state/context'
 import { CheckButton } from '../components/CheckButton'
 
@@ -84,7 +84,11 @@ export function ExerciseRow({ ex }: { ex: Exercise }) {
       <div className="ex-row__body">
         <div className="ex-row__top">
           <span className="ex-row__name">{name}</span>
-          <SetEntry week={week} logId={ex.id} label={name} />
+          {ex.dropset ? (
+            <DropSetEntry week={week} logId={ex.id} label={name} />
+          ) : (
+            <SetEntry week={week} logId={ex.id} label={name} />
+          )}
         </div>
         {ex.backoff && (
           <div className="ex-row__backoff">
@@ -169,5 +173,89 @@ function SetEntry({
         }
       />
     </span>
+  )
+}
+
+/**
+ * A drop set's main and drop numbers, each pair in one box as `125 - 65`. They
+ * are two inputs rather than one because the number keypad has no dash, and two
+ * stored values rather than one string so the main numbers stay the ones
+ * progression and the placeholders read.
+ */
+function DropSetEntry({
+  week,
+  logId,
+  label,
+}: {
+  week: number
+  logId: string
+  label: string
+}) {
+  const { log } = useAppState()
+  const drop = dropId(logId)
+  const lastMain = lastLogged(log, logId, week)
+  const lastDrop = lastLogged(log, drop, week)
+
+  return (
+    <span className="set-entry">
+      <span className="ex-row__input set-entry__pair set-entry__pair--weight">
+        <PairInput
+          id={tmplDoneKey(week, logId)}
+          inputMode="decimal"
+          label={`${label} weight`}
+          hint={lastMain?.weight ?? 'lb'}
+        />
+        <span className="set-entry__dash">-</span>
+        <PairInput
+          id={tmplDoneKey(week, drop)}
+          inputMode="decimal"
+          label={`${label} drop weight`}
+          hint={lastDrop?.weight ?? 'lb'}
+        />
+      </span>
+      <span className="set-entry__x">×</span>
+      <span className="ex-row__input set-entry__pair set-entry__pair--reps">
+        <PairInput
+          id={tmplDoneKey(week, repsId(logId))}
+          inputMode="numeric"
+          label={`${label} reps`}
+          hint={lastMain?.reps ?? '#'}
+        />
+        <span className="set-entry__dash">-</span>
+        <PairInput
+          id={tmplDoneKey(week, repsId(drop))}
+          inputMode="numeric"
+          label={`${label} drop reps`}
+          hint={lastDrop?.reps ?? '#'}
+        />
+      </span>
+    </span>
+  )
+}
+
+function PairInput({
+  id,
+  inputMode,
+  label,
+  hint,
+}: {
+  id: string
+  inputMode: 'decimal' | 'numeric'
+  label: string
+  hint: string
+}) {
+  const { log } = useAppState()
+  const dispatch = useAppDispatch()
+
+  return (
+    <input
+      type="text"
+      inputMode={inputMode}
+      className="set-entry__part"
+      aria-label={label}
+      value={log[id] ?? ''}
+      placeholder={hint}
+      onChange={(e) => dispatch({ type: 'setLog', id, value: e.target.value })}
+    />
   )
 }

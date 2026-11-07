@@ -57,6 +57,12 @@ back-off sets, stored under the suffixed id `{exId}:bo` (weight) and `{exId}:bo:
 the reps of the last set are logged in either pair: reps fall across sets, so the last set
 reaching the top of the range means every set did.
 
+**Drop sets share the boxes as `125 - 65`.** An `Exercise` with `dropset: true` renders each box
+as two bare inputs inside one border, main on the left and drop on the right. They are two inputs
+because the number keypad has no dash, and two stored values because the main numbers must stay
+where progression and the placeholders read them. The drop half is stored under `{exId}:drop`
+(weight) and `{exId}:drop:reps` (reps), and is not carried into a new block.
+
 **The easy week overrides every RPE.** A row's meta line comes from `exerciseMeta(ex, week)`:
 the exercise's own `sr`, `rpe` and `rest`, except that a week with `rpeOverride` (week 1's `~8`)
 replaces the RPE on every row. That keeps week 1 from reading as a call to go to failure. Drop
@@ -199,7 +205,7 @@ its own, so it reads directly against the RPE prescribed a few words to its left
 keeps the height it had before the field existed — see the control-placement rule in
 [`CONVENTIONS.md`](CONVENTIONS.md). It is a record only; nothing is computed from it.
 
-**Suffixed ids in use:** `:lsrpe`, `:reps`, `:bo` and `:bo:reps`, all built by helpers in
+**Suffixed ids in use:** `:lsrpe`, `:reps`, `:bo`, `:bo:reps`, `:drop` and `:drop:reps`, all built by helpers in
 `engine/keys.ts` and pinned in `progress.test.ts`. Week 8 once logged its AMRAP as `{exId}:reps`
 and `{exId}:rpe`; the `:reps` entries now read as that set's reps, and `:rpe` is inert.
 

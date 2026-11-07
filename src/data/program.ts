@@ -29,7 +29,7 @@ export const DAYS: Day[] = [
   { n: 1, title: 'MONDAY — LOWER', sub: WARM_UP,
     ex: [
       { id: 'bb-mon-squat', name: 'Back Squat', sr: '1×5–6 top, 2×8–10 back-off', rpe: '8', rest: '2–3 min', backoff: true, note: 'Brace, knees out. Back-off sets run 10–15% lighter than the top set.' },
-      { id: 'bb-mon-legext', name: 'Leg Extension', sr: '3×10–12', rpe: '9, last 10', rest: '90s', note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze at the top, control the way down.' },
+      { id: 'bb-mon-legext', name: 'Leg Extension', sr: '3×10–12', rpe: '9, last 10', rest: '90s', dropset: true, note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze at the top, control the way down.' },
       { id: 'bb-mon-legcurl', name: 'Seated Leg Curl', sr: '4×10–12', rpe: '9, last 10', rest: '90s', note: 'Lean forward for a deeper hamstring stretch, control the way back.' },
       { id: 'bb-mon-fly', name: 'B1 · Cable Fly', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Soft elbows, big stretch when open, squeeze the chest together.' },
       { id: 'bb-mon-crunch', name: 'B2 · Cable Crunch', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Round your back as you crunch, hips stay still.' },
@@ -45,7 +45,7 @@ export const DAYS: Day[] = [
       { id: 'bb-wed-pullup', name: 'Weighted Pull-up', sr: '3×6–10', rpe: '9–10', rest: '2 min', note: 'Full hang to chest up. Add weight once you clear 10 reps.' },
       { id: 'bb-wed-lateral', name: 'B1 · Cable Lateral Raise', sr: '3×12–15', rpe: '9, last 10', rest: '60s', note: 'Raise out, not up. Control the lowering.' },
       { id: 'bb-wed-triceps', name: 'B2 · Overhead Cable Triceps Extension', sr: '3×10–12', rpe: '9, last 10', rest: '60s', note: 'Elbows in, full stretch behind the head.' },
-      { id: 'bb-wed-curl', name: 'EZ-Bar Curl', sr: '2×10–12', rpe: '9, last 10', rest: '90s', note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze the top.' },
+      { id: 'bb-wed-curl', name: 'EZ-Bar Curl', sr: '2×10–12', rpe: '9, last 10', rest: '90s', dropset: true, note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze the top.' },
     ] },
   { n: 3, title: 'FRIDAY — FULL BODY', sub: WARM_UP,
     ex: [
@@ -76,7 +76,7 @@ export const NOTES: string[] = [
   'On top-set exercises, add weight to the top set first. Back-off sets run 10–15% lighter.',
   'RPE 10 is the last rep you can complete with good form.',
   'On isolation exercises (RPE 9, last 10), stop early sets about a rep short and take only the last set to failure.',
-  "Drop set: reach the target reps, cut the weight by about half, and keep going until you can't do another rep.",
+  "Drop set: reach the target reps, cut the weight by about half, and keep going until you can't do another rep. Log the drop on the right side of each box.",
   'On paired exercises (A1/A2), alternate between the two, resting about 1 minute after each set.',
   'Week 1 is easy: RPE ~8 on everything, no sets to failure, no drop sets. Use it to find your weights.',
   "If an exercise gains no rep or weight for 3 sessions in a row, add one set. If it's still stuck after two more sessions, swap it next block.",

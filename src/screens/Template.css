@@ -144,6 +144,41 @@
   text-align: center;
 }
 
+.set-entry__pair {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 5px;
+}
+
+.set-entry__pair--weight {
+  width: 96px;
+}
+
+.set-entry__pair--reps {
+  width: 68px;
+}
+
+/* The pair's box draws the border, so each half is bare text. */
+.set-entry__part {
+  flex: 1 1 0;
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: var(--fs-control);
+  text-align: center;
+}
+
+.set-entry__dash {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+}
+
 .set-entry__x {
   font-size: 13px;
   color: var(--text-muted);
