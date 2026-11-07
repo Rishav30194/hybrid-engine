@@ -84,7 +84,7 @@ sets: 2–3 before squat, deadlift, and the DB presses; 0–1 before isolation e
 | A1 Incline DB Press / A2 Bulgarian Split Squat | 3×8–10 / 2×8–10 per leg | 9 / 8 | 1 min between |
 | B1 Lat Pulldown / B2 DB Lateral Raise | 3×10–12 / 2×12–15 | 9–10 / 10 | 1 min between |
 | C1 Bayesian Cable Curl / C2 Triceps Pressdown | 2×12–15 / 2×12–15 | 10 | 1 min between |
-| Standing Calf Raise | 2×12–15 | 10 | 90 s |
+| Seated Calf Raise | 2×12–15 | 10 | 90 s |
 
 ### Progression
 
@@ -109,6 +109,7 @@ All agreed with Rishav on 2026-10-29.
 | 12-week block with one easy week, at the start | Rishav is already training, so he needs no ramp-in; one week finds the new weights. Matches Nippard's Essentials program, which runs 12 weeks without a deload at similar volume |
 | No leg extension; leg curl as straight sets on Monday | A leg curl and leg extension superset holds two machines at once, which fails at a busy Crunch |
 | ~~Seated leg curl replaces Friday's calf raise~~ Reversed the same day: Friday keeps the calf raise | Rishav's call: conventional deadlift was picked over sumo for its hamstring work, so Monday's leg curl plus the deadlift covers hamstrings (3 direct sets) and calves keep 5 |
+| Friday's calf raise is seated (2026-11-06) | Standing on both days had no deliberate reason; seated adds focused soleus work. New id `bb-fri-seatedcalf`, so anything logged under `bb-fri-calf` doesn't carry over. Gym having the machine is unconfirmed |
 | Leg press and seated leg curl stay as written | Rishav confirmed Crunch University has both |
 | Log reps of the last set only (option C) | Reps fall across sets, so the last set reaching the top of the range means every set did. One number on the number keypad per row; the iOS number keypad has no space key, which ruled out one field holding every set |
 
@@ -276,3 +277,5 @@ None.
 - **2026-10-29:** Rishav checked the phone: all good. The cloud-reload item stays open, since the
   report doesn't say whether he was signed in. Lint run on the merged code: clean. Remaining: the
   cloud-reload check and the first full training week.
+- **2026-11-06:** Friday's calf raise changed to seated (`bb-fri-seatedcalf`, same 2×12–15 @ RPE
+  10). `bb-fri-calf` retired, with a test against reuse.
