@@ -109,8 +109,8 @@ All agreed with Rishav on 2026-10-29.
 | 12-week block with one easy week, at the start | Rishav is already training, so he needs no ramp-in; one week finds the new weights. Matches Nippard's Essentials program, which runs 12 weeks without a deload at similar volume |
 | No leg extension; leg curl as straight sets on Monday | A leg curl and leg extension superset holds two machines at once, which fails at a busy Crunch |
 | ~~Seated leg curl replaces Friday's calf raise~~ Reversed the same day: Friday keeps the calf raise | Rishav's call: conventional deadlift was picked over sumo for its hamstring work, so Monday's leg curl plus the deadlift covers hamstrings (3 direct sets) and calves keep 5 |
-| Friday's calf raise is seated (2026-11-06) | Standing on both days had no deliberate reason; seated adds focused soleus work. New id `bb-fri-seatedcalf`, so anything logged under `bb-fri-calf` doesn't carry over. Gym having the machine is unconfirmed |
-| Leg extension replaces Monday's leg press (2026-11-06) | Squat and leg press overlap, and that pairing was not from the source programs. New id `bb-mon-legext`, last set a drop set. Gym having the machine is unconfirmed |
+| Friday's calf raise is seated (2026-11-06) | Standing on both days had no deliberate reason; seated adds focused soleus work. New id `bb-fri-seatedcalf`, so anything logged under `bb-fri-calf` doesn't carry over. Rishav confirmed the gym has the machine |
+| Leg extension replaces Monday's leg press (2026-11-06) | Squat and leg press overlap, and that pairing was not from the source programs. New id `bb-mon-legext`, last set a drop set. Rishav confirmed the gym has the machine |
 | Leg press and seated leg curl stay as written | Rishav confirmed Crunch University has both |
 | Log reps of the last set only (option C) | Reps fall across sets, so the last set reaching the top of the range means every set did. One number on the number keypad per row; the iOS number keypad has no space key, which ruled out one field holding every set |
 
