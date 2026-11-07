@@ -169,7 +169,7 @@ behaves exactly as a localStorage-only app. Setup: [`CLOUD_SYNC.md`](CLOUD_SYNC.
 `PHASES`. The reasoning behind those values — time budgets, volume trade-offs — is in
 [`PROGRAM_SOURCE.md`](PROGRAM_SOURCE.md).
 
-- **12 weeks, 3 days of 6, 7 and 8 exercises, every id prefixed `bb-`.** `program.test.ts` →
+- **12 weeks, 3 days of 8, 7 and 8 exercises, every id prefixed `bb-`.** `program.test.ts` →
   `describe('program data integrity')` asserts the shape. If a change makes those fail, the
   change is wrong until proven otherwise.
 - Sets, reps, RPE and exercise selection are training decisions — see `CLAUDE.md` §3.

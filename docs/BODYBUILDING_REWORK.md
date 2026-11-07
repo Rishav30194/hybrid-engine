@@ -282,3 +282,8 @@ None.
   10). `bb-fri-calf` retired, with a test against reuse.
 - **2026-11-06:** Monday's leg press replaced by a leg extension (`bb-mon-legext`, 3×10–12 @ RPE
   9–10, last set a drop set). `bb-mon-legpress` retired, with a test against reuse.
+- **2026-11-06:** Review changes on `feature/program-review-changes`: Friday back to a standing calf
+  raise (`bb-fri-calf`; the seated version never shipped), Monday leg curl 4 sets, new cable lateral
+  raise (`bb-mon-lateral`) and reverse fly (`bb-mon-reversefly`), isolation at RPE 9 with the last
+  set at 10, stall rule, block rotation, time budget 60–80 min. Conventional deadlift stays;
+  `docs/PROGRAM_SOURCE.md` now holds the corrected reasoning, and the older entries here are history.

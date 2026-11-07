@@ -8,7 +8,7 @@ This file holds the *reasoning* behind it — the part that isn't recoverable by
 The goal is **hypertrophy** — building muscle. Until 2026-10-29 the program was an 8-week hybrid
 of strength and conditioning; Rishav switched the goal and the program was rebuilt around it.
 
-Three sessions a week, **about 55 minutes each, 60 at most**:
+Three sessions a week, **about 75 minutes each, within a window of 60 to 80**. The first full week ran about 75 minutes, and Rishav chose to keep the work rather than hold a 60-minute limit:
 
 | Day | Session | Anchor |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ Two Jeff Nippard programs, combined rather than run as written:
 
 - **The Essentials Program (3x a week)** gives the shape: Full Body / Upper / Lower, a heavy top
   set with lighter back-off sets, 1–3 hard sets per exercise, and paired exercises for opposing
-  muscles. It is built for 45 minutes; the extra 15 here buys more sets.
+  muscles. It is built for 45 minutes; the extra time here buys more sets.
 - **The Pure Bodybuilding Program** gives the effort and the progression: last set to failure on
   isolation work, stretch-focused exercise choices, and adding reps before weight. It runs 4–6
   days a week, which is why it isn't followed directly.
@@ -35,30 +35,34 @@ Two Jeff Nippard programs, combined rather than run as written:
 | Choice | Why |
 | --- | --- |
 | Flat DB press, not barbell bench | Unracking and setting up under a loaded bar alone was awkward. Dumbbells also give the chest a deeper stretch. |
-| Conventional deadlift, not sumo | It works the hamstrings and back harder, which counts for more in how a physique looks. If sumo was originally chosen for a back or hip reason, swap it back with the same scheme. |
+| Conventional deadlift | Rishav's preference. Activation data doesn't separate it from the alternatives: the one direct sumo comparison was about equal for hamstrings and glutes, and it matched a Romanian deadlift for hamstrings with slightly more glute and far more quad activation. Activation isn't growth, and no training study comparing them for size was found. Sumo or a Romanian deadlift are fair swaps if one suits his body better. |
 | Deadlift back-off sets at 6–8 reps, not 8–10 | On high-rep deadlifts, grip and lower back give out before the target muscles do. |
-| Calf raise on Friday, not a second leg curl | Conventional was chosen over sumo partly because it works the hamstrings harder, so Monday's leg curl plus the deadlift covers them and Friday's slot goes to calves. The cost: no second weekly stretch for the hamstrings. |
-| Standing calf raise Monday, seated Friday | The straight knee of a standing raise trains mostly the gastrocnemius, the visible upper calf, so it keeps the larger Monday slot. The bent knee of a seated raise shifts Friday's sets onto the soleus underneath. |
+| Direct hamstring work on Monday only | Squats do little for hamstrings, and a deadlift doesn't train knee flexion, so Monday's seated leg curl runs 4 sets. The seated version grew hamstrings more than a lying curl in a small study. Friday's last slot goes to calves. |
+| Standing calf raise on both days | In a 12-week study of 14 untrained people, standing raises grew the gastrocnemius 9–12% against 1–2% for seated, with no meaningful soleus difference. A seated raise was tried on paper and dropped before it shipped. |
 | Leg extension after the squat, not a leg press | A squat and a leg press are both heavy knee-and-hip pushes, so the second runs on tired legs for a similar stimulus, and neither source program pairs them in a session in week 1. The extension adds a different stimulus at low fatigue, and its last set is a drop set. It runs as straight sets because pairing it with the leg curl would hold two machines at once. |
+| Lateral raise and reverse fly on Monday | Side delts needed more than 5 sets, and pulling work alone leaves rear delts mostly to the lats and mid-back. Both run at the cable station Monday already uses. |
 | No hard conditioning | Nippard keeps cardio minimal on hypertrophy programs, and the RPE-9 stair climber cut into leg recovery. Dropping it freed about 12 minutes a session. Easy climber minutes are now the warm-up, and daily walking stays. |
 
 **Paired exercises share a station.** Each A/B/C pair runs on one bench with one set of
 dumbbells, or at one cable station — a pair that needs two machines at once fails at a busy gym.
-That pairing is what fits the sessions in under an hour, so don't split pairs into straight sets
+That pairing is what keeps the sessions inside the window, so don't split pairs into straight sets
 without accounting for the time.
 
 ## Weekly volume
 
-About **54 hard sets a week**. Per muscle: chest 8, back 9 (plus the deadlift), side delts 5,
-quads 8, hamstrings 3 (plus the deadlift), biceps 4, triceps 5, calves 5, abs 2.
+About **59 hard sets a week**: 21 on Monday, 19 on Wednesday and Friday. Per muscle: chest 8, back
+9 (plus the deadlift), side delts 7, rear delts 2, quads 8, hamstrings 4 (plus the deadlift),
+biceps 4, triceps 5, calves 5, abs 2.
 
 That is the low end of what supports growth. It works because sets are taken close to failure —
 Essentials' bet, fewer sets each worth more — so the effort prescription is not optional.
 
 ## Effort and progression
 
-- **Compound lifts at RPE 8–9, isolation to RPE 10** on the last set. RPE 10 means the last rep
-  you can complete with good form, not one ground out with bad form.
+- **Compound lifts at RPE 8–9. Isolation early sets at RPE 9, last set at RPE 10.** Growth tends
+  to rise as sets end closer to failure, but actually reaching it doesn't clearly add more and
+  costs more fatigue. RPE 10 means the last rep you can complete with good form, not one ground
+  out with bad form.
 - **Rep ranges with double progression.** When the last set reaches the top of the range at the
   target RPE, add the smallest jump and drop back to the bottom of the range. Dumbbells go up
   5 lb a hand, and a rep range is what absorbs a jump that size.
@@ -79,8 +83,15 @@ needs a second easy week.
 **The safety valve:** if weights or reps drop on two or more lifts for two sessions in a row,
 start the next block early instead of pushing through.
 
+**The stall rule:** if one exercise gains no rep or weight for 3 sessions in a row, add one set. If
+it's still stuck after two more sessions, swap it at the next block. This is a judgement call, not
+a research finding. Scheduled set increases across the block were considered and left out: in
+trained men they improved strength with no clear size advantage, so sets are added only where
+progress stops.
+
 Exercises stay the same for all 12 weeks — changing them flattens the strength curve that the
-logbook depends on.
+logbook depends on. Between blocks, keep the compound lifts and rotate 2–3 isolation exercises:
+planned variation seems to help growth across a muscle, while random switching may hurt it.
 
 ## Changing any of this
 

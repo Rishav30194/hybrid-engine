@@ -32,7 +32,7 @@ describe('exerciseMeta', () => {
   it('shows the easy week’s RPE in place of the exercise’s own', () => {
     const calf = DAYS[0]!.ex.find((e) => e.name === 'Standing Calf Raise')!
     expect(exerciseMeta(calf, 1)).toBe('3×10–12 · RPE ~8 · rest 90s')
-    expect(exerciseMeta(calf, 2)).toBe('3×10–12 · RPE 10 · rest 90s')
+    expect(exerciseMeta(calf, 2)).toBe('3×10–12 · RPE 9, last 10 · rest 90s')
   })
 })
 

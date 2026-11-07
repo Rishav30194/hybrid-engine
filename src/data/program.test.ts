@@ -14,8 +14,8 @@ describe('program data integrity', () => {
   // Other suites index fixtures literally (DAYS[0].ex[0]); this is what makes
   // that safe — if the program data loses a day's exercises, it fails here
   // with a clear message rather than as a confusing undefined downstream.
-  it('has 3 days of 6, 7 and 8 exercises', () => {
-    expect(DAYS.map((d) => d.ex.length)).toEqual([6, 7, 8])
+  it('has 3 days of 8, 7 and 8 exercises', () => {
+    expect(DAYS.map((d) => d.ex.length)).toEqual([8, 7, 8])
   })
   // Exercise ids are storage keys. Every id from the old program could still
   // hold logged weights on the phone, so a reused one would resurface them on
@@ -25,11 +25,9 @@ describe('program data integrity', () => {
     expect(new Set(ids).size).toBe(ids.length)
     for (const id of ids) expect(id).toMatch(/^bb-(mon|wed|fri)-[a-z]+$/)
   })
-  // Both went live before being replaced, so weights may be logged under them.
-  it('does not reuse a retired id', () => {
-    const ids = DAYS.flatMap((d) => d.ex.map((e) => e.id))
-    expect(ids).not.toContain('bb-fri-calf')
-    expect(ids).not.toContain('bb-mon-legpress')
+  // It went live before being replaced, so weights may be logged under it.
+  it('does not reuse the retired leg press id', () => {
+    expect(DAYS.flatMap((d) => d.ex.map((e) => e.id))).not.toContain('bb-mon-legpress')
   })
   it('logs back-off sets on exactly squat, flat DB press and deadlift', () => {
     const backoff = DAYS.flatMap((d) => d.ex.filter((e) => e.backoff).map((e) => e.name))

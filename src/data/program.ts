@@ -1,7 +1,7 @@
 /**
  * The program's real prescription data — this file is the source of truth.
  * Do not edit values casually; this is the athlete's actual 12-week hypertrophy
- * block, three sessions a week (Mon / Wed / Fri, ~55 min each). The reasoning
+ * block, three sessions a week (Mon / Wed / Fri, ~75 min each). The reasoning
  * behind the shape (time budgets, exercise choices, volume) is in
  * docs/PROGRAM_SOURCE.md.
  */
@@ -29,11 +29,13 @@ export const DAYS: Day[] = [
   { n: 1, title: 'MONDAY — LOWER', sub: WARM_UP,
     ex: [
       { id: 'bb-mon-squat', name: 'Back Squat', sr: '1×5–6 top, 2×8–10 back-off', rpe: '8', rest: '2–3 min', backoff: true, note: 'Brace, knees out. Back-off sets run 10–15% lighter than the top set.' },
-      { id: 'bb-mon-legext', name: 'Leg Extension', sr: '3×10–12', rpe: '9–10', rest: '90s', note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze at the top, control the way down.' },
-      { id: 'bb-mon-legcurl', name: 'Seated Leg Curl', sr: '3×10–12', rpe: '9–10', rest: '90s', note: 'Lean forward for a deeper hamstring stretch, control the way back.' },
-      { id: 'bb-mon-fly', name: 'B1 · Cable Fly', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Soft elbows, big stretch when open, squeeze the chest together.' },
-      { id: 'bb-mon-crunch', name: 'B2 · Cable Crunch', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Round your back as you crunch, hips stay still.' },
-      { id: 'bb-mon-calf', name: 'Standing Calf Raise', sr: '3×10–12', rpe: '10', rest: '90s', note: 'Pause a full second in the bottom stretch, then all the way up. No bouncing.' },
+      { id: 'bb-mon-legext', name: 'Leg Extension', sr: '3×10–12', rpe: '9, last 10', rest: '90s', note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze at the top, control the way down.' },
+      { id: 'bb-mon-legcurl', name: 'Seated Leg Curl', sr: '4×10–12', rpe: '9, last 10', rest: '90s', note: 'Lean forward for a deeper hamstring stretch, control the way back.' },
+      { id: 'bb-mon-fly', name: 'B1 · Cable Fly', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Soft elbows, big stretch when open, squeeze the chest together.' },
+      { id: 'bb-mon-crunch', name: 'B2 · Cable Crunch', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Round your back as you crunch, hips stay still.' },
+      { id: 'bb-mon-lateral', name: 'C1 · Cable Lateral Raise', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Raise out, not up. Control the lowering.' },
+      { id: 'bb-mon-reversefly', name: 'C2 · Cable Reverse Fly', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Rear delts. Arms out wide, lead with the elbows, smooth on the way up.' },
+      { id: 'bb-mon-calf', name: 'Standing Calf Raise', sr: '3×10–12', rpe: '9, last 10', rest: '90s', note: 'Pause a full second in the bottom stretch, then all the way up. No bouncing.' },
     ] },
   { n: 2, title: 'WEDNESDAY — UPPER', sub: WARM_UP,
     ex: [
@@ -41,9 +43,9 @@ export const DAYS: Day[] = [
       { id: 'bb-wed-ohp', name: 'A1 · Seated DB Shoulder Press', sr: '2×8–10', rpe: '9', rest: '60s', note: 'Bring the dumbbells all the way down, torso upright.' },
       { id: 'bb-wed-row', name: 'A2 · Chest-Supported DB Row', sr: '3×10–12', rpe: '9–10', rest: '60s', note: 'Chest on the incline bench. Drive the elbows back, let the shoulders reach forward at the bottom.' },
       { id: 'bb-wed-pullup', name: 'Weighted Pull-up', sr: '3×6–10', rpe: '9–10', rest: '2 min', note: 'Full hang to chest up. Add weight once you clear 10 reps.' },
-      { id: 'bb-wed-lateral', name: 'B1 · Cable Lateral Raise', sr: '3×12–15', rpe: '10', rest: '60s', note: 'Raise out, not up. Control the lowering.' },
-      { id: 'bb-wed-triceps', name: 'B2 · Overhead Cable Triceps Extension', sr: '3×10–12', rpe: '10', rest: '60s', note: 'Elbows in, full stretch behind the head.' },
-      { id: 'bb-wed-curl', name: 'EZ-Bar Curl', sr: '2×10–12', rpe: '10', rest: '90s', note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze the top.' },
+      { id: 'bb-wed-lateral', name: 'B1 · Cable Lateral Raise', sr: '3×12–15', rpe: '9, last 10', rest: '60s', note: 'Raise out, not up. Control the lowering.' },
+      { id: 'bb-wed-triceps', name: 'B2 · Overhead Cable Triceps Extension', sr: '3×10–12', rpe: '9, last 10', rest: '60s', note: 'Elbows in, full stretch behind the head.' },
+      { id: 'bb-wed-curl', name: 'EZ-Bar Curl', sr: '2×10–12', rpe: '9, last 10', rest: '90s', note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze the top.' },
     ] },
   { n: 3, title: 'FRIDAY — FULL BODY', sub: WARM_UP,
     ex: [
@@ -51,10 +53,10 @@ export const DAYS: Day[] = [
       { id: 'bb-fri-incline', name: 'A1 · Incline DB Press', sr: '3×8–10', rpe: '9', rest: '60s', note: 'Low incline. Sink the dumbbells as low as you comfortably can.' },
       { id: 'bb-fri-bss', name: 'A2 · Bulgarian Split Squat', sr: '2×8–10/leg', rpe: '8', rest: '60s', note: 'Drop straight down, drive through the front heel.' },
       { id: 'bb-fri-pulldown', name: 'B1 · Lat Pulldown', sr: '3×10–12', rpe: '9–10', rest: '60s', note: 'Full stretch at the top, elbows down and in.' },
-      { id: 'bb-fri-lateral', name: 'B2 · DB Lateral Raise', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Raise out, not up. The last rep should be a real struggle.' },
-      { id: 'bb-fri-curl', name: 'C1 · Bayesian Cable Curl', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Face away from the cable with the arm behind you for the stretch.' },
-      { id: 'bb-fri-pressdown', name: 'C2 · Triceps Pressdown', sr: '2×12–15', rpe: '10', rest: '60s', note: 'Elbows pinned to your sides, full lockout.' },
-      { id: 'bb-fri-seatedcalf', name: 'Seated Calf Raise', sr: '2×12–15', rpe: '10', rest: '90s', note: 'Pause a full second in the bottom stretch, then all the way up. No bouncing.' },
+      { id: 'bb-fri-lateral', name: 'B2 · DB Lateral Raise', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Raise out, not up. The last rep should be a real struggle.' },
+      { id: 'bb-fri-curl', name: 'C1 · Bayesian Cable Curl', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Face away from the cable with the arm behind you for the stretch.' },
+      { id: 'bb-fri-pressdown', name: 'C2 · Triceps Pressdown', sr: '2×12–15', rpe: '9, last 10', rest: '60s', note: 'Elbows pinned to your sides, full lockout.' },
+      { id: 'bb-fri-calf', name: 'Standing Calf Raise', sr: '2×12–15', rpe: '9, last 10', rest: '90s', note: 'Pause a full second in the bottom stretch, then all the way up. No bouncing.' },
     ] },
 ]
 
@@ -73,10 +75,12 @@ export const NOTES: string[] = [
   'When the last set reaches the top of the range at the target RPE, add the smallest jump (5 lb per dumbbell, 5–10 lb on a barbell) and drop back to the bottom of the range.',
   'On top-set exercises, add weight to the top set first. Back-off sets run 10–15% lighter.',
   'RPE 10 is the last rep you can complete with good form.',
+  'On isolation exercises (RPE 9, last 10), stop early sets about a rep short and take only the last set to failure.',
   "Drop set: reach the target reps, cut the weight by about half, and keep going until you can't do another rep.",
   'On paired exercises (A1/A2), alternate between the two, resting about 1 minute after each set.',
   'Week 1 is easy: RPE ~8 on everything, no sets to failure, no drop sets. Use it to find your weights.',
+  "If an exercise gains no rep or weight for 3 sessions in a row, add one set. If it's still stuck after two more sessions, swap it next block.",
   'If weights or reps drop on two or more lifts for two sessions in a row, start the next block early.',
   'Missed a day? Skip it rather than doubling up.',
-  'In week 12, tap Start new block on This Week. Your weights carry into week 1.',
+  'In week 12, tap Start new block on This Week. Your weights carry into week 1. Keep the compound lifts, and rotate 2–3 isolation exercises for the next block.',
 ]
