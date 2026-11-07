@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { planNewBlock } from './newBlock'
-import { backoffId, lsrpeId, repsId, tmplDoneKey } from './keys'
+import { backoffId, dropId, lsrpeId, repsId, tmplDoneKey } from './keys'
 import { DAYS, LAST_WEEK } from '../data/program'
 
 const atLast = (id: string) => tmplDoneKey(LAST_WEEK, id)
@@ -31,6 +31,16 @@ describe('planNewBlock', () => {
       [atOne('bb-mon-squat')]: '185',
       [atOne(backoffId('bb-mon-squat'))]: '160',
     })
+  })
+
+  // Week 1 has no drop sets, so its drop box starts empty.
+  it('carries a drop-set row’s main weight, but no drop numbers', () => {
+    const log = {
+      [atLast('bb-wed-curl')]: '125',
+      [atLast(dropId('bb-wed-curl'))]: '65',
+      [atLast(repsId(dropId('bb-wed-curl')))]: '12',
+    }
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({ [atOne('bb-wed-curl')]: '125' })
   })
 
   // Felt RPE describes one set, not a starting point for the next block.

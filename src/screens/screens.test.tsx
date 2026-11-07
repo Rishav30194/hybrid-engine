@@ -266,6 +266,58 @@ describe('Template', () => {
     })
   })
 
+  describe('drop sets', () => {
+    const field = (container: HTMLElement, label: string) =>
+      container.querySelector<HTMLInputElement>(`[aria-label="Leg Extension ${label}"]`)!
+
+    it('logs main and drop numbers under separate keys', () => {
+      const { container } = renderAtWeek(<Template />, 2)
+      for (const [label, value] of [
+        ['weight', '125'],
+        ['drop weight', '65'],
+        ['reps', '12'],
+        ['drop reps', '10'],
+      ] as const) {
+        fireEvent.change(field(container, label), { target: { value } })
+      }
+
+      expect(saved().log).toEqual({
+        'w2:t:bb-mon-legext': '125',
+        'w2:t:bb-mon-legext:drop': '65',
+        'w2:t:bb-mon-legext:reps': '12',
+        'w2:t:bb-mon-legext:drop:reps': '10',
+      })
+    })
+
+    it('shows each side’s own latest numbers as placeholders', () => {
+      const { container } = renderWith(<Template />, {
+        week: 4,
+        log: {
+          'w2:t:bb-mon-legext': '125',
+          'w2:t:bb-mon-legext:reps': '12',
+          'w2:t:bb-mon-legext:drop': '65',
+          'w2:t:bb-mon-legext:drop:reps': '10',
+        },
+      })
+      expect(field(container, 'weight').placeholder).toBe('125')
+      expect(field(container, 'drop weight').placeholder).toBe('65')
+      expect(field(container, 'reps').placeholder).toBe('12')
+      expect(field(container, 'drop reps').placeholder).toBe('10')
+    })
+
+    it('uses the number keypad on all four, and keeps the felt RPE', () => {
+      const { container } = renderAtWeek(<Template />, 2)
+      expect(field(container, 'weight').inputMode).toBe('decimal')
+      expect(field(container, 'drop reps').inputMode).toBe('numeric')
+      expect(rowNamed(container, 'Leg Extension').querySelector('.lsrpe')).not.toBeNull()
+    })
+
+    it('leaves other rows with a single pair', () => {
+      const { container } = renderAtWeek(<Template />, 2)
+      expect(rowNamed(container, 'Seated Leg Curl').querySelector('.set-entry__pair')).toBeNull()
+    })
+  })
+
   describe('last set RPE', () => {
     it('logs a felt RPE on any row, with no implied-1RM signal', () => {
       const { container } = renderAtWeek(<Template />, 1)

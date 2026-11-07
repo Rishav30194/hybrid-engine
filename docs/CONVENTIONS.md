@@ -69,7 +69,7 @@ are intentional.
 
 | Adding                        | Goes                                                                                                                                                            |
 | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| An exercise                   | `DAYS` in `program.ts`, with a **fresh unique `id`** (prefixed `bb-`). Day progress totals update automatically. A top set with back-off sets takes `backoff: true` |
+| An exercise                   | `DAYS` in `program.ts`, with a **fresh unique `id`** (prefixed `bb-`). Day progress totals update automatically. A top set with back-off sets takes `backoff: true`; a last-set drop set takes `dropset: true` |
 | A per-week prescription field | `Week` in `data/types.ts`, then the entries in `WEEKS`. A required field fails type-check until every week has it — that's the point |
 | A persisted field             | `PersistedState` → `pickPersisted` → `mergePersisted` default → `hydrateRemote` → a `persistence.test.ts` case. **All five, or it desyncs** |
 | UI-only state                 | `AppState` only. Keep it out of `PersistedState`                                                                                                            |

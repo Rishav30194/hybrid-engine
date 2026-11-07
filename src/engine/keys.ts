@@ -27,3 +27,9 @@ export const repsId = (exId: string) => `${exId}:reps`
  * `backoffId(exId)`, their last set's reps under `repsId(backoffId(exId))`.
  */
 export const backoffId = (exId: string) => `${exId}:bo`
+
+/**
+ * Log id for the drop half of a drop set: its weight under `dropId(exId)`, its
+ * reps under `repsId(dropId(exId))`.
+ */
+export const dropId = (exId: string) => `${exId}:drop`

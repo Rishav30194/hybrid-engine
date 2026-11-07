@@ -25,6 +25,8 @@ export interface Exercise {
   rest: string
   /** A top set followed by lighter back-off sets, logged as two weight × reps pairs. */
   backoff?: boolean
+  /** The last set is a drop set, logged as main - drop in each box. */
+  dropset?: boolean
   note: string
 }
 
