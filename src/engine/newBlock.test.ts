@@ -42,7 +42,7 @@ describe('planNewBlock', () => {
   // A back-off id on an exercise without back-off sets is not something the
   // row ever writes; nothing should invent it.
   it('only carries a back-off weight for a top-set exercise', () => {
-    const log = { [atLast(backoffId('bb-mon-legpress'))]: '300' }
+    const log = { [atLast(backoffId('bb-mon-legext'))]: '300' }
     expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({})
   })
 

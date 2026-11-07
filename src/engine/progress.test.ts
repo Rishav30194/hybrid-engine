@@ -4,10 +4,10 @@ import { backoffId, lsrpeId, repsId, tmplDoneKey } from './keys'
 import { DAYS } from '../data/program'
 
 describe('dayProgress', () => {
-  const day = DAYS[0]! // Monday: 6 exercises, no conditioning block
+  const day = DAYS[0]! // Monday: 8 exercises, no conditioning block
 
   it('counts nothing done for an empty state', () => {
-    expect(dayProgress(day, 1, {})).toEqual({ done: 0, total: 6, complete: false })
+    expect(dayProgress(day, 1, {})).toEqual({ done: 0, total: 8, complete: false })
   })
 
   it('counts checked exercises', () => {
@@ -15,7 +15,7 @@ describe('dayProgress', () => {
       [tmplDoneKey(1, day.ex[0]!.id)]: true,
       [tmplDoneKey(1, day.ex[1]!.id)]: true,
     }
-    expect(dayProgress(day, 1, done)).toEqual({ done: 2, total: 6, complete: false })
+    expect(dayProgress(day, 1, done)).toEqual({ done: 2, total: 8, complete: false })
   })
 
   // An old conditioning check-off is inert — it must not count toward a day.
@@ -26,7 +26,7 @@ describe('dayProgress', () => {
   it('is complete only when every exercise is checked', () => {
     const done: Record<string, boolean> = {}
     for (const e of day.ex) done[tmplDoneKey(1, e.id)] = true
-    expect(dayProgress(day, 1, done)).toEqual({ done: 6, total: 6, complete: true })
+    expect(dayProgress(day, 1, done)).toEqual({ done: 8, total: 8, complete: true })
   })
 
   it('is keyed per week — week 1 checks do not count for week 2', () => {
@@ -51,8 +51,8 @@ describe('key format', () => {
 describe('weekProgress', () => {
   const mon = DAYS[0]!
 
-  it('sums every day: Mon 6 + Wed 7 + Fri 8', () => {
-    expect(weekProgress(DAYS, 1, {}).total).toBe(21)
+  it('sums every day: Mon 8 + Wed 7 + Fri 8', () => {
+    expect(weekProgress(DAYS, 1, {}).total).toBe(23)
   })
 
   it('counts only the week it is asked about', () => {
@@ -71,7 +71,7 @@ describe('weekProgress', () => {
     for (const d of DAYS) {
       for (const e of d.ex) done[tmplDoneKey(4, e.id)] = true
     }
-    expect(weekProgress(DAYS, 4, done)).toEqual({ done: 21, total: 21, complete: true })
+    expect(weekProgress(DAYS, 4, done)).toEqual({ done: 23, total: 23, complete: true })
     expect(weekProgress(DAYS, 5, done).complete).toBe(false)
   })
 })

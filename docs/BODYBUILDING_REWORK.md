@@ -61,7 +61,7 @@ sets: 2–3 before squat, deadlift, and the DB presses; 0–1 before isolation e
 | Exercise | Sets × reps | RPE | Rest |
 |---|---|---|---|
 | Back Squat | 1×5–6 top, 2×8–10 back-off | 8 | 2–3 min |
-| Leg Press | 3×10–12 | 9 | 2 min |
+| Leg Extension | 3×10–12, last set drop set | 9–10 | 90 s |
 | Seated Leg Curl | 3×10–12 | 9–10 | 90 s |
 | B1 Cable Fly / B2 Cable Crunch | 2×12–15 / 2×12–15 | 10 | 1 min between |
 | Standing Calf Raise | 3×10–12, pause at the bottom | 10 | 90 s |
@@ -84,7 +84,7 @@ sets: 2–3 before squat, deadlift, and the DB presses; 0–1 before isolation e
 | A1 Incline DB Press / A2 Bulgarian Split Squat | 3×8–10 / 2×8–10 per leg | 9 / 8 | 1 min between |
 | B1 Lat Pulldown / B2 DB Lateral Raise | 3×10–12 / 2×12–15 | 9–10 / 10 | 1 min between |
 | C1 Bayesian Cable Curl / C2 Triceps Pressdown | 2×12–15 / 2×12–15 | 10 | 1 min between |
-| Standing Calf Raise | 2×12–15 | 10 | 90 s |
+| Seated Calf Raise | 2×12–15 | 10 | 90 s |
 
 ### Progression
 
@@ -109,6 +109,8 @@ All agreed with Rishav on 2026-10-29.
 | 12-week block with one easy week, at the start | Rishav is already training, so he needs no ramp-in; one week finds the new weights. Matches Nippard's Essentials program, which runs 12 weeks without a deload at similar volume |
 | No leg extension; leg curl as straight sets on Monday | A leg curl and leg extension superset holds two machines at once, which fails at a busy Crunch |
 | ~~Seated leg curl replaces Friday's calf raise~~ Reversed the same day: Friday keeps the calf raise | Rishav's call: conventional deadlift was picked over sumo for its hamstring work, so Monday's leg curl plus the deadlift covers hamstrings (3 direct sets) and calves keep 5 |
+| Friday's calf raise is seated (2026-11-06) | Standing on both days had no deliberate reason; seated adds focused soleus work. New id `bb-fri-seatedcalf`, so anything logged under `bb-fri-calf` doesn't carry over. Rishav confirmed the gym has the machine |
+| Leg extension replaces Monday's leg press (2026-11-06) | Squat and leg press overlap, and that pairing was not from the source programs. New id `bb-mon-legext`, last set a drop set. Rishav confirmed the gym has the machine |
 | Leg press and seated leg curl stay as written | Rishav confirmed Crunch University has both |
 | Log reps of the last set only (option C) | Reps fall across sets, so the last set reaching the top of the range means every set did. One number on the number keypad per row; the iOS number keypad has no space key, which ruled out one field holding every set |
 
@@ -276,3 +278,12 @@ None.
 - **2026-10-29:** Rishav checked the phone: all good. The cloud-reload item stays open, since the
   report doesn't say whether he was signed in. Lint run on the merged code: clean. Remaining: the
   cloud-reload check and the first full training week.
+- **2026-11-06:** Friday's calf raise changed to seated (`bb-fri-seatedcalf`, same 2×12–15 @ RPE
+  10). `bb-fri-calf` retired, with a test against reuse.
+- **2026-11-06:** Monday's leg press replaced by a leg extension (`bb-mon-legext`, 3×10–12 @ RPE
+  9–10, last set a drop set). `bb-mon-legpress` retired, with a test against reuse.
+- **2026-11-06:** Review changes on `feature/program-review-changes`: Friday back to a standing calf
+  raise (`bb-fri-calf`; the seated version never shipped), Monday leg curl 4 sets, new cable lateral
+  raise (`bb-mon-lateral`) and reverse fly (`bb-mon-reversefly`), isolation at RPE 9 with the last
+  set at 10, stall rule, block rotation, time budget 60–80 min. Conventional deadlift stays;
+  `docs/PROGRAM_SOURCE.md` now holds the corrected reasoning, and the older entries here are history.

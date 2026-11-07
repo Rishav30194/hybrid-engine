@@ -85,7 +85,7 @@ describe('This Week', () => {
     const squat = container.querySelector<HTMLInputElement>('[aria-label="Back Squat weight"]')!
     expect(squat.value).toBe('')
     expect(squat.placeholder).toBe('weight')
-    expect(textsOf(container, '.block__count')[4]).toBe('0/21')
+    expect(textsOf(container, '.block__count')[4]).toBe('0/23')
   })
 
   it('offers Start new block only in the last week', () => {
@@ -131,13 +131,13 @@ describe('This Week', () => {
     expect(container.querySelectorAll('.check-btn')).toHaveLength(0)
   })
 
-  it('shows one block-progress row per week, counting 21 items each', () => {
+  it('shows one block-progress row per week, counting 23 items each', () => {
     const { container } = renderAtWeek(<ThisWeek />, 1)
     expect(textsOf(container, '.block__wk')).toEqual(
       Array.from({ length: 12 }, (_, i) => `W${i + 1}`),
     )
-    // Mon 6 + Wed 7 + Fri 8
-    expect(textsOf(container, '.block__count')).toEqual(Array(12).fill('0/21'))
+    // Mon 8 + Wed 7 + Fri 8
+    expect(textsOf(container, '.block__count')).toEqual(Array(12).fill('0/23'))
   })
 
   it('counts only the active week and marks it', () => {
@@ -150,9 +150,9 @@ describe('This Week', () => {
       },
     })
     const counts = textsOf(container, '.block__count')
-    expect(counts[0]).toBe('1/21') // week 1 keeps its own tally
-    expect(counts[2]).toBe('2/21') // week 3
-    expect(counts[3]).toBe('0/21')
+    expect(counts[0]).toBe('1/23') // week 1 keeps its own tally
+    expect(counts[2]).toBe('2/23') // week 3
+    expect(counts[3]).toBe('0/23')
     expect(container.querySelectorAll('.block__row--active')).toHaveLength(1)
     expect(
       container.querySelector('.block__row--active')?.querySelector('.block__wk')
@@ -165,7 +165,7 @@ describe('Template', () => {
   it('renders a card per day, counting its exercises', () => {
     const { container } = renderAtWeek(<Template />, 1)
     expect(textsOf(container, '.day-card__title')).toEqual(DAYS.map((d) => d.title))
-    expect(textsOf(container, '.day-card__progress')).toEqual(['0/6', '0/7', '0/8'])
+    expect(textsOf(container, '.day-card__progress')).toEqual(['0/8', '0/7', '0/8'])
   })
 
   it('opens Monday by default, with the warm-up and no conditioning block', () => {
@@ -178,7 +178,7 @@ describe('Template', () => {
   it('shows the exercise’s own RPE in a full-effort week', () => {
     const { container } = renderAtWeek(<Template />, 2)
     expect(rowNamed(container, 'Standing Calf Raise').querySelector('.ex-row__meta-text')!
-      .textContent).toBe('3×10–12 · RPE 10 · rest 90s')
+      .textContent).toBe('3×10–12 · RPE 9, last 10 · rest 90s')
   })
 
   it('shows RPE ~8 on every row in the easy week', () => {
@@ -254,7 +254,7 @@ describe('Template', () => {
 
     it('gives an ordinary exercise one pair', () => {
       const { container } = renderAtWeek(<Template />, 1)
-      const row = rowNamed(container, 'Leg Press')
+      const row = rowNamed(container, 'Leg Extension')
       expect(row.querySelectorAll('.set-entry')).toHaveLength(1)
       expect(row.querySelector('.ex-row__backoff')).toBeNull()
     })

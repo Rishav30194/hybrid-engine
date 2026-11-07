@@ -1,7 +1,7 @@
 # Hybrid Engine
 
 Mobile-first PWA for a single athlete running a fixed 12-week hypertrophy program — **three
-sessions a week (Mon / Wed / Fri), around 55 minutes each**. Why it's shaped this way is in
+sessions a week (Mon / Wed / Fri), around 75 minutes each**. Why it's shaped this way is in
 `docs/PROGRAM_SOURCE.md`.
 
 Pick the current week (1–12) and log weight × reps of your last set on each exercise; your latest
