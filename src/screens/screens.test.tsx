@@ -145,7 +145,7 @@ describe('This Week', () => {
       week: 3,
       done: {
         'w3:t:bb-mon-squat': true,
-        'w3:t:bb-wed-curl': true,
+        'w3:t:bb-wed-machinecurl': true,
         'w1:t:bb-mon-squat': true,
       },
     })

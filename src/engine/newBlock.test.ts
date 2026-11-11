@@ -36,16 +36,16 @@ describe('planNewBlock', () => {
   // Week 1 has no drop sets, so its drop box starts empty.
   it('carries a drop-set row’s main weight, but no drop numbers', () => {
     const log = {
-      [atLast('bb-wed-curl')]: '125',
-      [atLast(dropId('bb-wed-curl'))]: '65',
-      [atLast(repsId(dropId('bb-wed-curl')))]: '12',
+      [atLast('bb-wed-machinecurl')]: '125',
+      [atLast(dropId('bb-wed-machinecurl'))]: '65',
+      [atLast(repsId(dropId('bb-wed-machinecurl')))]: '12',
     }
-    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({ [atOne('bb-wed-curl')]: '125' })
+    expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({ [atOne('bb-wed-machinecurl')]: '125' })
   })
 
   // Felt RPE describes one set, not a starting point for the next block.
   it('never carries felt RPE forward', () => {
-    const log = { [atLast(lsrpeId('bb-wed-curl'))]: '10' }
+    const log = { [atLast(lsrpeId('bb-wed-machinecurl'))]: '10' }
     expect(planNewBlock(DAYS, LAST_WEEK, log)).toEqual({})
   })
 

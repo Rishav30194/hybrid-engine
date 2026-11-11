@@ -41,6 +41,7 @@ Two Jeff Nippard programs, combined rather than run as written:
 | Standing calf raise on both days | In a 12-week study of 14 untrained people, standing raises grew the gastrocnemius 9–12% against 1–2% for seated, with no meaningful soleus difference. A seated raise was tried on paper and dropped before it shipped. |
 | Leg extension after the squat, not a leg press | A squat and a leg press are both heavy knee-and-hip pushes, so the second runs on tired legs for a similar stimulus, and neither source program pairs them in a session in week 1. The extension adds a different stimulus at low fatigue, and its last set is a drop set. It runs as straight sets because pairing it with the leg curl would hold two machines at once. |
 | Lateral raise and reverse fly on Monday | Side delts needed more than 5 sets, and pulling work alone leaves rear delts mostly to the lats and mid-back. Both run at the cable station Monday already uses. |
+| Machine biceps curl on Wednesday, not an EZ-bar curl | Swapped 2026-11-11 (Hoist RS-1102). The seated machine is less mentally draining, so the sets reach a truer RPE 10, and the pin makes the drop set quick. The EZ bar's extra bottom range carried little load, and Friday's Bayesian curl covers the stretch. Reps widen to 10–15 because the stack and the fixed EZ bars both jump 10 lb. |
 | No hard conditioning | Nippard keeps cardio minimal on hypertrophy programs, and the RPE-9 stair climber cut into leg recovery. Dropping it freed about 12 minutes a session. Easy climber minutes are now the warm-up, and daily walking stays. |
 
 **Paired exercises share a station.** Each A/B/C pair runs on one bench with one set of
@@ -50,7 +51,7 @@ without accounting for the time.
 
 ## Weekly volume
 
-About **59 hard sets a week**: 21 on Monday, 19 on Wednesday and Friday. Per muscle: chest 8, back
+About **60 hard sets a week**: 21 on Monday, 20 on Wednesday, 19 on Friday. Per muscle: chest 8, back
 9 (plus the deadlift), side delts 7, rear delts 2, quads 8, hamstrings 4 (plus the deadlift),
 biceps 4, triceps 5, calves 5, abs 2.
 
