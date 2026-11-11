@@ -116,7 +116,7 @@ sets live in the exercise note, not in `sr`, for the same reason.
 - **Never put volatile state in the persisted slice.** `persistedSnapshot()` is the dependency
   driving both the localStorage write and the debounced cloud push. Put `tab`, `timer` or a
   scroll flag in there and every tick becomes a network write. `pickPersisted` keeps
-  `week, rounding, rm, done, log` and nothing else.
+  `week, rounding, rm, basisAt, done, log` and nothing else.
 - **There is no migration layer.** A key-format or exercise-`id` change would orphan data
   silently — no error, no failing test. Adding one means running it on **both** paths in
   (see below), or the untreated path becomes a re-infection vector.
