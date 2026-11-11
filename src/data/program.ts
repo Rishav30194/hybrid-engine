@@ -40,12 +40,12 @@ export const DAYS: Day[] = [
   { n: 2, title: 'WEDNESDAY — UPPER', sub: WARM_UP,
     ex: [
       { id: 'bb-wed-dbpress', name: 'Flat DB Press', sr: '1×6–8 top, 2×8–10 back-off', rpe: '8–9', rest: '2–3 min', backoff: true, note: 'Sit with the dumbbells on your knees, kick them up as you lie back. Sink them low for the stretch.' },
-      { id: 'bb-wed-ohp', name: 'A1 · Seated DB Shoulder Press', sr: '2×8–10', rpe: '9', rest: '60s', note: 'Bring the dumbbells all the way down, torso upright.' },
+      { id: 'bb-wed-ohp', name: 'A1 · Seated DB Shoulder Press', sr: '3×8–10', rpe: '9', rest: '60s', note: 'Bring the dumbbells all the way down, torso upright.' },
       { id: 'bb-wed-row', name: 'A2 · Chest-Supported DB Row', sr: '3×10–12', rpe: '9–10', rest: '60s', note: 'Chest on the incline bench. Drive the elbows back, let the shoulders reach forward at the bottom.' },
       { id: 'bb-wed-pullup', name: 'Weighted Pull-up', sr: '3×6–10', rpe: '9–10', rest: '2 min', note: 'Full hang to chest up. Add weight once you clear 10 reps.' },
       { id: 'bb-wed-lateral', name: 'B1 · Cable Lateral Raise', sr: '3×12–15', rpe: '9, last 10', rest: '60s', note: 'Raise out, not up. Control the lowering.' },
       { id: 'bb-wed-triceps', name: 'B2 · Overhead Cable Triceps Extension', sr: '3×10–12', rpe: '9, last 10', rest: '60s', note: 'Elbows in, full stretch behind the head.' },
-      { id: 'bb-wed-curl', name: 'EZ-Bar Curl', sr: '2×10–12', rpe: '9, last 10', rest: '90s', dropset: true, note: 'Last set is a drop set: cut the weight by about half and keep going. Squeeze the top.' },
+      { id: 'bb-wed-machinecurl', name: 'Machine Biceps Curl', sr: '2×10–15', rpe: '9, last 10', rest: '90s', dropset: true, note: 'Last set is a drop set: move the pin to about half and keep going. Keep a slight bend at the bottom so the stack never rests. Squeeze the top.' },
     ] },
   { n: 3, title: 'FRIDAY — FULL BODY', sub: WARM_UP,
     ex: [

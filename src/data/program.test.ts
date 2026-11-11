@@ -29,9 +29,12 @@ describe('program data integrity', () => {
   it('does not reuse the retired leg press id', () => {
     expect(DAYS.flatMap((d) => d.ex.map((e) => e.id))).not.toContain('bb-mon-legpress')
   })
-  it('logs drop sets on exactly leg extension and EZ-bar curl', () => {
+  it('does not reuse the retired EZ-bar curl id', () => {
+    expect(DAYS.flatMap((d) => d.ex.map((e) => e.id))).not.toContain('bb-wed-curl')
+  })
+  it('logs drop sets on exactly leg extension and machine biceps curl', () => {
     const drops = DAYS.flatMap((d) => d.ex.filter((e) => e.dropset).map((e) => e.name))
-    expect(drops).toEqual(['Leg Extension', 'EZ-Bar Curl'])
+    expect(drops).toEqual(['Leg Extension', 'Machine Biceps Curl'])
   })
   it('logs back-off sets on exactly squat, flat DB press and deadlift', () => {
     const backoff = DAYS.flatMap((d) => d.ex.filter((e) => e.backoff).map((e) => e.name))
